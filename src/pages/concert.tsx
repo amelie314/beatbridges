@@ -7,6 +7,9 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 
+import Reviews from "../components/Reviews";
+import { ReviewsProvider } from "../contexts/ReviewsContext";
+
 import {
   collection,
   getDocs,
@@ -49,12 +52,14 @@ interface CommentItem {
   // 可根据需要添加其他属性
 }
 
-function ConcertPage({ venues }) {
+function ConcertPage({ venues, currentUser }) {
   const [user] = useAuthState(auth);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
   const [localVenues, setLocalVenues] = useState([]); // 使用从服务器获取的venues初始化
   const router = useRouter();
+  const [districts, setDistricts] = useState([]);
+  const venueId = "venue-id";
 
   // 检查用户登录状态
   useEffect(() => {
@@ -110,6 +115,18 @@ function ConcertPage({ venues }) {
 
     fetchVenues();
   }, [activeCounty]);
+  useEffect(() => {
+    // 当activeCounty更新时，调用这个effect
+    if (activeCounty) {
+      const filteredVenues = venues.filter(
+        (venue) => venue.City === activeCounty
+      );
+      const districtSet = new Set(
+        filteredVenues.map((venue) => venue.District)
+      );
+      setDistricts(Array.from(districtSet));
+    }
+  }, [activeCounty, venues]);
 
   return (
     <div className="min-h-screen flex items-center pl-[150px] bg-primary-color">
@@ -125,7 +142,16 @@ function ConcertPage({ venues }) {
           </Link>
         </div>
         <div className="flex-1 p-6 rounded-lg shadow-md bg-primary-color ml-[100px]">
-          <LocationInfo venues={localVenues} />
+          <LocationInfo
+            venues={localVenues}
+            districts={districts}
+            activeCounty={activeCounty}
+          />
+        </div>
+        <div className="flex flex-col space-y-4">
+          <div className="venue-selector">
+            {/* 展演空间选择菜单的组件或逻辑 */}
+          </div>
         </div>
       </div>
     </div>
