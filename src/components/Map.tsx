@@ -411,6 +411,7 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
               activeCounty === "南投縣" ? "is-active" : ""
             }`}
+            onClick={() => handlePathClick("南投縣")}
             onMouseMove={(e) => handleMouseMove(e, "南投縣")}
             onMouseOut={handleMouseOut}
           ></path>

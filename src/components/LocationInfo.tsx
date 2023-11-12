@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-const LocationInfo = ({ venues, activeCounty }) => {
+const LocationInfo = ({ venues, activeCounty, onVenueSelected }) => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
 
@@ -22,12 +22,13 @@ const LocationInfo = ({ venues, activeCounty }) => {
     (venue) => venue.District === selectedDistrict
   );
 
-  // 当选择区域发生变化时调用此函数
-  const handleDistrictChange = (e) => {
-    const district = e.target.value;
-    setSelectedDistrict(district);
-    // 重置展演空间的选择
-    setSelectedVenue(null);
+  // LocationInfo 组件中
+
+  const handleVenueChange = (e) => {
+    console.log(e.target.value);
+    const venueId = e.target.value; // 这里获取选中的 venueId
+    setSelectedVenue(venueId); // 设置选中的 venue
+    onVenueSelected(venueId); // 将 venueId 传递给父组件
   };
 
   return (
@@ -67,17 +68,15 @@ const LocationInfo = ({ venues, activeCounty }) => {
             id="venue-select"
             className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
             value={selectedVenue}
-            onChange={(e) => setSelectedVenue(e.target.value)}
+            onChange={handleVenueChange} // 使用 handleVenueChange 函数
           >
-            <option value="" disabled>
-              選擇展演空間
-            </option>
+            <option value="">選擇展演空間</option>
             {venuesInDistrict.map((venue) => (
-              <option key={venue.Name} value={venue.Name}>
+              <option key={venue.id} value={venue.id}>
                 {venue.Name}
               </option>
             ))}
-          </select>{" "}
+          </select>
         </div>
       )}
     </div>

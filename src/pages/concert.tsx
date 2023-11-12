@@ -1,14 +1,11 @@
 /** @format */
 
-// export default Accounting;
 import React, { useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
-
-import Reviews from "../components/Reviews";
-import { ReviewsProvider } from "../contexts/ReviewsContext";
+import ReviewForm from "../components/ReviewForm";
 
 import {
   collection,
@@ -18,6 +15,7 @@ import {
   deleteDoc,
   query,
   where,
+  serverTimestamp,
 } from "firebase/firestore";
 
 import { db, auth } from "../firebaseConfig";
@@ -41,25 +39,21 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-// interface RecordItem {
-//   id: string;
-//   amount: number;
-//   detail: string;
-// }
 interface CommentItem {
   id: string;
   text: string;
   // 可根据需要添加其他属性
 }
 
-function ConcertPage({ venues, currentUser }) {
+function ConcertPage({ venues }) {
   const [user] = useAuthState(auth);
   const [comments, setComments] = useState<CommentItem[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
   const [localVenues, setLocalVenues] = useState([]); // 使用从服务器获取的venues初始化
   const router = useRouter();
   const [districts, setDistricts] = useState([]);
-  const venueId = "venue-id";
+  const [selectedVenueId, setSelectedVenueId] = useState(null);
+  console.log("Rendering ReviewForm with venueId: ", selectedVenueId);
 
   // 检查用户登录状态
   useEffect(() => {
@@ -70,6 +64,33 @@ function ConcertPage({ venues, currentUser }) {
     }
   }, [user, router]);
 
+  // 确保定义了 handleVenueSelected 函数来更新 selectedVenueId 状态
+  const handleVenueSelected = (venueId) => {
+    setSelectedVenueId(venueId); // 设置选中的 venueId
+  };
+
+  // 当用户提交评论时，确保 venueId 被传递给 handleAddReview
+  const handleAddReview = async (text, venueId) => {
+    if (!user || !venueId) {
+      // 用户未登录或未选择场馆
+      console.error("User is not logged in or venueId is not selected.");
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, "reviews"), {
+        userId: user.uid,
+        venueId: venueId,
+        text,
+        createdAt: serverTimestamp(),
+      });
+      // 在这里您可以添加状态更新或UI反馈，例如：
+      alert("评论已成功提交！");
+    } catch (error) {
+      console.error("Error adding review:", error);
+    }
+  };
+
   // 获取评论数据
   const fetchComments = async (userId: string) => {
     const commentsColRef = collection(db, "users", userId, "comments");
@@ -79,22 +100,6 @@ function ConcertPage({ venues, currentUser }) {
       ...(doc.data() as { text: string }),
     }));
     setComments(commentsData);
-  };
-
-  // 添加评论到Firestore
-  const addCommentToFirestore = async (newComment: { text: string }) => {
-    if (!user) return;
-    const commentsColRef = collection(db, "users", user.uid, "comments");
-    await addDoc(commentsColRef, newComment);
-    fetchComments(user.uid); // 重新获取评论数据
-  };
-
-  // 从Firestore删除评论
-  const deleteCommentFromFirestore = async (commentId: string) => {
-    if (!user || !commentId) return;
-    const commentRef = doc(db, "users", user.uid, "comments", commentId);
-    await deleteDoc(commentRef);
-    fetchComments(user.uid); // 重新获取评论数据
   };
 
   useEffect(() => {
@@ -146,11 +151,26 @@ function ConcertPage({ venues, currentUser }) {
             venues={localVenues}
             districts={districts}
             activeCounty={activeCounty}
+            onVenueSelected={handleVenueSelected} // 这里传递了handleVenueSelected作为onVenueSelected属性
           />
         </div>
         <div className="flex flex-col space-y-4">
           <div className="venue-selector">
             {/* 展演空间选择菜单的组件或逻辑 */}
+            {/* {user && (
+              <ReviewForm
+                venueId={selectedVenueId} // 确保这是有效的场馆 ID
+                userId={user.uid} // 用户 ID
+                onAddReview={handleAddReview} // 处理评论添加的函数
+              />
+            )} */}
+            {user && (
+              <ReviewForm
+                venueId={selectedVenueId} // 传递选中的场馆 ID
+                userId={user.uid}
+                onAddReview={handleAddReview}
+              />
+            )}
           </div>
         </div>
       </div>
