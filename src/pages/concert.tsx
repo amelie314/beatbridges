@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
+import ReviewList from "../components/ReviewList";
 
 import {
   collection,
@@ -27,7 +28,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   // 在服务器端从 Firebase 获取数据
   const querySnapshot = await getDocs(collection(db, "venues"));
-
   querySnapshot.forEach((doc) => {
     data.push({ id: doc.id, ...doc.data() });
   });
@@ -38,68 +38,70 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-interface CommentItem {
-  id: string;
-  text: string;
-  // 可根据需要添加其他属性
-}
-
 function ConcertPage({ venues }) {
-  const [user] = useAuthState(auth);
-  const [comments, setComments] = useState<CommentItem[]>([]);
+  const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
+  const [reviews, setReviews] = useState([]);
   const [activeCounty, setActiveCounty] = useState(null);
   const [localVenues, setLocalVenues] = useState([]); // 使用从服务器获取的venues初始化
   const router = useRouter();
   const [districts, setDistricts] = useState([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
-  console.log("Rendering ReviewForm with venueId: ", selectedVenueId);
 
-  // 检查用户登录状态
   useEffect(() => {
-    if (user) {
-      fetchComments(user.uid);
-    } else {
-      router.push("/login");
+    if (!loading && !user) {
+      router.push("/login"); // 如果不在加載過程中，且用戶未登錄，則導向至登錄頁面
     }
-  }, [user, router]);
+  }, [user, loading, router]); // 確保依賴項中包含用戶和加載狀態
 
-  // 确保定义了 handleVenueSelected 函数来更新 selectedVenueId 状态
+  // 确保定義了 handleVenueSelected 函數来更新 selectedVenueId 狀態
   const handleVenueSelected = (venueId) => {
-    setSelectedVenueId(venueId); // 设置选中的 venueId
+    setSelectedVenueId(venueId); // 設置選中的 venueId
   };
 
-  // 当用户提交评论时，确保 venueId 被传递给 handleAddReview
-  const handleAddReview = async (text, venueId) => {
+  // 當用戶提交評論時，確保 venueId 被傳遞给 handleAddReview
+  const handleAddReview = async (
+    text,
+    venueId,
+    userId,
+    performanceName,
+    date
+  ) => {
     if (!user || !venueId) {
-      // 用户未登录或未选择场馆
       console.error("User is not logged in or venueId is not selected.");
       return;
     }
 
     try {
-      await addDoc(collection(db, "reviews"), {
+      // 創建新評論對象
+      const newReview = {
         userId: user.uid,
+        userName: user.displayName || "匿名用戶",
         venueId: venueId,
-        text,
+        text: text,
+        performanceName: performanceName,
+        date: date,
         createdAt: serverTimestamp(),
-      });
-      // 在这里您可以添加状态更新或UI反馈，例如：
-      alert("评论已成功提交！");
+      };
+
+      // 將新評論添加到 Firestore
+      const docRef = await addDoc(collection(db, "reviews"), newReview);
+
+      // 添加成功後，更新評論列表狀態
+      setReviews((prevReviews) => [
+        ...prevReviews,
+        {
+          id: docRef.id,
+          ...newReview,
+          createdAt: new Date(), // 因為 serverTimestamp() 需要從服務器同步，這裡只能先用客戶端時間
+        },
+      ]);
+      alert("評論已成功提交！");
     } catch (error) {
       console.error("Error adding review:", error);
     }
   };
 
-  // 获取评论数据
-  const fetchComments = async (userId: string) => {
-    const commentsColRef = collection(db, "users", userId, "comments");
-    const commentsSnapshot = await getDocs(commentsColRef);
-    const commentsData = commentsSnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...(doc.data() as { text: string }),
-    }));
-    setComments(commentsData);
-  };
+  //
 
   useEffect(() => {
     const fetchVenues = async () => {
@@ -113,14 +115,16 @@ function ConcertPage({ venues }) {
         querySnapshot.forEach((doc) => {
           newVenues.push({ id: doc.id, ...doc.data() });
         });
-        setLocalVenues(newVenues); // 注意这里是setLocalVenues，不是setVenues
+        setLocalVenues(newVenues); // 注意這裡是setLocalVenues，不是setVenues
+        setSelectedVenueId(null);
       }
     };
 
     fetchVenues();
   }, [activeCounty]);
+
   useEffect(() => {
-    // 当activeCounty更新时，调用这个effect
+    // 當activeCounty更新時，調用這個effect
     if (activeCounty) {
       const filteredVenues = venues.filter(
         (venue) => venue.City === activeCounty
@@ -132,44 +136,73 @@ function ConcertPage({ venues }) {
     }
   }, [activeCounty, venues]);
 
+  useEffect(() => {
+    // 清空評論列表
+    setReviews([]);
+    // 僅在當選中了展演空間時才獲取評論資料
+    if (selectedVenueId) {
+      const fetchReviews = async () => {
+        const reviewsRef = collection(db, "reviews");
+        const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
+
+        const querySnapshot = await getDocs(q);
+        const fetchedReviews = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReviews(fetchedReviews);
+      };
+
+      fetchReviews().catch(console.error);
+    }
+  }, [selectedVenueId]);
+
+  const handleDeleteReview = async (reviewId) => {
+    if (window.confirm("確定要刪除這則評論嗎？")) {
+      await deleteDoc(doc(db, "reviews", reviewId));
+      setReviews(reviews.filter((review) => review.id !== reviewId));
+    }
+  };
+
   return (
-    <div className="min-h-screen flex items-center pl-[150px] bg-primary-color">
-      {/* Flex container with max width set */}
-      <div className="flex w-full max-w-6xl mx-auto">
+    <div className="min-h-screen flex bg-primary-color">
+      {/* Flex container */}
+      <div className="flex w-full max-w-5xl mx-auto">
         {/* Left side: Map component */}
-        <div className="bg-primary-color p-6 rounded-lg shadow-md w-full max-w-md">
+        <div className="w-full md:w-1/2 p-6">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
           <Link href="/">
-            <div className="block px-3 py-1 bg-light-purple text-gray-700 rounded hover:bg-purple-300">
-              返回首页
+            <div className="inline-block px-3 py-1 bg-light-purple text-gray-700 rounded hover:bg-purple-300">
+              返回首頁
             </div>
           </Link>
         </div>
-        <div className="flex-1 p-6 rounded-lg shadow-md bg-primary-color ml-[100px]">
-          <LocationInfo
-            venues={localVenues}
-            districts={districts}
-            activeCounty={activeCounty}
-            onVenueSelected={handleVenueSelected} // 这里传递了handleVenueSelected作为onVenueSelected属性
-          />
-        </div>
-        <div className="flex flex-col space-y-4">
-          <div className="venue-selector">
-            {/* 展演空间选择菜单的组件或逻辑 */}
-            {/* {user && (
+
+        {/* Right side: Selection and ReviewForm */}
+        <div className="w-full md:w-1/2 p-6 flex flex-col">
+          {/* Selection menus */}
+          <div className="flex flex-col space-y-4">
+            {/* 展演空間選擇菜單的組件 */}
+            <LocationInfo
+              venues={localVenues}
+              districts={districts}
+              activeCounty={activeCounty}
+              onVenueSelected={handleVenueSelected}
+            />
+
+            {/* 僅當選中展演空間時才顯示評論填寫表單 */}
+            {selectedVenueId && user && (
               <ReviewForm
-                venueId={selectedVenueId} // 确保这是有效的场馆 ID
-                userId={user.uid} // 用户 ID
-                onAddReview={handleAddReview} // 处理评论添加的函数
-              />
-            )} */}
-            {user && (
-              <ReviewForm
-                venueId={selectedVenueId} // 传递选中的场馆 ID
+                venueId={selectedVenueId}
                 userId={user.uid}
                 onAddReview={handleAddReview}
               />
             )}
+            <ReviewList
+              reviews={reviews}
+              currentUserId={user?.uid}
+              onDelete={handleDeleteReview}
+            />
           </div>
         </div>
       </div>
