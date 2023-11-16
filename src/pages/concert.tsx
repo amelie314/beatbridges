@@ -22,21 +22,6 @@ import { db, auth } from "../firebaseConfig";
 import Map from "../components/Map";
 import LocationInfo from "../components/LocationInfo";
 
-// 这里获取服务器端数据
-// export const getServerSideProps: GetServerSideProps = async (context) => {
-//   let data = [];
-
-//   // 在服务器端从 Firebase 获取数据
-//   const querySnapshot = await getDocs(collection(db, "venues"));
-//   querySnapshot.forEach((doc) => {
-//     data.push({ id: doc.id, ...doc.data() });
-//   });
-
-//   // 将 venues 数据作为 props 传递给页面
-//   return {
-//     props: { venues: data },
-//   };
-// };
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const data: { id: string }[] = [];
 
@@ -137,7 +122,7 @@ function ConcertPage({ venues }) {
           where("City", "==", activeCounty)
         );
         const querySnapshot = await getDocs(q);
-        const newVenues = [];
+        const newVenues: { id: string }[] = [];
         querySnapshot.forEach((doc) => {
           newVenues.push({ id: doc.id, ...doc.data() });
         });
@@ -145,7 +130,6 @@ function ConcertPage({ venues }) {
         setSelectedVenueId(null);
       }
     };
-
     fetchVenues();
   }, [activeCounty]);
 
