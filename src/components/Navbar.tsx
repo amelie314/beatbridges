@@ -37,7 +37,7 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
       </Link>
       <div>
         {currentUser ? (
-          <button onClick={handleLogout}>登出</button>
+          <button onClick={handleLogout}>Sign out</button>
         ) : (
           <div className="flex flexjustify-between">
             <Link href="/login">
