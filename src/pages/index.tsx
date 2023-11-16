@@ -52,7 +52,7 @@ export default function Home() {
           FROM THE
           <br />
           SAME VIBE·
-          <br />▶ ıı|ıı|ıı|ıı 30"
+          <br />▶ ıı|ıı|ıı|ıı 30
         </div>
         <div className="absolute top-[50px] right-0">
           <img
