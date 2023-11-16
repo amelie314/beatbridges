@@ -51,8 +51,8 @@ const LocationInfo = ({ venues, activeCounty, onVenueSelected }) => {
           <option value="" disabled>
             選擇區域
           </option>
-          {uniqueDistricts.map((district) => (
-            <option key={district} value={district}>
+          {uniqueDistricts.map((district, index) => (
+            <option key={index.toString()} value={district}>
               {district}
             </option>
           ))}
