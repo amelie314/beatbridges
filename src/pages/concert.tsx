@@ -160,10 +160,10 @@ function ConcertPage({ venues }) {
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          // 确保这里包含了所有 Review 类型所需的属性
         }));
-        setReviews(fetchedReviews);
+        setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
-
       fetchReviews().catch(console.error);
     }
   }, [selectedVenueId]);
