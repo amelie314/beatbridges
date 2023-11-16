@@ -51,10 +51,22 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: { venues: data },
   };
 };
+// 假設 Review 的類型如下
+interface Review {
+  id: string;
+  createdAt: Date;
+  userId: string;
+  userName: string;
+  venueId: string;
+  text: string;
+  performanceName: string;
+  date: string;
+}
 
 function ConcertPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
-  const [reviews, setReviews] = useState([]);
+  // 在你的組件中使用 useState 定義 reviews 狀態
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
   const [localVenues, setLocalVenues] = useState([]); // 使用从服务器获取的venues初始化
   const router = useRouter();
