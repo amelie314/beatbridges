@@ -143,7 +143,7 @@ function ConcertPage({ venues }) {
       const districtSet = new Set(
         filteredVenues.map((venue) => venue.District)
       );
-      setDistricts(Array.from(districtSet));
+      setDistricts(Array.from(districtSet) as string[]); // 將 districtSet 轉換為 string[]
     }
   }, [activeCounty, venues]);
 
