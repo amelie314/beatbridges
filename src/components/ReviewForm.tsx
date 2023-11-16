@@ -1,10 +1,8 @@
 /** @format */
 
 import React, { useState } from "react";
-import { db } from "../firebaseConfig";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
-const ReviewForm = ({ venueId, userId, onAddReview }) => {
+const ReviewForm = ({ venueId, userId, onAddReview, handleFavorite }) => {
   const [reviewText, setReviewText] = useState("");
   const [performanceName, setPerformanceName] = useState("");
   const [date, setDate] = useState("");

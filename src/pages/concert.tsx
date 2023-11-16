@@ -163,6 +163,30 @@ function ConcertPage({ venues }) {
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
+  // concert.tsx 中的 handleToggleFavorite 方法
+  const handleToggleFavorite = async (reviewId) => {
+    // 检查评论是否已被当前用户收藏
+    const favoritesRef = collection(db, "userFavorites");
+    const q = query(
+      favoritesRef,
+      where("userId", "==", user.uid),
+      where("reviewId", "==", reviewId)
+    );
+
+    const querySnapshot = await getDocs(q);
+    if (querySnapshot.empty) {
+      // 如果没有收藏，则添加收藏
+      await addDoc(favoritesRef, {
+        userId: user.uid,
+        reviewId: reviewId,
+      });
+    } else {
+      // 如果已经收藏，取消收藏（删除对应的文档）
+      for (const docSnapshot of querySnapshot.docs) {
+        await deleteDoc(docSnapshot.ref);
+      }
+    }
+  };
 
   return (
     <div className="min-h-screen flex bg-primary-color">
@@ -202,6 +226,7 @@ function ConcertPage({ venues }) {
               reviews={reviews}
               currentUserId={user?.uid}
               onDelete={handleDeleteReview}
+              onToggleFavorite={handleToggleFavorite} // 确保传递了这个函数
             />
           </div>
         </div>
