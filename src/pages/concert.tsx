@@ -56,7 +56,7 @@ function ConcertPage({ venues }) {
   const [localVenues, setLocalVenues] = useState<{ id: string }[]>([]);
 
   const router = useRouter();
-  const [districts, setDistricts] = useState([]);
+  const [districts, setDistricts] = useState<string[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
 
   useEffect(() => {
