@@ -3,7 +3,7 @@
 // ReviewList.js 或 .tsx
 import React from "react";
 
-const ReviewList = ({ reviews, currentUserId, onDelete }) => {
+const ReviewList = ({ reviews, currentUserId, onDelete, onToggleFavorite }) => {
   return (
     <div className="space-y-4">
       {reviews.map((review) => (
@@ -33,6 +33,21 @@ const ReviewList = ({ reviews, currentUserId, onDelete }) => {
               🗑️ 删除
             </button>
           )}
+          <button
+            onClick={() => {
+              console.log("Toggling favorite for review ID:", review.id);
+              console.log(
+                "Current isFavorite status before toggle:",
+                review.isFavorite
+              );
+              onToggleFavorite(review.id);
+            }}
+            className={`ml-2 text-xs ${
+              review.isFavorite ? "text-yellow-500" : "text-gray-500"
+            } hover:text-yellow-300`}
+          >
+            {review.isFavorite ? "☆ 取消收藏" : "★ 收藏"}
+          </button>
         </div>
       ))}
     </div>

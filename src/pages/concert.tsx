@@ -174,7 +174,6 @@ function ConcertPage({ venues }) {
       const fetchReviews = async () => {
         const reviewsRef = collection(db, "reviews");
         const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
-
         const querySnapshot = await getDocs(q);
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
@@ -195,7 +194,65 @@ function ConcertPage({ venues }) {
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
-  // concert.tsx 中的 handleToggleFavorite 方法
+  useEffect(() => {
+    const fetchReviewsAndFavorites = async () => {
+      // 清空评论列表
+      setReviews([]);
+
+      if (selectedVenueId && user) {
+        // 获取评论数据
+        const reviewsRef = collection(db, "reviews");
+        const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
+        const querySnapshot = await getDocs(q);
+
+        // 获取收藏状态
+        const favoritesRef = collection(db, "userFavorites");
+        const favQuery = query(favoritesRef, where("userId", "==", user.uid));
+        const favQuerySnapshot = await getDocs(favQuery);
+        const favoriteIds = new Set(
+          favQuerySnapshot.docs.map((doc) => doc.data().reviewId)
+        );
+
+        // 组合评论数据和收藏状态
+        const fetchedReviews = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          userName: doc.data().userName,
+          text: doc.data().text,
+          userId: doc.data().userId,
+          isFavorite: favoriteIds.has(doc.id),
+          // ...其他属性
+        }));
+
+        setReviews(fetchedReviews);
+      }
+    };
+
+    fetchReviewsAndFavorites().catch(console.error);
+  }, [selectedVenueId, user]);
+
+  // const handleToggleFavorite = async (reviewId) => {
+  //   // 检查评论是否已被当前用户收藏
+  //   const favoritesRef = collection(db, "userFavorites");
+  //   const q = query(
+  //     favoritesRef,
+  //     where("userId", "==", user.uid),
+  //     where("reviewId", "==", reviewId)
+  //   );
+
+  //   const querySnapshot = await getDocs(q);
+  //   if (querySnapshot.empty) {
+  //     // 如果没有收藏，则添加收藏
+  //     await addDoc(favoritesRef, {
+  //       userId: user.uid,
+  //       reviewId: reviewId,
+  //     });
+  //   } else {
+  //     // 如果已经收藏，取消收藏（删除对应的文档）
+  //     for (const docSnapshot of querySnapshot.docs) {
+  //       await deleteDoc(docSnapshot.ref);
+  //     }
+  //   }
+  // };
   const handleToggleFavorite = async (reviewId) => {
     // 检查评论是否已被当前用户收藏
     const favoritesRef = collection(db, "userFavorites");
@@ -206,18 +263,30 @@ function ConcertPage({ venues }) {
     );
 
     const querySnapshot = await getDocs(q);
-    if (querySnapshot.empty) {
+    let isCurrentlyFavorite = !querySnapshot.empty;
+
+    if (isCurrentlyFavorite) {
+      // 如果已经收藏，取消收藏（删除对应的文档）
+      for (const docSnapshot of querySnapshot.docs) {
+        await deleteDoc(docSnapshot.ref);
+      }
+    } else {
       // 如果没有收藏，则添加收藏
       await addDoc(favoritesRef, {
         userId: user.uid,
         reviewId: reviewId,
       });
-    } else {
-      // 如果已经收藏，取消收藏（删除对应的文档）
-      for (const docSnapshot of querySnapshot.docs) {
-        await deleteDoc(docSnapshot.ref);
-      }
     }
+
+    // 更新评论的 isFavorite 状态
+    setReviews(
+      reviews.map((review) => {
+        if (review.id === reviewId) {
+          return { ...review, isFavorite: !isCurrentlyFavorite };
+        }
+        return review;
+      })
+    );
   };
 
   return (

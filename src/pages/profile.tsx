@@ -72,3 +72,97 @@ const Profile = () => {
 };
 
 export default Profile;
+// /** @format */
+
+// import React, { useState, useEffect } from "react";
+// import { db, auth } from "../firebaseConfig";
+// import { updateProfile } from "firebase/auth";
+// import ReviewList from "../components/ReviewList";
+// import { doc, collection, query, where, getDocs } from "firebase/firestore";
+
+// const ProfilePage = () => {
+//   const [newDisplayName, setNewDisplayName] = useState("");
+//   const [favoriteReviews, setFavoriteReviews] = useState([]);
+
+//   useEffect(() => {
+//     const fetchFavoriteReviews = async () => {
+//       if (auth.currentUser) {
+//         // 获取用户收藏的评论 ID
+//         const favoritesRef = collection(db, "userFavorites");
+//         const favoritesQuery = query(
+//           favoritesRef,
+//           where("userId", "==", auth.currentUser.uid)
+//         );
+//         const favoritesSnapshot = await getDocs(favoritesQuery);
+//         const favoriteReviewIds = favoritesSnapshot.docs.map(
+//           (doc) => doc.data().reviewId
+//         );
+
+//         // 根据收藏的评论 ID 获取评论详情
+//         const reviewsRef = collection(db, "reviews");
+//         const reviewsPromises = favoriteReviewIds.map((reviewId) =>
+//           getDocs(doc(reviewsRef, reviewId))
+//         );
+//         const reviewsDocs = await Promise.all(reviewsPromises);
+//         const reviews = reviewsDocs
+//           .map((docSnapshot) => {
+//             if (docSnapshot.exists()) {
+//               return { id: docSnapshot.id, ...docSnapshot.data() };
+//             }
+//             return null;
+//           })
+//           .filter((review) => review !== null);
+
+//         setFavoriteReviews(reviews);
+//       }
+//     };
+
+//     fetchFavoriteReviews();
+//   }, []);
+
+//   const handleUpdate = async (event) => {
+//     event.preventDefault();
+//     try {
+//       await updateProfile(auth.currentUser, {
+//         displayName: newDisplayName,
+//       });
+//       alert("昵称更新成功！");
+//       // 可以在这里处理路由跳转或其他逻辑
+//     } catch (error) {
+//       alert(`昵称更新失败：${error.message}`);
+//       console.error("昵称更新错误：", error);
+//     }
+//   };
+
+//   return (
+//     <div>
+//       <h1>个人中心</h1>
+//       {/* 昵称更新表单 */}
+//       <form onSubmit={handleUpdate} className="space-y-4">
+//         <input
+//           className="text-black border border-gray-300 rounded-lg p-2"
+//           type="text"
+//           value={newDisplayName}
+//           onChange={(e) => setNewDisplayName(e.target.value)}
+//           placeholder="新的昵称"
+//           required
+//         />
+//         <button className="bg-blue-500 text-white p-2 rounded-lg" type="submit">
+//           更新昵称
+//         </button>
+//       </form>
+
+//       {/* 收藏的评论列表 */}
+//       <div className="mt-8">
+//         <h2>我收藏的评论</h2>
+//         <ReviewList
+//           reviews={favoriteReviews}
+//           showFavorites={false}
+//           /* 其他 props */
+//         />
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default ProfilePage;
