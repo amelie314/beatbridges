@@ -24,18 +24,26 @@ import LocationInfo from "../components/LocationInfo";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const data: Venue[] = [];
-
-  // 在服务器端从 Firebase 获取数据
   const querySnapshot = await getDocs(collection(db, "venues"));
   querySnapshot.forEach((doc) => {
-    const venueData = doc.data() as Venue;
-    data.push({ ...venueData, id: doc.id }); // 先解构 venueData，然后添加 id
+    const docData = doc.data();
+    // 确保 docData 包含 Venue 接口所需的所有字段
+    const venue: Venue = {
+      id: doc.id,
+      Address: docData.Address,
+      City: docData.City,
+      District: docData.District,
+      Name: docData.Name,
+      // ...其他字段
+    };
+    data.push(venue);
   });
-  // 将 venues 数据作为 props 传递给页面
+
   return {
     props: { venues: data },
   };
 };
+
 // 假設 Review 的類型如下
 interface Review {
   id: string;
@@ -123,6 +131,24 @@ function ConcertPage({ venues }) {
   //
 
   useEffect(() => {
+    //   const fetchVenues = async () => {
+    //     if (activeCounty) {
+    //       const q = query(
+    //         collection(db, "venues"),
+    //         where("City", "==", activeCounty)
+    //       );
+    //       const querySnapshot = await getDocs(q);
+    //       const newVenues: Venue[] = [];
+    //       querySnapshot.forEach((doc) => {
+    //         const venueData: any = { ...doc.data(), id: doc.id };
+    //         newVenues.push(venueData); // 直接使用 venueData
+    //       });
+    //       setLocalVenues(newVenues);
+    //       setSelectedVenueId(null);
+    //     }
+    //   };
+    //   fetchVenues();
+    // }, [activeCounty]);
     const fetchVenues = async () => {
       if (activeCounty) {
         const q = query(
@@ -132,9 +158,16 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const newVenues: Venue[] = [];
         querySnapshot.forEach((doc) => {
-          const venueData: any = { ...doc.data(), id: doc.id };
-
-          newVenues.push(venueData); // 直接使用 venueData
+          const docData = doc.data();
+          const venue: Venue = {
+            id: doc.id,
+            Address: docData.Address,
+            City: docData.City,
+            District: docData.District,
+            Name: docData.Name,
+            // ...其他字段
+          };
+          newVenues.push(venue);
         });
         setLocalVenues(newVenues);
         setSelectedVenueId(null);

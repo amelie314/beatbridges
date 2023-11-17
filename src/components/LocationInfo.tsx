@@ -4,9 +4,11 @@ import React, { useState, useEffect } from "react";
 
 interface Venue {
   id: string;
+  Address: string; // 新增字段
+  City: string; // 新增字段
   District: string;
   Name: string;
-  // 可能还有其他属性...
+  // ...其他字段，如果有的话
 }
 
 interface LocationInfoProps {
