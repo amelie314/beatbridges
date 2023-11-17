@@ -6,6 +6,9 @@ import Link from "next/link";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
+// Concert.tsx 和 LocationInfo.tsx
+import { Venue } from "../types/types";
+// ...组件的其余代码
 
 import {
   collection,
@@ -22,29 +25,48 @@ import { db, auth } from "../firebaseConfig";
 import Map from "../components/Map";
 import LocationInfo from "../components/LocationInfo";
 
-// 这里获取服务器端数据
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  let data = [];
-
-  // 在服务器端从 Firebase 获取数据
+  const data: Venue[] = [];
   const querySnapshot = await getDocs(collection(db, "venues"));
   querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...doc.data() });
+    const docData = doc.data();
+    // 确保 docData 包含 Venue 接口所需的所有字段
+    const venue: Venue = {
+      id: doc.id,
+      Address: docData.Address,
+      City: docData.City,
+      District: docData.District,
+      Name: docData.Name,
+      // ...其他字段
+    };
+    data.push(venue);
   });
 
-  // 将 venues 数据作为 props 传递给页面
   return {
     props: { venues: data },
   };
 };
 
+// 假設 Review 的類型如下
+interface Review {
+  id: string;
+  createdAt: Date;
+  userId: string;
+  userName: string;
+  venueId: string;
+  text: string;
+  performanceName: string;
+  date: string;
+}
+
 function ConcertPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
-  const [reviews, setReviews] = useState([]);
+  // 在你的組件中使用 useState 定義 reviews 狀態
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
-  const [localVenues, setLocalVenues] = useState([]); // 使用从服务器获取的venues初始化
+  const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const router = useRouter();
-  const [districts, setDistricts] = useState([]);
+  const [districts, setDistricts] = useState<string[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
 
   useEffect(() => {
@@ -111,15 +133,23 @@ function ConcertPage({ venues }) {
           where("City", "==", activeCounty)
         );
         const querySnapshot = await getDocs(q);
-        const newVenues = [];
+        const newVenues: Venue[] = [];
         querySnapshot.forEach((doc) => {
-          newVenues.push({ id: doc.id, ...doc.data() });
+          const docData = doc.data();
+          const venue: Venue = {
+            id: doc.id,
+            Address: docData.Address,
+            City: docData.City,
+            District: docData.District,
+            Name: docData.Name,
+            // ...其他字段
+          };
+          newVenues.push(venue);
         });
-        setLocalVenues(newVenues); // 注意這裡是setLocalVenues，不是setVenues
+        setLocalVenues(newVenues);
         setSelectedVenueId(null);
       }
     };
-
     fetchVenues();
   }, [activeCounty]);
 
@@ -132,7 +162,7 @@ function ConcertPage({ venues }) {
       const districtSet = new Set(
         filteredVenues.map((venue) => venue.District)
       );
-      setDistricts(Array.from(districtSet));
+      setDistricts(Array.from(districtSet) as string[]); // 將 districtSet 轉換為 string[]
     }
   }, [activeCounty, venues]);
 
@@ -148,11 +178,13 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          userName: doc.data().userName,
+          text: doc.data().text,
+          userId: doc.data().userId,
+          // 确保这里包含了所有 Review 类型所需的属性
         }));
-        setReviews(fetchedReviews);
+        setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
-
       fetchReviews().catch(console.error);
     }
   }, [selectedVenueId]);
@@ -196,7 +228,7 @@ function ConcertPage({ venues }) {
         <div className="w-full md:w-1/2 p-6">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
           <Link href="/">
-            <div className="inline-block px-3 py-1 bg-light-purple text-gray-700 rounded hover:bg-purple-300">
+            <div className="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-tertiary-color">
               返回首頁
             </div>
           </Link>

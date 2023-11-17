@@ -1,8 +1,21 @@
 /** @format */
 
 import React, { useState, useEffect } from "react";
+import { Venue } from "../types/types";
 
-const LocationInfo = ({ venues, activeCounty, onVenueSelected }) => {
+interface LocationInfoProps {
+  venues: Venue[];
+  districts: string[];
+  activeCounty: string | null;
+  onVenueSelected: (venueId: string) => void;
+}
+
+const LocationInfo: React.FC<LocationInfoProps> = ({
+  venues,
+  districts,
+  activeCounty,
+  onVenueSelected,
+}) => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
 
@@ -51,8 +64,8 @@ const LocationInfo = ({ venues, activeCounty, onVenueSelected }) => {
           <option value="" disabled>
             選擇區域
           </option>
-          {uniqueDistricts.map((district) => (
-            <option key={district} value={district}>
+          {uniqueDistricts.map((district: string, index) => (
+            <option key={index.toString()} value={district}>
               {district}
             </option>
           ))}

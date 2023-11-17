@@ -7,7 +7,6 @@ import Head from "next/head";
 // /src/pages/index.tsx
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import Image from "next/image";
 
 // 登入函數
 const login = async (email: string, password: string) => {
@@ -52,6 +51,7 @@ export default function Home() {
           FROM THE
           <br />
           SAME VIBE·
+          <br />▶ ıı|ıı|ıı|ıı 30 &quot;
         </div>
         <div className="absolute top-[50px] right-0">
           <img
