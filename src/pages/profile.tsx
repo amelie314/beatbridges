@@ -20,7 +20,7 @@ const Profile = () => {
         const q = query(favoritesRef, where("userId", "==", user.uid));
 
         const querySnapshot = await getDocs(q);
-        const favoritesData = [];
+        const favoritesData: string[] = [];
         querySnapshot.forEach((doc) => {
           favoritesData.push(doc.data().reviewId); // 存储收藏的评论 ID
         });
