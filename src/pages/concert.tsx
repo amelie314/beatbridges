@@ -55,13 +55,6 @@ interface Review {
   performanceName: string;
   date: string;
 }
-// 在 concert.tsx 文件中
-interface Venue {
-  id: string;
-  District: string;
-  Name: string;
-  // 其他需要的属性...
-}
 
 function ConcertPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
