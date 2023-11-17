@@ -8,10 +8,11 @@ const ReviewList = ({ reviews, currentUserId, onDelete }) => {
     <ul>
       {reviews.map((review) => (
         <li key={review.id}>
-          <p>{review.text}</p>
-          {/* 显示刪除按钮，仅当当前登录用户是评论的发布者时 */}
+          <p>
+            {review.userName}: {review.text}
+          </p>{" "}
           {currentUserId === review.userId && (
-            <button onClick={() => onDelete(review.id)}>刪除</button>
+            <button onClick={() => onDelete(review.id)}>删除</button>
           )}
         </li>
       ))}

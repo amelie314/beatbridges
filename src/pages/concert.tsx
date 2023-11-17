@@ -178,7 +178,9 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          ...doc.data(),
+          userName: doc.data().userName,
+          text: doc.data().text,
+          userId: doc.data().userId,
           // 确保这里包含了所有 Review 类型所需的属性
         }));
         setReviews(fetchedReviews as Review[]); // 使用类型断言
