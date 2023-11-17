@@ -28,9 +28,9 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   // 在服务器端从 Firebase 获取数据
   const querySnapshot = await getDocs(collection(db, "venues"));
   querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...(doc.data() as Venue) });
+    const venueData = doc.data() as Venue;
+    data.push({ ...venueData, id: doc.id }); // 先解构 venueData，然后添加 id
   });
-
   // 将 venues 数据作为 props 传递给页面
   return {
     props: { venues: data },
