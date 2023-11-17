@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-const ReviewForm = ({ venueId, userId, onAddReview, handleFavorite }) => {
+const ReviewForm = ({ venueId, userId, onAddReview }) => {
   const [reviewText, setReviewText] = useState("");
   const [performanceName, setPerformanceName] = useState("");
   const [date, setDate] = useState("");
