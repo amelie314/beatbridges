@@ -2,9 +2,16 @@
 
 import React, { useState, useEffect } from "react";
 
+interface Venue {
+  id: string;
+  District: string;
+  Name: string;
+  // 可能还有其他属性...
+}
+
 interface LocationInfoProps {
-  venues: { id: string }[];
-  districts: string[]; // 确保有这个属性的定义
+  venues: Venue[];
+  districts: string[];
   activeCounty: string | null;
   onVenueSelected: (venueId: string) => void;
 }
