@@ -23,12 +23,12 @@ import Map from "../components/Map";
 import LocationInfo from "../components/LocationInfo";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  const data: { id: string }[] = [];
+  const data: Venue[] = [];
 
   // 在服务器端从 Firebase 获取数据
   const querySnapshot = await getDocs(collection(db, "venues"));
   querySnapshot.forEach((doc) => {
-    data.push({ id: doc.id, ...doc.data() });
+    data.push({ id: doc.id, ...(doc.data() as Venue) });
   });
 
   // 将 venues 数据作为 props 传递给页面
@@ -125,7 +125,7 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const newVenues: { id: string }[] = [];
         querySnapshot.forEach((doc) => {
-          newVenues.push({ id: doc.id, ...doc.data() });
+          newVenues.push({ id: doc.id, ...(doc.data() as Venue) }); // 类型断言为 Venue
         });
         setLocalVenues(newVenues); // 注意這裡是setLocalVenues，不是setVenues
         setSelectedVenueId(null);
