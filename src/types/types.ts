@@ -8,3 +8,13 @@ export interface Venue {
     // ...其他需要的属性...
   }
   
+export interface Review {
+  id: string;
+  createdAt: Date;
+  userId: string;
+  userName: string;
+  venueId: string;
+  text: string;
+  performanceName: string;
+  date: string;
+}

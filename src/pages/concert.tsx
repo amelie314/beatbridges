@@ -8,7 +8,7 @@ import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
 // Concert.tsx 和 LocationInfo.tsx
 import { Venue } from "../types/types";
-// ...组件的其余代码
+import { Review } from "../types/types";
 
 import {
   collection,
@@ -46,18 +46,6 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
     props: { venues: data },
   };
 };
-
-// 假設 Review 的類型如下
-interface Review {
-  id: string;
-  createdAt: Date;
-  userId: string;
-  userName: string;
-  venueId: string;
-  text: string;
-  performanceName: string;
-  date: string;
-}
 
 function ConcertPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
