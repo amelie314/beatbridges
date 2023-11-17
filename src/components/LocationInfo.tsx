@@ -2,7 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 
-const LocationInfo = ({ venues, activeCounty, onVenueSelected }) => {
+interface LocationInfoProps {
+  venues: { id: string }[];
+  districts: string[]; // 确保有这个属性的定义
+  activeCounty: string | null;
+  onVenueSelected: (venueId: string) => void;
+}
+
+const LocationInfo: React.FC<LocationInfoProps> = ({
+  venues,
+  districts,
+  activeCounty,
+  onVenueSelected,
+}) => {
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
 
