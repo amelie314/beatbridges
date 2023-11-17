@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 
 interface Venue {
+  id: string;
   District: string;
   Name: string;
   // 可能还有其他属性...
