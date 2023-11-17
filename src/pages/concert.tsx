@@ -204,7 +204,7 @@ function ConcertPage({ venues }) {
         <div className="w-full md:w-1/2 p-6">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
           <Link href="/">
-            <div className="inline-block px-3 py-1 bg-light-purple text-gray-700 rounded hover:bg-purple-300">
+            <div className="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-tertiary-color">
               返回首頁
             </div>
           </Link>

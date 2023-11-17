@@ -33,7 +33,7 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
     <form onSubmit={handleSubmit} className="space-y-4">
       <label
         htmlFor="performanceName"
-        className="block text-sm font-medium text-gray-900"
+        className="block text-sm font-medium text-white"
       >
         表演名稱
       </label>
@@ -65,7 +65,7 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       <div>
         <label
           htmlFor="reviewText"
-          className="block mb-2 text-sm font-medium text-black "
+          className="block mb-2 text-sm font-medium text-white "
         >
           評論
         </label>
