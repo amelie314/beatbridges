@@ -14,18 +14,27 @@ const ImageUpload = ({ userId }) => {
   };
 
   const handleUpload = () => {
+    if (!image) {
+      console.log("未選擇圖片，取消上傳");
+      return;
+    }
+
     const imageRef = ref(storage, `avatars/${userId}`);
-    uploadBytes(imageRef, image).then(() => {
-      getDownloadURL(imageRef).then((url) => {
-        // 更新用户头像 URL 的逻辑
+    uploadBytes(imageRef, image)
+      .then(() => {
+        getDownloadURL(imageRef).then((url) => {
+          // 更新用户头像 URL 的逻辑
+        });
+      })
+      .catch((error) => {
+        console.error("圖片上傳失敗:", error);
       });
-    });
   };
 
   return (
     <div>
       <input type="file" onChange={handleImageChange} />
-      <button onClick={handleUpload}>上传头像</button>
+      <button onClick={handleUpload}>上傳頭貼</button>
     </div>
   );
 };
