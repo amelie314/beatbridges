@@ -172,7 +172,6 @@ function ConcertPage({ venues }) {
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
-          isFavorite: checkIfFavorite(doc.id),
         }));
         setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
