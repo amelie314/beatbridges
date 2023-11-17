@@ -211,7 +211,11 @@ function ConcertPage({ venues }) {
           text: doc.data().text,
           userId: doc.data().userId,
           isFavorite: favoriteIds.has(doc.id),
-          // ...其他属性
+          id: doc.id,
+          createdAt: doc.data().createdAt,
+          venueId: doc.data().venueId,
+          performanceName: doc.data().performanceName,
+          date: doc.data().date,
         }));
 
         setReviews(fetchedReviews);
