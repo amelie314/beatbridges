@@ -6,7 +6,7 @@ import Link from "next/link";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
-// Concert.tsx 和 LocationInfo.tsx
+//
 import { Venue } from "../types/types";
 import { Review } from "../types/types";
 
@@ -168,7 +168,11 @@ function ConcertPage({ venues }) {
           userName: doc.data().userName,
           text: doc.data().text,
           userId: doc.data().userId,
-          // 确保这里包含了所有 Review 类型所需的属性
+          createdAt: doc.data().createdAt,
+          venueId: doc.data().venueId,
+          performanceName: doc.data().performanceName,
+          date: doc.data().date,
+          isFavorite: checkIfFavorite(doc.id),
         }));
         setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
