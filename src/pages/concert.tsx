@@ -132,8 +132,8 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const newVenues: Venue[] = [];
         querySnapshot.forEach((doc) => {
-          const venueData = doc.data() as Venue;
-          newVenues.push({ ...venueData, id: doc.id }); // 先解构 venueData，然后添加 id
+          const venueData = { id: doc.id, ...(doc.data() as Venue) };
+          newVenues.push(venueData); // 直接使用 venueData
         });
         setLocalVenues(newVenues);
         setSelectedVenueId(null);
