@@ -9,7 +9,7 @@ import { auth, db } from "../firebaseConfig";
 
 const Profile = () => {
   const [user] = useAuthState(auth);
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState<string[]>([]); // Define favorites as an array of strings
 
   // profile.tsx 页面
   useEffect(() => {
