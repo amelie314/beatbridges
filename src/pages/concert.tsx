@@ -64,8 +64,7 @@ function ConcertPage({ venues }) {
   // 在你的組件中使用 useState 定義 reviews 狀態
   const [reviews, setReviews] = useState<Review[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
-  const [localVenues, setLocalVenues] = useState<{ id: string }[]>([]);
-
+  const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const router = useRouter();
   const [districts, setDistricts] = useState<string[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
