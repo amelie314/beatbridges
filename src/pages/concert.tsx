@@ -6,6 +6,9 @@ import Link from "next/link";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
+// Concert.tsx 和 LocationInfo.tsx
+import { Venue } from "../types/types";
+// ...组件的其余代码
 
 import {
   collection,
@@ -124,24 +127,6 @@ function ConcertPage({ venues }) {
   //
 
   useEffect(() => {
-    //   const fetchVenues = async () => {
-    //     if (activeCounty) {
-    //       const q = query(
-    //         collection(db, "venues"),
-    //         where("City", "==", activeCounty)
-    //       );
-    //       const querySnapshot = await getDocs(q);
-    //       const newVenues: Venue[] = [];
-    //       querySnapshot.forEach((doc) => {
-    //         const venueData: any = { ...doc.data(), id: doc.id };
-    //         newVenues.push(venueData); // 直接使用 venueData
-    //       });
-    //       setLocalVenues(newVenues);
-    //       setSelectedVenueId(null);
-    //     }
-    //   };
-    //   fetchVenues();
-    // }, [activeCounty]);
     const fetchVenues = async () => {
       if (activeCounty) {
         const q = query(
