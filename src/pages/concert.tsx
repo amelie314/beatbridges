@@ -130,11 +130,12 @@ function ConcertPage({ venues }) {
           where("City", "==", activeCounty)
         );
         const querySnapshot = await getDocs(q);
-        const newVenues: { id: string }[] = [];
+        const newVenues: Venue[] = [];
         querySnapshot.forEach((doc) => {
-          newVenues.push({ id: doc.id, ...(doc.data() as Venue) }); // 类型断言为 Venue
+          const venueData = doc.data() as Venue;
+          newVenues.push({ ...venueData, id: doc.id }); // 先解构 venueData，然后添加 id
         });
-        setLocalVenues(newVenues); // 注意這裡是setLocalVenues，不是setVenues
+        setLocalVenues(newVenues);
         setSelectedVenueId(null);
       }
     };
