@@ -17,9 +17,21 @@ import {
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
 
+// 假設 Review 的類型如下
+interface Review {
+  id: string;
+  createdAt: Date;
+  userId: string;
+  userName: string;
+  venueId: string;
+  text: string;
+  performanceName: string;
+  date: string;
+}
+
 const Reviews = () => {
   const [user] = useAuthState(auth);
-  const [reviews, setReviews] = useState([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
 
   useEffect(() => {
     let unsubscribe = () => {};
@@ -30,10 +42,13 @@ const Reviews = () => {
         where("userId", "==", user.uid)
       );
       unsubscribe = onSnapshot(q, (querySnapshot) => {
-        const reviewsData = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const reviewsData = querySnapshot.docs.map(
+          (doc) =>
+            ({
+              id: doc.id,
+              ...doc.data(),
+            } as Review)
+        ); // 这里进行类型断言
         setReviews(reviewsData);
       });
     }
