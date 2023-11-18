@@ -23,6 +23,10 @@ const ReviewList = ({ reviews, currentUserId, onDelete, onToggleFavorite }) => {
               </h4>
               <span className="text-xs text-white">{/* 日期处理逻辑 */}</span>
             </div>
+            <p className="text-xs text-white mt-1">
+              {" "}
+              {review.performanceName ? review.performanceName : "未知表演"}
+            </p>
             <p className="text-sm text-white">{review.text}</p>
           </div>
           {currentUserId === review.userId && (
