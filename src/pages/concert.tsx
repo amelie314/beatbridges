@@ -30,7 +30,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   const querySnapshot = await getDocs(collection(db, "venues"));
   querySnapshot.forEach((doc) => {
     const docData = doc.data();
-    // 确保 docData 包含 Venue 接口所需的所有字段
+    // 確保 docData 包含 Venue 接口所需的所有字段
     const venue: Venue = {
       id: doc.id,
       Address: docData.Address,
@@ -187,16 +187,16 @@ function ConcertPage({ venues }) {
   };
   useEffect(() => {
     const fetchReviewsAndFavorites = async () => {
-      // 清空评论列表
+      // 清空評論列表
       setReviews([]);
 
       if (selectedVenueId && user) {
-        // 获取评论数据
+        // 獲取評論數據
         const reviewsRef = collection(db, "reviews");
         const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
         const querySnapshot = await getDocs(q);
 
-        // 获取收藏状态
+        // 獲取收藏狀態
         const favoritesRef = collection(db, "userFavorites");
         const favQuery = query(favoritesRef, where("userId", "==", user.uid));
         const favQuerySnapshot = await getDocs(favQuery);
@@ -204,7 +204,7 @@ function ConcertPage({ venues }) {
           favQuerySnapshot.docs.map((doc) => doc.data().reviewId)
         );
 
-        // 组合评论数据和收藏状态
+        // 組合評論數據和收藏狀態
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           userName: doc.data().userName,
@@ -229,7 +229,7 @@ function ConcertPage({ venues }) {
       console.error("User is not logged in.");
       return;
     }
-    // 检查评论是否已被当前用户收藏
+    // 檢查評論是否已經被當前用戶收藏
     const favoritesRef = collection(db, "userFavorites");
     const q = query(
       favoritesRef,
@@ -241,19 +241,19 @@ function ConcertPage({ venues }) {
     let isCurrentlyFavorite = !querySnapshot.empty;
 
     if (isCurrentlyFavorite) {
-      // 如果已经收藏，取消收藏（删除对应的文档）
+      // 如果已经收藏，取消收藏（刪除對應的文檔）
       for (const docSnapshot of querySnapshot.docs) {
         await deleteDoc(docSnapshot.ref);
       }
     } else {
-      // 如果没有收藏，则添加收藏
+      // 如果没有收藏，則添加收藏（添加新文檔）
       await addDoc(favoritesRef, {
         userId: user.uid,
         reviewId: reviewId,
       });
     }
 
-    // 更新评论的 isFavorite 状态
+    // 更新評論的 isFavorite 狀態
     setReviews(
       reviews.map((review) => {
         if (review.id === reviewId) {
