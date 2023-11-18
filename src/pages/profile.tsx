@@ -21,15 +21,20 @@ const ProfilePage = () => {
 
   const handleUpdate = async (event) => {
     event.preventDefault();
-    try {
-      await updateProfile(auth.currentUser, {
-        displayName: newDisplayName,
-      });
-      alert("暱稱更新成功！");
-      // 可以在这里处理路由跳转或其他逻辑
-    } catch (error) {
-      alert(`暱稱更新失败：${error.message}`);
-      console.error("暱稱更新錯誤：", error);
+    // Check if currentUser exists before updating the profile
+    if (auth.currentUser) {
+      try {
+        await updateProfile(auth.currentUser, {
+          displayName: newDisplayName,
+        });
+        alert("暱稱更新成功！");
+        // 可以在這裡處理路由跳轉或其他邏輯
+      } catch (error) {
+        alert(`暱稱更新失敗：${error.message}`);
+        console.error("暱稱更新錯誤：", error);
+      }
+    } else {
+      alert("用戶未登錄，無法更新暱稱。");
     }
   };
 
