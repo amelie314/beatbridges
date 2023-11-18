@@ -2,11 +2,19 @@
 
 import React, { useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { collection, query, where, getDocs } from "firebase/firestore";
+import {
+  collection,
+  query,
+  where,
+  getDocs,
+  doc,
+  deleteDoc,
+} from "firebase/firestore";
 import UserInfoForm from "../components/UserInfoForm";
 import FavoriteReviews from "../components/FavoriteReviews";
 import { auth, db } from "../firebaseConfig";
 
+// profile.tsx 页面
 const Profile = () => {
   const [user] = useAuthState(auth);
   const [favorites, setFavorites] = useState<string[]>([]); // Define favorites as an array of strings
@@ -22,10 +30,10 @@ const Profile = () => {
         const querySnapshot = await getDocs(q);
         const favoritesData: string[] = [];
         querySnapshot.forEach((doc) => {
-          favoritesData.push(doc.data().reviewId); // 存储收藏的评论 ID
+          favoritesData.push(doc.data().reviewId); // 儲存收藏的評論ID
         });
 
-        // 你还需要根据这些 ID 获取实际的评论数据，并更新 favorites 状态
+        // 更新 favorites 狀態
         setFavorites(favoritesData);
       };
 
@@ -35,21 +43,17 @@ const Profile = () => {
 
   // 取消收藏的处理函数
   const handleRemoveFavorite = async (reviewId) => {
-    // 根据 reviewId 和 userId 来定位 Firestore 中的记录
-    const favoriteRef = doc(
-      db,
-      "userFavorites",
-      currentUserId,
-      "favorites",
-      reviewId
-    );
+    // 根据 reviewId 来定位 Firestore 中的记录
+    const favoriteRef = doc(db, "userFavorites", reviewId);
 
     try {
-      // 删除记录
+      // 刪除紀錄
       await deleteDoc(favoriteRef);
       // 更新组件状态以移除取消收藏的评论
-      setFavoriteReviews((prevReviews) =>
-        prevReviews.filter((review) => review.id !== reviewId)
+      setFavorites((prevFavorites) =>
+        prevFavorites.filter(
+          (favoriteReviewId) => favoriteReviewId !== reviewId
+        )
       );
     } catch (error) {
       console.error("Failed to remove favorite:", error);
