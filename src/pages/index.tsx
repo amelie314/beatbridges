@@ -1,10 +1,10 @@
 /** @format */
 
+// /src/pages/index.tsx
 import "../app/globals.css";
 import React from "react";
 import Link from "next/link";
 import Head from "next/head";
-// /src/pages/index.tsx
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 

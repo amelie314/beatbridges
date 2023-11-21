@@ -49,13 +49,13 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
 function ConcertPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
-  // 在你的組件中使用 useState 定義 reviews 狀態
+  // 在組件中使用 useState 定義狀態
   const [reviews, setReviews] = useState<Review[]>([]);
   const [activeCounty, setActiveCounty] = useState(null);
-  const [localVenues, setLocalVenues] = useState<Venue[]>([]);
-  const router = useRouter();
   const [districts, setDistricts] = useState<string[]>([]);
+  const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
     if (!loading && !user) {
@@ -142,7 +142,6 @@ function ConcertPage({ venues }) {
   }, [activeCounty]);
 
   useEffect(() => {
-    // 當activeCounty更新時，調用這個effect
     if (activeCounty) {
       const filteredVenues = venues.filter(
         (venue) => venue.City === activeCounty
@@ -302,7 +301,7 @@ function ConcertPage({ venues }) {
               reviews={reviews}
               currentUserId={user?.uid}
               onDelete={handleDeleteReview}
-              onToggleFavorite={handleToggleFavorite} // 确保传递了这个函数
+              onToggleFavorite={handleToggleFavorite}
             />
           </div>
         </div>

@@ -1,4 +1,11 @@
 // types.ts
+export interface LocationInfoProps {
+  venues: Venue[];
+  districts: string[];
+  activeCounty: string | null;
+  onVenueSelected: (venueId: string) => void;
+}
+
 export interface Venue {
     id: string;
     Address: string;
@@ -18,3 +25,5 @@ export interface Review {
   performanceName: string;
   date: string;
 }
+
+

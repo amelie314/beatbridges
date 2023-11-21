@@ -2,13 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import { Venue } from "../types/types";
-
-interface LocationInfoProps {
-  venues: Venue[];
-  districts: string[];
-  activeCounty: string | null;
-  onVenueSelected: (venueId: string) => void;
-}
+import { LocationInfoProps } from "../types/types"; // 從types檔案中import
 
 const LocationInfo: React.FC<LocationInfoProps> = ({
   venues,
@@ -19,7 +13,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
   const [selectedDistrict, setSelectedDistrict] = useState("");
   const [selectedVenue, setSelectedVenue] = useState("");
 
-  // 使用 Set 去重，得到唯一的行政區列表
+  // 使用 Set 去重新得到唯一的行政區列表
   const uniqueDistricts = Array.from(
     new Set(venues.map((venue) => venue.District))
   );
@@ -30,18 +24,23 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
     setSelectedVenue("");
   }, [activeCounty]);
 
+  // 當 selectedDistrict 更新時，重置 selectedDistrict 和 selectedVenue
+  useEffect(() => {
+    setSelectedVenue(""); // 清除展演空間選擇
+    onVenueSelected(""); // 通知父組件重置 selectedVenueId
+  }, [selectedDistrict]);
+
   // 篩選當前選定行政區的展演空間
   const venuesInDistrict = venues.filter(
     (venue) => venue.District === selectedDistrict
   );
 
   // LocationInfo 组件中
-
   const handleVenueChange = (e) => {
     console.log(e.target.value);
-    const venueId = e.target.value; // 这里获取选中的 venueId
-    setSelectedVenue(venueId); // 设置选中的 venue
-    onVenueSelected(venueId); // 将 venueId 传递给父组件
+    const venueId = e.target.value; // 這裡獲取選中的 venueId
+    setSelectedVenue(venueId); // 更新本地狀態
+    onVenueSelected(venueId); // 通知父組件已選擇的 venueId
   };
 
   return (
@@ -83,7 +82,9 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
             value={selectedVenue}
             onChange={handleVenueChange} // 使用 handleVenueChange 函数
           >
-            <option value="">選擇展演空間</option>
+            <option value="" disabled>
+              選擇展演空間
+            </option>
             {venuesInDistrict.map((venue) => (
               <option key={venue.id} value={venue.id}>
                 {venue.Name}
