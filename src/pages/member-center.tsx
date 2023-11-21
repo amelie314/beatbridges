@@ -97,7 +97,7 @@ const MemberPage = () => {
       if (user) {
         const userRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userRef); // 使用 getDoc 函數來獲取文檔
-        if (userDoc.exists) {
+        if (userDoc.exists()) {
           const userData = userDoc.data();
           setDisplayName(userDoc.displayName);
           setUsername(userDoc.username);
