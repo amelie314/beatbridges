@@ -99,9 +99,9 @@ const MemberPage = () => {
         const userDoc = await getDoc(userRef); // 使用 getDoc 函數來獲取文檔
         if (userDoc.exists()) {
           const userData = userDoc.data();
-          setDisplayName(userDoc.displayName);
-          setUsername(userDoc.username);
-          setBio(userDoc.bio);
+          setDisplayName(userData.displayName);
+          setUsername(userData.username);
+          setBio(userData.bio);
         }
       }
     };
