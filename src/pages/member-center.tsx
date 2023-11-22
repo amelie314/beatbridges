@@ -36,20 +36,17 @@ const MemberPage = () => {
     console.log("開始上傳圖片");
 
     try {
-      const storageRef = ref(storage, `profilePics/${user.uid}`);
-      const uploadTask = await uploadBytes(storageRef, selectedFile);
-      const downloadURL = await getDownloadURL(uploadTask.ref);
-
-      // 更新 Authentication 中的 photoURL
-      await updateProfile(user, { photoURL: downloadURL });
-
-      // 更新 Firestore 中的 photoURL
-      const userDocRef = doc(db, "users", user.uid);
-      await updateDoc(userDocRef, { photoURL: downloadURL });
-
-      console.log("使用者上傳成功");
+      if (user) {
+        const storageRef = ref(storage, `profilePics/${user.uid}`);
+        const uploadTask = await uploadBytes(storageRef, selectedFile);
+        const downloadURL = await getDownloadURL(uploadTask.ref);
+        // Rest of your code
+      } else {
+        // Handle the case when 'user' is null or undefined
+        console.error("User is not authenticated.");
+      }
     } catch (error) {
-      console.error("圖片上傳失敗：", error);
+      console.error("Error uploading profile picture:", error);
     }
 
     setSelectedFile(null); // 清除已選擇的檔案
@@ -143,7 +140,7 @@ const MemberPage = () => {
     <div className="profile-page bg-primary-color text-white p-5">
       <div className="flex flex-col items-center">
         {/* 大頭貼和用戶名稱 */}
-        <div className="flex">
+        <div className="flex items-center">
           {" "}
           {/* 使用 flex 布局 */}
           <img
@@ -153,28 +150,37 @@ const MemberPage = () => {
           />
           <div>
             {" "}
-            {/* 新 div 包裹用戶名稱和選擇檔案 */}
+            {/* 新 div 包裹用戶名稱和按鈕 */}
             <span className="block text-lg text-white mb-2">
               {username}
             </span>{" "}
             {/* 用戶名稱 */}
-            <input
-              id="file-upload"
-              type="file"
-              accept="image/*"
-              onChange={(e) => setSelectedFile(e.target.files[0])}
-              className="cursor-pointer text-sm  text-white p-2 rounded-lg" // 選擇檔案按鈕的樣式
-            />
+            <div>
+              <input
+                id="file-upload"
+                type="file"
+                accept="image/*"
+                onChange={(e) => setSelectedFile(e.target.files[0])}
+                className="hidden" // 隱藏 input
+              />
+              <label
+                htmlFor="file-upload"
+                className={`cursor-pointer text-sm bg-blue-500 text-white py-1 px-4 rounded-lg mb-2 ${
+                  selectedFile ? "hidden" : "block"
+                }`} // 根據是否選擇了檔案來顯示或隱藏
+              >
+                選擇檔案
+              </label>
+              {selectedFile && (
+                <button
+                  onClick={handleImageUpload}
+                  className="text-sm bg-blue-500 text-white py-1 px-4 rounded-lg mb-2"
+                >
+                  上傳檔案
+                </button>
+              )}
+            </div>
           </div>
-          {selectedFile && (
-            <button
-              onClick={handleImageUpload}
-              className="text-sm text-white font-semibold
-                     py-1 px-4 rounded-full"
-            >
-              上傳圖片
-            </button>
-          )}
         </div>
         <form onSubmit={handleUpdate} className="w-full max-w-xs space-y-3">
           <div className="flex items-center space-x-2">
