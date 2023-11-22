@@ -25,7 +25,7 @@ const MemberPage = () => {
   const [bio, setBio] = useState(""); // 個人簡介
   const [favorites, setFavorites] = useState<string[]>([]); // 用戶收藏列表
   // 新增狀態用於儲存選擇的圖片檔案
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const handleImageUpload = async () => {
     if (!selectedFile) {
