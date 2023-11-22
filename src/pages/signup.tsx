@@ -45,7 +45,7 @@ const Signup = () => {
       await setDoc(doc(db, "users", user.uid), {
         username: username,
         bio: bio,
-        photoURL: photoURL, // 儲存大頭照的 URL
+        // photoURL: photoURL, // 儲存大頭照的 URL
         displayName: displayName, // 確保這裡的字段名與您的Firestore結構一致
       });
       console.log("Firestore 寫入成功");
