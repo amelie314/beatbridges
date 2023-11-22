@@ -15,10 +15,24 @@ const Signup = () => {
   // 新增狀態
   const [username, setUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [profilePic, setProfilePic] = useState(null); // 用於儲存上傳的圖片文件
 
+  const validateUsername = (username) => {
+    // 正則表達式用於檢查用戶名稱是否只包含字母、數字及標點符號
+    const regex = /^[a-zA-Z0-9.\-_]+$/;
+    return regex.test(username);
+  };
+
+  // 處理註冊表單提交的函數
   const handleSignup = async (event) => {
     event.preventDefault();
+    // 在創建帳戶前驗證 username
+    if (!validateUsername(username)) {
+      alert(
+        "用戶名稱格式不正確，只能包含字母、數字及標點符號（例如：username.123）。"
+      );
+      return;
+    }
+
     try {
       const userCredential = await createUserWithEmailAndPassword(
         auth,
@@ -27,41 +41,22 @@ const Signup = () => {
       );
       const user = userCredential.user;
       //add
-      // 上傳大頭照到 Firebase Storage 並獲取 URL
-      let photoURL = ""; // 初始化 photoURL
-      if (profilePic) {
-        const picRef = ref(storage, `profilePics/${user.uid}`);
-        const snapshot = await uploadBytes(picRef, profilePic);
-        photoURL = await getDownloadURL(snapshot.ref);
-      }
 
-      console.log("即將更新 displayName 和 photoURL");
-      await updateProfile(user, {
-        displayName: displayName,
-        photoURL: photoURL,
-      });
+      // 更新 Firebase Authentication 的 displayName，不涉及照片上傳
+      await updateProfile(user, { displayName: displayName });
 
-      console.log("即將寫入 Firestore");
       await setDoc(doc(db, "users", user.uid), {
         username: username,
         bio: bio,
-        // photoURL: photoURL, // 儲存大頭照的 URL
+        photoURL: "", // 儲存大頭照的 URL
         displayName: displayName, // 確保這裡的字段名與您的Firestore結構一致
       });
       console.log("Firestore 寫入成功");
-
       alert("帳戶註冊成功！");
       router.push("/member-center"); // 更改導向到會員中心
     } catch (error) {
       alert(`帳戶註冊失敗，請再試一次：${error.message}`);
       console.error("帳戶註冊失敗：", error);
-    }
-  };
-
-  // 處理圖片文件變化的函數
-  const handleProfilePicChange = (e) => {
-    if (e.target.files[0]) {
-      setProfilePic(e.target.files[0]);
     }
   };
 

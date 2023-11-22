@@ -13,7 +13,7 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-import { auth, db } from "../firebaseConfig";
+import { auth, db, storage } from "../firebaseConfig";
 import { updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import FavoriteReviews from "../components/FavoriteReviews";
@@ -24,6 +24,36 @@ const MemberPage = () => {
   const [username, setUsername] = useState(""); // 用戶名
   const [bio, setBio] = useState(""); // 個人簡介
   const [favorites, setFavorites] = useState<string[]>([]); // 用戶收藏列表
+  // 新增狀態用於儲存選擇的圖片檔案
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const handleImageUpload = async () => {
+    if (!selectedFile) {
+      console.log("未選擇檔案");
+      return;
+    }
+
+    console.log("開始上傳圖片");
+
+    try {
+      const storageRef = ref(storage, `profilePics/${user.uid}`);
+      const uploadTask = await uploadBytes(storageRef, selectedFile);
+      const downloadURL = await getDownloadURL(uploadTask.ref);
+
+      // 更新 Authentication 中的 photoURL
+      await updateProfile(user, { photoURL: downloadURL });
+
+      // 更新 Firestore 中的 photoURL
+      const userDocRef = doc(db, "users", user.uid);
+      await updateDoc(userDocRef, { photoURL: downloadURL });
+
+      console.log("使用者上傳成功");
+    } catch (error) {
+      console.error("圖片上傳失敗：", error);
+    }
+
+    setSelectedFile(null); // 清除已選擇的檔案
+  };
 
   const handleUpdate = async (event) => {
     event.preventDefault();
@@ -71,7 +101,7 @@ const MemberPage = () => {
     }
   }, [user]);
 
-  // 取消收藏的处理函数
+  // 取消收藏的處理函數
   const handleRemoveFavorite = async (reviewId) => {
     // 根据 reviewId 来定位 Firestore 中的记录
     const favoriteRef = doc(db, "userFavorites", reviewId);
@@ -79,7 +109,7 @@ const MemberPage = () => {
     try {
       // 刪除紀錄
       await deleteDoc(favoriteRef);
-      // 更新组件状态以移除取消收藏的评论
+      // 更新组件狀態以移除取消收藏的評論
       setFavorites((prevFavorites) =>
         prevFavorites.filter(
           (favoriteReviewId) => favoriteReviewId !== reviewId
@@ -111,15 +141,40 @@ const MemberPage = () => {
 
   return (
     <div className="profile-page bg-primary-color text-white p-5">
-      {/* 假設已經加載了用戶的大頭貼 URL */}
       <div className="flex flex-col items-center">
-        <div className="flex items-center space-x-2">
+        {/* 大頭貼和用戶名稱 */}
+        <div className="flex">
+          {" "}
+          {/* 使用 flex 布局 */}
           <img
             src={user?.photoURL || "default-profile.png"}
             alt="Profile"
-            className="w-24 h-24 rounded-full mb-4"
+            className="w-24 h-24 rounded-full object-cover object-center mr-4" // 圖片類別
           />
-          <span className="text-me text-white">{username}</span>
+          <div>
+            {" "}
+            {/* 新 div 包裹用戶名稱和選擇檔案 */}
+            <span className="block text-lg text-white mb-2">
+              {username}
+            </span>{" "}
+            {/* 用戶名稱 */}
+            <input
+              id="file-upload"
+              type="file"
+              accept="image/*"
+              onChange={(e) => setSelectedFile(e.target.files[0])}
+              className="cursor-pointer text-sm  text-white p-2 rounded-lg" // 選擇檔案按鈕的樣式
+            />
+          </div>
+          {selectedFile && (
+            <button
+              onClick={handleImageUpload}
+              className="text-sm text-white font-semibold
+                     py-1 px-4 rounded-full"
+            >
+              上傳圖片
+            </button>
+          )}
         </div>
         <form onSubmit={handleUpdate} className="w-full max-w-xs space-y-3">
           <div className="flex items-center space-x-2">
@@ -156,7 +211,7 @@ const MemberPage = () => {
           </div>
           <button
             type="submit"
-            className="w-full bg-blue-500 hover:bg-blue-700 rounded-lg p-2"
+            className="w-full bg-green-300 hover:bg-green-500 rounded-lg p-2"
           >
             更新資料
           </button>

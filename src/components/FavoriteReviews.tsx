@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
+
 import {
   collection,
   query,
@@ -15,18 +16,32 @@ import { Review } from "../types/types";
 
 const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
+  const [userDetails, setUserDetails] = useState({});
 
   useEffect(() => {
     const fetchFavoriteReviews = async () => {
       const reviews: Review[] = [];
+      const details = {};
       for (const reviewId of favoriteReviewIds) {
         const reviewRef = doc(db, "reviews", reviewId);
         const reviewSnap = await getDoc(reviewRef);
         if (reviewSnap.exists()) {
-          reviews.push({ id: reviewSnap.id, ...(reviewSnap.data() as any) });
+          const reviewData = reviewSnap.data() as any;
+          reviews.push({ id: reviewSnap.id, ...reviewData });
+
+          // 加載用戶詳細信息
+          const userRef = doc(db, "users", reviewData.userId);
+          const userSnap = await getDoc(userRef);
+          if (userSnap.exists()) {
+            details[reviewData.userId] = {
+              photoURL: userSnap.data()?.photoURL || "default-avatar.png",
+              userName: userSnap.data()?.username || "匿名用戶",
+            };
+          }
         }
       }
       setFavoriteReviews(reviews);
+      setUserDetails(details);
     };
 
     if (favoriteReviewIds && favoriteReviewIds.length > 0) {
@@ -64,11 +79,18 @@ const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
         {favoriteReviews.map((review) => (
           <li
             key={review.id}
-            className="bg-gray-800 text-white p-4 rounded-lg mb-4"
+            className="bg-primary-color text-white p-4 rounded-lg mb-4"
           >
             <div className="flex justify-between items-center">
               <div>
-                <div className="font-bold">{review.userName || "匿名用户"}</div>
+                <img
+                  src={userDetails[review.userId]?.photoURL}
+                  alt={userDetails[review.userId]?.userName}
+                  className="w-10 h-10 rounded-full object-cover"
+                />
+                <div className="font-bold">
+                  {userDetails[review.userId]?.userName}
+                </div>
                 <p className="text-gray-400">{review.text}</p>
                 {/* 其他評論數據如日期等 */}
               </div>

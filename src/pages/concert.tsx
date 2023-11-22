@@ -14,6 +14,7 @@ import {
   collection,
   getDocs,
   doc,
+  getDoc,
   addDoc,
   deleteDoc,
   query,
@@ -82,10 +83,12 @@ function ConcertPage({ venues }) {
     }
 
     try {
+      // 从 Firebase 获取用户信息，包括 username
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      const username = userDoc.data()?.username; // 这里获取了 username
       // 創建新評論對象
       const newReview = {
         userId: user.uid,
-        userName: user.displayName || "匿名用戶",
         venueId: venueId,
         text: text,
         performanceName: performanceName,

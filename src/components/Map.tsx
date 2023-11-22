@@ -2,9 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 
-import { db } from "../firebaseConfig";
-import { collection, query, where, getDocs } from "firebase/firestore";
-
 const Map = (props) => {
   // const [activeCounty, setActiveCounty] = useState(null);
   const { activeCounty, setActiveCounty } = props;
@@ -14,13 +11,13 @@ const Map = (props) => {
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
   const handlePathClick = (countyName) => {
-    console.log("點擊", countyName); // 加入此行來調試
+    // console.log("點擊", countyName); // 加入此行來調試
     setActiveCounty(countyName);
     setIsTooltipVisible(false);
   };
 
   const handleMouseMove = (e, countyName) => {
-    console.log("移入", countyName); // 加入此行來調試
+    // console.log("移入", countyName); // 加入此行來調試
     setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
     setTooltipContent(countyName);
     setIsTooltipVisible(true);
@@ -431,17 +428,6 @@ const Map = (props) => {
       >
         {tooltipContent}
       </div>
-
-      {/* <div className="flex-1 p-6 rounded-lg shadow-md bg-primary-color ml-[100px]">
-        {venues.map((venue) => (
-          <div key={venue.id}>
-            <h3>{venue.Name}</h3>
-            <p>
-              {venue.City} {venue.District} {venue.Address}
-            </p>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 };

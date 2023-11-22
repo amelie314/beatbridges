@@ -19,7 +19,6 @@ export interface Review {
   id: string;
   createdAt: Date;
   userId: string;
-  userName: string;
   venueId: string;
   text: string;
   performanceName: string;
