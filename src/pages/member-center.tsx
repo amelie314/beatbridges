@@ -160,7 +160,11 @@ const MemberPage = () => {
                 id="file-upload"
                 type="file"
                 accept="image/*"
-                onChange={(e) => setSelectedFile(e.target.files[0])}
+                onChange={(e) => {
+                  if (e.target.files && e.target.files.length > 0) {
+                    setSelectedFile(e.target.files[0]);
+                  }
+                }}
                 className="hidden" // 隱藏 input
               />
               <label
