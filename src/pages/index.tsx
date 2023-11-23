@@ -101,7 +101,7 @@ export default function Home() {
       </div>
 
       <Link href="/concert">
-        <div className="absolute bottom-10 left-[85px] text-white bg-green-500 px-4 py-2 border border-white rounded hover:bg-green-300 transition duration-300 ease-in-out z-20 font-bold">
+        <div className="absolute bottom-7 left-[70px] text-white bg-secondary-color px-4 py-2 border border-white rounded hover:bg-green-500 transition duration-300 ease-in-out z-20 font-bold">
           Enter
         </div>
       </Link>
