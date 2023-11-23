@@ -5,9 +5,15 @@ import Link from "next/link";
 import { auth } from "../firebaseConfig";
 import React, { useState, useEffect } from "react";
 import { User } from "firebase/auth"; // 確保這個導入是正確的
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faUser, faHouse, faDoorOpen } from "@fortawesome/free-solid-svg-icons";
+import {
+  faRightToBracket,
+  faUserPlus,
+} from "@fortawesome/free-solid-svg-icons";
 
-// const Navbar = () => {
 const Navbar = ({ currentUser }: { currentUser: User | null }) => {
+  // const Navbar = () => {
   // 明確指定 useState 的類型為 User | null
   // const [user, setUser] = useState<User | null>(null);
 
@@ -31,21 +37,42 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
   };
 
   return (
-    <nav className="text-[15px] flex justify-between items-center p-4 bg-primary-color text-secondary-color border-b border-white">
+    <nav className="text-[15px] flex justify-between items-center p-3 bg-primary-color text-secondary-color border-b border-white">
       <Link href="/">
-        <div className="font-bold">Home</div>
+        <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+          <FontAwesomeIcon icon={faHouse} />
+        </div>
       </Link>
       <div>
         {currentUser ? (
-          <button onClick={handleLogout}>Sign out</button>
+          <div className="flex items-center space-x-3">
+            {" "}
+            {/* 添加flex容器以對齊子元素 */}
+            <Link href="/member-center">
+              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+                <FontAwesomeIcon icon={faUser} />
+              </div>{" "}
+              {/* 會員中心鏈接 */}
+            </Link>
+            <button
+              onClick={handleLogout}
+              className="hover:bg-show-color px-3 py-1 rounded font-bold"
+            >
+              <FontAwesomeIcon icon={faDoorOpen} />
+            </button>
+          </div>
         ) : (
-          <div className="flex flexjustify-between">
+          <div className="flex items-center space-x-3">
             <Link href="/login">
               {" "}
-              <div className="mr-4">Login</div>
+              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+                <FontAwesomeIcon icon={faRightToBracket} />
+              </div>
             </Link>
             <Link href="/signup">
-              <div>Sign up</div>
+              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+                <FontAwesomeIcon icon={faUserPlus} />
+              </div>
             </Link>
           </div>
         )}

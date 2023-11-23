@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { auth, db, storage } from "../firebaseConfig";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, setDoc } from "firebase/firestore";
 
 const Signup = () => {
@@ -97,7 +96,7 @@ const Signup = () => {
         />
 
         <button
-          className="text-primary-color p-1 bg-tertiary-color border rounded-md"
+          className="text-primary-color p-1 m-3 bg-tertiary-color border rounded-md"
           type="submit"
         >
           註冊

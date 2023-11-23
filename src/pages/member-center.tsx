@@ -26,21 +26,24 @@ const MemberPage = () => {
   const [favorites, setFavorites] = useState<string[]>([]); // 用戶收藏列表
   // 新增狀態用於儲存選擇的圖片檔案
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [profilePicUrl, setProfilePicUrl] = useState(
+    user?.photoURL || "default-profile.png"
+  );
 
   const handleImageUpload = async () => {
     if (!selectedFile) {
-      console.log("未選擇檔案");
       return;
     }
-
-    console.log("開始上傳圖片");
-
     try {
       if (user) {
         const storageRef = ref(storage, `profilePics/${user.uid}`);
         const uploadTask = await uploadBytes(storageRef, selectedFile);
-        const downloadURL = await getDownloadURL(uploadTask.ref);
+
         // Rest of your code
+        const downloadURL = await getDownloadURL(uploadTask.ref);
+        setProfilePicUrl(downloadURL); // 更新頭像的 URL
+        // 如果需要，也可以在這裡更新 Firebase auth 中的 photoURL
+        await updateProfile(user, { photoURL: downloadURL });
       } else {
         // Handle the case when 'user' is null or undefined
         console.error("User is not authenticated.");
@@ -52,8 +55,21 @@ const MemberPage = () => {
     setSelectedFile(null); // 清除已選擇的檔案
   };
 
+  const validateUsername = (username) => {
+    // 正則表達式用於檢查用戶名稱是否只包含字母、數字及標點符號
+    const regex = /^[a-zA-Z0-9.\-_]+$/;
+    return regex.test(username);
+  };
+
   const handleUpdate = async (event) => {
     event.preventDefault();
+    // 驗證 username
+    if (!validateUsername(username)) {
+      alert(
+        "用戶名稱格式不正確，只能包含字母、數字及標點符號（例如：username.123）。"
+      );
+      return;
+    }
     if (user) {
       try {
         // 更新 displayName
@@ -137,14 +153,14 @@ const MemberPage = () => {
   }, [user]);
 
   return (
-    <div className="profile-page bg-primary-color text-white p-5">
+    <div className="bg-primary-color text-white p-8 ">
       <div className="flex flex-col items-center">
         {/* 大頭貼和用戶名稱 */}
         <div className="flex items-center">
           {" "}
           {/* 使用 flex 布局 */}
           <img
-            src={user?.photoURL || "default-profile.png"}
+            src={user?.photoURL || { profilePicUrl }}
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover object-center mr-4" // 圖片類別
           />
@@ -169,9 +185,9 @@ const MemberPage = () => {
               />
               <label
                 htmlFor="file-upload"
-                className={`cursor-pointer text-sm bg-blue-500 text-white py-1 px-4 rounded-lg mb-2 ${
+                className={`cursor-pointer text-sm text-green-500  rounded ${
                   selectedFile ? "hidden" : "block"
-                }`} // 根據是否選擇了檔案來顯示或隱藏
+                } `} // 根據是否選擇了檔案來顯示或隱藏
               >
                 選擇檔案
               </label>
@@ -186,7 +202,10 @@ const MemberPage = () => {
             </div>
           </div>
         </div>
-        <form onSubmit={handleUpdate} className="w-full max-w-xs space-y-3">
+        <form
+          onSubmit={handleUpdate}
+          className="mt-8 w-full max-w-xs space-y-3"
+        >
           <div className="flex items-center space-x-2">
             <span className="text-me text-white">姓名</span>
             <input

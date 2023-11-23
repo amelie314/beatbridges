@@ -56,7 +56,7 @@ const Login = () => {
           required
         />
         <button
-          className="text-primary-color p-1 bg-tertiary-color border rounded-md"
+          className="text-primary-color p-1 m-3 bg-tertiary-color border rounded-md"
           type="submit"
         >
           登入
