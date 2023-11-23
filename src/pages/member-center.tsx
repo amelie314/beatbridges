@@ -160,7 +160,7 @@ const MemberPage = () => {
           {" "}
           {/* 使用 flex 布局 */}
           <img
-            src={user?.photoURL || { profilePicUrl }}
+            src={user?.photoURL ? user.photoURL : profilePicUrl}
             alt="Profile"
             className="w-24 h-24 rounded-full object-cover object-center mr-4" // 圖片類別
           />
