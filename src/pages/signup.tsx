@@ -49,6 +49,7 @@ const Signup = () => {
         bio: bio,
         photoURL: "", // 儲存大頭照的 URL
         displayName: displayName, // 確保這裡的字段名與您的Firestore結構一致
+        uid: user.uid,
       });
       console.log("Firestore 寫入成功");
       alert("帳戶註冊成功！");
@@ -63,7 +64,7 @@ const Signup = () => {
     <div style={{ backgroundColor: "#131313", minHeight: "100vh" }}>
       <form onSubmit={handleSignup}>
         <input
-          className="text-black p-1 m-3  border rounded-md text-dark-purple"
+          className="text-black p-1 mx-5 mt-5 mb-3  border rounded-md text-dark-purple"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -71,7 +72,7 @@ const Signup = () => {
           required
         />
         <input
-          className="text-black p-1 m-3  border rounded-md text-primary-color"
+          className="text-black p-1 mx-5 my-3 border rounded-md text-primary-color"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -80,7 +81,7 @@ const Signup = () => {
         />
         <input
           type="text"
-          className="text-black p-1 m-3  border rounded-md text-primary-color"
+          className="text-black p-1 mx-5 my-3 border rounded-md text-primary-color"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           placeholder="Username"
@@ -88,7 +89,7 @@ const Signup = () => {
         />
         <input
           type="text"
-          className="text-black p-1 m-3  border rounded-md text-primary-color"
+          className="text-black p-1 mx-5  border rounded-md text-primary-color"
           value={displayName}
           onChange={(e) => setDisplayName(e.target.value)}
           placeholder="Display Name"
@@ -96,10 +97,10 @@ const Signup = () => {
         />
 
         <button
-          className="text-primary-color p-1 m-3 bg-tertiary-color border rounded-md"
+          className="text-white p-1 m-3 bg-tertiary-color border rounded-md hover:bg-show-color transition duration-300 ease-in-out"
           type="submit"
         >
-          註冊
+          Signup
         </button>
       </form>
     </div>

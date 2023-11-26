@@ -4,6 +4,9 @@
 import React, { useState, useEffect } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../firebaseConfig";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faFolder, faTrash } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 const ReviewList = ({ reviews, currentUserId, onDelete, onToggleFavorite }) => {
   const [userDetails, setUserDetails] = useState({});
@@ -28,57 +31,69 @@ const ReviewList = ({ reviews, currentUserId, onDelete, onToggleFavorite }) => {
       {reviews.map((review) => (
         <div
           key={review.id}
-          className="flex flex-col bg-secondary-color p-4 rounded-lg"
+          className="bg-primary-color border border-[#585858] p-4 rounded-lg"
         >
-          {/* 用户照片、用户名、日期和性能名称在同一行 */}
-          <div className="flex items-center space-x-4">
-            <img
-              src={userDetails[review.userId]?.photoURL}
-              alt={userDetails[review.userId]?.userName}
-              className="w-10 h-10 rounded-full object-cover"
-            />
-            <div className="flex flex-col flex-1 min-w-0">
-              <div className="flex justify-between items-center w-full">
-                {/* 用户名字体放大 */}
-                <h4 className="text-base font-semibold text-white truncate">
-                  {userDetails[review.userId]?.userName}
+          <div className="grid grid-cols-12 items-center gap-4 mb-2">
+            <div className="col-span-2">
+              <Link href={`/profile/${userDetails[review.userId]?.userName}`}>
+                <img
+                  src={userDetails[review.userId]?.photoURL}
+                  alt={userDetails[review.userId]?.userName}
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              </Link>
+            </div>
+            <div className="col-span-10">
+              <div className="grid grid-cols-12 items-center">
+                <h4 className="col-span-5 text-sm font-semibold text-white truncate">
+                  <Link
+                    href={`/profile/${userDetails[review.userId]?.userName}`}
+                  >
+                    {userDetails[review.userId]?.userName}
+                  </Link>
                 </h4>
-                <span className="text-xs text-gray-400">
+                <span className="col-span-7 text-xs text-white font-bold text-right">
                   {review.date
                     ? new Date(review.date).toLocaleDateString("zh-TW")
                     : "未知日期"}
                 </span>
               </div>
-              {/* 性能名称字体放大 */}
               <p className="text-sm text-white mt-1 truncate">
                 {review.performanceName}
               </p>
+              <p className="text-xs text-white mt-1">{review.text}</p>
             </div>
           </div>
-          {/* 评论文本 */}
-          <div className="mt-1">
-            <p className="text-sm text-white whitespace-pre-line">
-              {review.text}
-            </p>
-          </div>
+
           {/* 操作按钮 */}
           <div className="flex justify-end space-x-2 mt-2">
-            {currentUserId === review.userId && (
-              <button
-                onClick={() => onDelete(review.id)}
-                className="text-xs text-red-600 hover:text-red-800"
-              >
-                🗑️ 刪除
-              </button>
-            )}
             <button
               onClick={() => onToggleFavorite(review.id)}
               className={`text-xs ${
-                review.isFavorite ? "text-yellow-500" : "text-gray-500"
-              } hover:text-yellow-300`}
+                review.isFavorite
+                  ? "text-[#FF2F40] font-bold hover:text-[#FF2F40]"
+                  : "text-white font-bold hover:text-[#FF2F40]"
+              } `}
             >
-              {review.isFavorite ? "☆ 取消收藏" : "★ 收藏"}
+              {review.isFavorite ? (
+                <>
+                  <FontAwesomeIcon icon={faFolder} />
+                </>
+              ) : (
+                <>
+                  <FontAwesomeIcon icon={faFolder} />
+                </>
+              )}
             </button>
+
+            {currentUserId === review.userId && (
+              <button
+                onClick={() => onDelete(review.id)}
+                className="text-xs text-white hover:text-red-800"
+              >
+                <FontAwesomeIcon icon={faTrash} />
+              </button>
+            )}
           </div>
         </div>
       ))}

@@ -2,30 +2,43 @@
 
 // /src/components/Navbar.tsx
 import Link from "next/link";
-import { auth } from "../firebaseConfig";
+import { auth, db } from "../firebaseConfig";
 import React, { useState, useEffect } from "react";
 import { User } from "firebase/auth"; // 確保這個導入是正確的
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUser, faHouse, faDoorOpen } from "@fortawesome/free-solid-svg-icons";
+import { doc, getDoc } from "firebase/firestore";
+import {
+  faUser,
+  faHouse,
+  faDoorOpen,
+  faMapLocationDot,
+} from "@fortawesome/free-solid-svg-icons";
+
 import {
   faRightToBracket,
   faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 
+// const Navbar = ({ currentUser }: { currentUser: User | null }) => {
+
 const Navbar = ({ currentUser }: { currentUser: User | null }) => {
-  // const Navbar = () => {
-  // 明確指定 useState 的類型為 User | null
-  // const [user, setUser] = useState<User | null>(null);
+  const [username, setUsername] = useState("");
 
-  // useEffect(() => {
-  //   // 這裡返回的用戶對象將匹配 useState 的類型註解
-  //   const unsubscribe = auth.onAuthStateChanged((user) => {
-  //     setUser(user); // 現在 setUser 接受 User 類型或者 null
-  //   });
+  useEffect(() => {
+    const fetchUsername = async () => {
+      if (currentUser) {
+        const userDocRef = doc(db, "users", currentUser.uid);
+        const userDoc = await getDoc(userDocRef);
+        if (userDoc.exists()) {
+          setUsername(userDoc.data().username); // 假设用户名字段是 `username`
+        }
+      }
+    };
 
-  //   // 返回清理函數
-  //   return unsubscribe;
-  // }, []);
+    fetchUsername();
+  }, [currentUser]);
+
+  const profileLink = username ? `/profile/${username}` : "/login";
 
   const handleLogout = async () => {
     try {
@@ -48,11 +61,16 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
           <div className="flex items-center space-x-3">
             {" "}
             {/* 添加flex容器以對齊子元素 */}
-            <Link href="/member-center">
+            <Link href="/concert">
+              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+                <FontAwesomeIcon icon={faMapLocationDot} />
+              </div>{" "}
+              {/* 會員中心連結 */}
+            </Link>
+            <Link href={profileLink}>
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faUser} />
-              </div>{" "}
-              {/* 會員中心鏈接 */}
+              </div>
             </Link>
             <button
               onClick={handleLogout}
@@ -63,6 +81,12 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
           </div>
         ) : (
           <div className="flex items-center space-x-3">
+            <Link href="/concert">
+              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+                <FontAwesomeIcon icon={faMapLocationDot} />
+              </div>{" "}
+              {/* 會員中心連結 */}
+            </Link>
             <Link href="/login">
               {" "}
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">

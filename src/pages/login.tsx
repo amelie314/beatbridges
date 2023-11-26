@@ -40,7 +40,7 @@ const Login = () => {
     <div style={{ backgroundColor: "#131313", minHeight: "100vh" }}>
       <form onSubmit={handleLogin}>
         <input
-          className="text-black p-1 m-3  border rounded-md text-primary-color"
+          className="text-black p-1 mx-5 mt-5 mb-3  border rounded-md text-primary-color"
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -48,7 +48,7 @@ const Login = () => {
           required
         />
         <input
-          className="text-black p-1 m-3 border rounded-md text-primary-color"
+          className="text-black p-1 mx-5 border rounded-md text-primary-color"
           type="password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -56,10 +56,10 @@ const Login = () => {
           required
         />
         <button
-          className="text-primary-color p-1 m-3 bg-tertiary-color border rounded-md"
+          className="text-white p-1 m-3 bg-tertiary-color border rounded-md hover:bg-show-color transition duration-300 ease-in-out"
           type="submit"
         >
-          登入
+          Login
         </button>
       </form>
       {loginError && <p>{loginError}</p>}

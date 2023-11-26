@@ -58,11 +58,11 @@ function ConcertPage({ venues }) {
   const [selectedVenueId, setSelectedVenueId] = useState(null);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login"); // 如果不在加載過程中，且用戶未登錄，則導向至登錄頁面
-    }
-  }, [user, loading, router]); // 確保依賴項中包含用戶和加載狀態
+  // useEffect(() => {
+  //   if (!loading && !user) {
+  //     router.push("/login"); // 如果不在加載過程中，且用戶未登錄，則導向至登錄頁面
+  //   }
+  // }, [user, loading, router]); // 確保依賴項中包含用戶和加載狀態
 
   // 确保定義了 handleVenueSelected 函數来更新 selectedVenueId 狀態
   const handleVenueSelected = (venueId) => {
@@ -83,7 +83,7 @@ function ConcertPage({ venues }) {
     }
 
     try {
-      // 从 Firebase 获取用户信息，包括 username
+      // 从 Firebase 獲取用户信息，包括 username
       const userDoc = await getDoc(doc(db, "users", user.uid));
       const username = userDoc.data()?.username; // 这里获取了 username
       // 創建新評論對象
@@ -167,7 +167,6 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          userName: doc.data().userName,
           text: doc.data().text,
           userId: doc.data().userId,
           createdAt: doc.data().createdAt,
@@ -209,7 +208,6 @@ function ConcertPage({ venues }) {
         // 組合評論數據和收藏狀態
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          userName: doc.data().userName,
           text: doc.data().text,
           userId: doc.data().userId,
           isFavorite: favoriteIds.has(doc.id),

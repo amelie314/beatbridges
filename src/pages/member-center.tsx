@@ -39,13 +39,19 @@ const MemberPage = () => {
         const storageRef = ref(storage, `profilePics/${user.uid}`);
         const uploadTask = await uploadBytes(storageRef, selectedFile);
 
-        // Rest of your code
+        // 獲取圖片的下載 URL
         const downloadURL = await getDownloadURL(uploadTask.ref);
         setProfilePicUrl(downloadURL); // 更新頭像的 URL
-        // 如果需要，也可以在這裡更新 Firebase auth 中的 photoURL
+
+        // 更新 Firebase auth 中的 photoURL
         await updateProfile(user, { photoURL: downloadURL });
+
+        // 更新 Firestore 中的用戶資料
+        const userDocRef = doc(db, "users", user.uid);
+        await updateDoc(userDocRef, {
+          photoURL: downloadURL, // 更新 Firestore 中的 photoURL 欄位
+        });
       } else {
-        // Handle the case when 'user' is null or undefined
         console.error("User is not authenticated.");
       }
     } catch (error) {
@@ -153,8 +159,8 @@ const MemberPage = () => {
   }, [user]);
 
   return (
-    <div className="bg-primary-color text-white p-8 ">
-      <div className="flex flex-col items-center">
+    <div className="bg-primary-color text-white p-12 ">
+      <div className="flex flex-col items-center mt-3">
         {/* 大頭貼和用戶名稱 */}
         <div className="flex items-center">
           {" "}
@@ -189,12 +195,12 @@ const MemberPage = () => {
                   selectedFile ? "hidden" : "block"
                 } `} // 根據是否選擇了檔案來顯示或隱藏
               >
-                選擇檔案
+                變更大頭貼
               </label>
               {selectedFile && (
                 <button
                   onClick={handleImageUpload}
-                  className="text-sm bg-blue-500 text-white py-1 px-4 rounded-lg mb-2"
+                  className="text-sm bg-green-500 text-white py-1 px-4 rounded-lg mb-2"
                 >
                   上傳檔案
                 </button>
@@ -206,49 +212,50 @@ const MemberPage = () => {
           onSubmit={handleUpdate}
           className="mt-8 w-full max-w-xs space-y-3"
         >
-          <div className="flex items-center space-x-2">
-            <span className="text-me text-white">姓名</span>
+          {/* 使用 grid 佈局 */}
+          <div className="grid grid-cols-[auto_1fr] gap-x-2 gap-y-4">
+            {/* 姓名 */}
+            <label className="text-me text-white self-center">姓名</label>
             <input
-              className="flex-1 text-black rounded-lg p-2"
+              className="text-black rounded-lg p-2"
               type="text"
               value={displayName}
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder="顯示名稱"
             />
-          </div>
-          <p className="text-sm text-gray-500">
-            使用你為大眾所熟知的姓名／名稱，例如全名、暱稱。
-          </p>
-          <div className="flex items-center space-x-2 mb-1 ">
-            <span className="text-me text-white">用戶名稱</span>
+
+            {/* 用戶名稱 */}
+            <label className="text-me text-white self-center">用戶名稱</label>
             <input
-              className="flex-1 text-black rounded-lg p-2"
+              className="text-black rounded-lg p-2"
               type="text"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               placeholder="用户名稱"
             />
-          </div>
-          <div className="flex items-center space-x-2">
-            <span className="text-me text-white">個人簡介</span>
+
+            {/* 個人簡介 */}
+            <label className="text-me text-white self-cente">個人簡介</label>
             <textarea
-              className="flex-1 text-black rounded-lg p-2"
+              className="text-black rounded-lg p-2"
               value={bio}
               onChange={(e) => setBio(e.target.value)}
               placeholder="個人簡介"
             />
           </div>
-          <button
-            type="submit"
-            className="w-full bg-green-300 hover:bg-green-500 rounded-lg p-2"
-          >
-            更新資料
-          </button>
+          <div className="flex justify-center">
+            <button
+              type="submit"
+              className="max-w-xs bg-secondary-color font-bold hover:bg-green-500 rounded-lg p-2 mt-3"
+            >
+              Update
+            </button>
+          </div>
         </form>
       </div>
 
       {/* 收藏的評論列表 */}
-      <div className="mt-8">
+      <div className="mt-8 bg-primary-color">
         {user && (
           <>
             {/* ...其他组件 */}
