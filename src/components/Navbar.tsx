@@ -4,48 +4,47 @@
 import Link from "next/link";
 import { auth, db } from "../firebaseConfig";
 import React, { useState, useEffect } from "react";
-import { User } from "firebase/auth"; // 確保這個導入是正確的
+import { User } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { doc, getDoc } from "firebase/firestore";
+import { useRouter } from "next/router"; // 導入 useRouter
 import {
-  faUser,
   faHouse,
   faDoorOpen,
   faMapLocationDot,
-} from "@fortawesome/free-solid-svg-icons";
-
-import {
-  faRightToBracket,
   faUserPlus,
+  faUser,
 } from "@fortawesome/free-solid-svg-icons";
-
-// const Navbar = ({ currentUser }: { currentUser: User | null }) => {
+import { doc, getDoc } from "firebase/firestore";
+import SignupModal from "./SignupModal";
+import LoginModal from "./LoginModal";
 
 const Navbar = ({ currentUser }: { currentUser: User | null }) => {
   const [username, setUsername] = useState("");
+  const [showSignupModal, setShowSignupModal] = useState(false);
+  const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    const fetchUsername = async () => {
-      if (currentUser) {
+    if (currentUser) {
+      const fetchUsername = async () => {
         const userDocRef = doc(db, "users", currentUser.uid);
         const userDoc = await getDoc(userDocRef);
         if (userDoc.exists()) {
-          setUsername(userDoc.data().username); // 假设用户名字段是 `username`
+          setUsername(userDoc.data().username);
         }
-      }
-    };
+      };
+      fetchUsername();
+    } else {
+      setUsername(""); // 当没有用户登录时重置用户名
+    }
+  }, [currentUser, currentUser?.uid]); // 添加 currentUser?.uid 作为依赖
 
-    fetchUsername();
-  }, [currentUser]);
-
-  const profileLink = username ? `/profile/${username}` : "/login";
-
+  const router = useRouter(); // 使用 useRouter 鉤子
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      // 登出成功後的處理，例如狀態更新或跳轉
+      router.push("/"); // 使用 router.push 來跳轉路由
     } catch (error) {
-      console.error("登出失敗:", error);
+      console.error("Logout failed:", error);
     }
   };
 
@@ -59,15 +58,12 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
       <div>
         {currentUser ? (
           <div className="flex items-center space-x-3">
-            {" "}
-            {/* 添加flex容器以對齊子元素 */}
             <Link href="/concert">
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
-              </div>{" "}
-              {/* 會員中心連結 */}
+              </div>
             </Link>
-            <Link href={profileLink}>
+            <Link href={`/profile/${username}`}>
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faUser} />
               </div>
@@ -84,23 +80,30 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
             <Link href="/concert">
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
-              </div>{" "}
-              {/* 會員中心連結 */}
-            </Link>
-            <Link href="/login">
-              {" "}
-              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
-                <FontAwesomeIcon icon={faRightToBracket} />
               </div>
             </Link>
-            <Link href="/signup">
-              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
-                <FontAwesomeIcon icon={faUserPlus} />
-              </div>
-            </Link>
+
+            <button
+              onClick={() => setShowLoginModal(true)}
+              className="hover:bg-show-color px-3 py-1 rounded font-bold"
+            >
+              <FontAwesomeIcon icon={faUserPlus} />
+            </button>
           </div>
         )}
       </div>
+      <LoginModal
+        show={showLoginModal}
+        onClose={() => setShowLoginModal(false)}
+        onShowSignup={() => {
+          setShowLoginModal(false);
+          setShowSignupModal(true);
+        }}
+      />
+      <SignupModal
+        show={showSignupModal}
+        onClose={() => setShowSignupModal(false)}
+      />
     </nav>
   );
 };

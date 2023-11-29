@@ -9,6 +9,8 @@ import ReviewList from "../components/ReviewList";
 //
 import { Venue } from "../types/types";
 import { Review } from "../types/types";
+import LoginModal from "../components/LoginModal";
+import { increment, updateDoc } from "firebase/firestore";
 
 import {
   collection,
@@ -57,12 +59,8 @@ function ConcertPage({ venues }) {
   const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
   const router = useRouter();
-
-  // useEffect(() => {
-  //   if (!loading && !user) {
-  //     router.push("/login"); // 如果不在加載過程中，且用戶未登錄，則導向至登錄頁面
-  //   }
-  // }, [user, loading, router]); // 確保依賴項中包含用戶和加載狀態
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [reviewsLoading, setReviewsLoading] = useState(true); // 加載狀態
 
   // 确保定義了 handleVenueSelected 函數来更新 selectedVenueId 狀態
   const handleVenueSelected = (venueId) => {
@@ -83,10 +81,6 @@ function ConcertPage({ venues }) {
     }
 
     try {
-      // 从 Firebase 獲取用户信息，包括 username
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const username = userDoc.data()?.username; // 这里获取了 username
-      // 創建新評論對象
       const newReview = {
         userId: user.uid,
         venueId: venueId,
@@ -94,28 +88,51 @@ function ConcertPage({ venues }) {
         performanceName: performanceName,
         date: date,
         createdAt: serverTimestamp(),
+        likes: 0,
       };
 
-      // 將新評論添加到 Firestore
       const docRef = await addDoc(collection(db, "reviews"), newReview);
-
-      // 添加成功後，更新評論列表狀態
-      setReviews((prevReviews) => [
-        ...prevReviews,
-        {
-          id: docRef.id,
-          ...newReview,
-          createdAt: new Date(), // 因為 serverTimestamp() 需要從服務器同步，這裡只能先用客戶端時間
-        },
-      ]);
-      alert("評論已成功提交！");
+      setReviews([...reviews, { id: docRef.id, ...newReview }]);
     } catch (error) {
       console.error("Error adding review:", error);
     }
   };
 
-  //
+  // 加載評論
+  useEffect(() => {
+    if (selectedVenueId) {
+      setReviewsLoading(true);
+      const fetchReviews = async () => {
+        const q = query(
+          collection(db, "reviews"),
+          where("venueId", "==", selectedVenueId)
+        );
+        const querySnapshot = await getDocs(q);
+        const fetchedReviews = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setReviews(fetchedReviews);
+        setReviewsLoading(false);
+      };
+      fetchReviews();
+    }
+  }, [selectedVenueId]);
 
+  // 處理點讚
+  const handleLike = async (reviewId) => {
+    const reviewRef = doc(db, "reviews", reviewId);
+    await updateDoc(reviewRef, { likes: increment(1) });
+
+    const updatedReviewDoc = await getDoc(reviewRef);
+    const updatedLikes = updatedReviewDoc.data()?.likes;
+
+    setReviews(
+      reviews.map((review) =>
+        review.id === reviewId ? { ...review, likes: updatedLikes } : review
+      )
+    );
+  };
   useEffect(() => {
     const fetchVenues = async () => {
       if (activeCounty) {
@@ -173,6 +190,7 @@ function ConcertPage({ venues }) {
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
+          likes: doc.data().likes,
         }));
         setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
@@ -186,6 +204,7 @@ function ConcertPage({ venues }) {
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
+
   useEffect(() => {
     const fetchReviewsAndFavorites = async () => {
       // 清空評論列表
@@ -215,6 +234,7 @@ function ConcertPage({ venues }) {
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
+          likes: doc.data().likes,
         }));
 
         setReviews(fetchedReviews);
@@ -226,6 +246,7 @@ function ConcertPage({ venues }) {
 
   const handleToggleFavorite = async (reviewId) => {
     if (!user) {
+      setShowLoginModal(true); // 如果用户未登錄，顯示登錄對話框
       console.error("User is not logged in.");
       return;
     }
@@ -271,11 +292,6 @@ function ConcertPage({ venues }) {
         {/* Left side: Map component */}
         <div className="w-full md:w-1/2 p-6">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
-          <Link href="/">
-            <div className="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-tertiary-color">
-              返回首頁
-            </div>
-          </Link>
         </div>
 
         {/* Right side: Selection and ReviewForm */}
@@ -298,12 +314,24 @@ function ConcertPage({ venues }) {
                 onAddReview={handleAddReview}
               />
             )}
+
             <ReviewList
               reviews={reviews}
               currentUserId={user?.uid}
               onDelete={handleDeleteReview}
               onToggleFavorite={handleToggleFavorite}
+              onLike={handleLike}
             />
+
+            {showLoginModal && (
+              <LoginModal
+                show={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                onShowSignup={() => {
+                  /* 如果你需要处理注册逻辑 */
+                }}
+              />
+            )}
           </div>
         </div>
       </div>

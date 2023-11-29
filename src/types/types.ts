@@ -23,6 +23,7 @@ export interface Review {
   text: string;
   performanceName: string;
   date: string;
+  likes: number;
 }
 
 

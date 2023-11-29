@@ -27,17 +27,80 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
     setDate(""); // 清空日期输入
   };
 
+  //   return (
+  //     <form onSubmit={handleSubmit} className="space-y-4">
+  //       <label
+  //         htmlFor="performanceName"
+  //         className="block text-sm font-medium text-white"
+  //       >
+  //         表演名稱
+  //       </label>
+  //       <input
+  //         id="performanceName"
+  //         className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+  //         type="text"
+  //         value={performanceName}
+  //         onChange={(e) => setPerformanceName(e.target.value)}
+  //         placeholder="請輸入表演名稱"
+  //         required
+  //       />
+
+  //       <div>
+  //         <label
+  //           htmlFor="date"
+  //           className="block mb-1 text-sm font-medium text-white"
+  //         >
+  //           日期
+  //         </label>
+  //         <input
+  //           id="date"
+  //           className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+  //           type="date"
+  //           value={date}
+  //           onChange={(e) => setDate(e.target.value)}
+  //           max={new Date().toISOString().split("T")[0]} // 限制为今天之前
+  //           required
+  //         />
+  //       </div>
+
+  //       <div>
+  //         <label
+  //           htmlFor="reviewText"
+  //           className="block mb-1 text-sm font-medium text-white "
+  //         >
+  //           評論
+  //         </label>
+  //         <textarea
+  //           id="reviewText"
+  //           className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+  //           value={reviewText}
+  //           onChange={(e) => setReviewText(e.target.value)}
+  //           placeholder="請輸入評論"
+  //           required
+  //         />
+  //       </div>
+  //       <button
+  //         type="submit"
+  //         className="mt-2 mb-4 bg-white hover:bg-green-500 text-black font-medium rounded-lg text-sm px-4 py-2"
+  //       >
+  //         提交評論
+  //       </button>
+  //     </form>
+  //   );
+  // };
+  // 統一的間距樣式
+  const inputClass =
+    "text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5 mb-4";
+  const labelClass = "block mb-2 text-sm font-medium text-white";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <label
-        htmlFor="performanceName"
-        className="block text-sm font-medium text-white"
-      >
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="performanceName" className={labelClass}>
         表演名稱
       </label>
       <input
         id="performanceName"
-        className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+        className={inputClass}
         type="text"
         value={performanceName}
         onChange={(e) => setPerformanceName(e.target.value)}
@@ -46,12 +109,12 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       />
 
       <div>
-        <label htmlFor="date" className="block text-sm font-medium text-white">
+        <label htmlFor="date" className={labelClass}>
           日期
         </label>
         <input
           id="date"
-          className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          className={inputClass}
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
@@ -61,15 +124,12 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       </div>
 
       <div>
-        <label
-          htmlFor="reviewText"
-          className="block mb-2 text-sm font-medium text-white "
-        >
+        <label htmlFor="reviewText" className={labelClass}>
           評論
         </label>
         <textarea
           id="reviewText"
-          className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          className={inputClass}
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="請輸入評論"
@@ -78,12 +138,11 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       </div>
       <button
         type="submit"
-        className="bg-white hover:bg-green-500 text-black font-medium rounded-lg text-sm px-4 py-2"
+        className="mt-2 mb-4 bg-white hover:bg-green-500 text-black font-medium rounded-lg text-sm px-4 py-2"
       >
         提交評論
       </button>
     </form>
   );
 };
-
 export default ReviewForm;

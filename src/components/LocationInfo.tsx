@@ -94,41 +94,16 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
     }),
   };
 
-  //   return (
-  //     <div>
-  //       <div>目前選擇的縣市為: {activeCounty}</div>
-  //       <div className="mt-4">
-  //         <Select
-  //           id="district-select"
-  //           options={districtOptions}
-  //           value={selectedDistrict}
-  //           onChange={setSelectedDistrict}
-  //           styles={customStyles}
-  //           placeholder="選擇區域"
-  //           isClearable
-  //         />
-  //       </div>
-  //       {selectedDistrict && (
-  //         <div className="mt-4">
-  //           <Select
-  //             id="venue-select"
-  //             options={venueOptions}
-  //             value={selectedVenue}
-  //             onChange={(selected) => {
-  //               setSelectedVenue(selected);
-  //               onVenueSelected(selected?.value || "");
-  //             }}
-  //             styles={customStyles}
-  //             placeholder="選擇展演空間"
-  //             isClearable
-  //           />
-  //         </div>
-  //       )}
-  //     </div>
-  //   );
-  // };
-
-  // export default LocationInfo;
+  // 新增一個函數來處理 Google 搜尋
+  const handleSearch = () => {
+    const venueName = venues.find((venue) => venue.id === selectedVenue)?.Name;
+    if (venueName) {
+      // 使用 window.open 來在新視窗中打開 Google 搜尋頁面
+      window.open(
+        `https://www.google.com/search?q=${encodeURIComponent(venueName)}`
+      );
+    }
+  };
 
   return (
     <div>
@@ -179,6 +154,17 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
               </option>
             ))}
           </select>
+        </div>
+      )}
+      {selectedVenue && (
+        <div className="mt-4">
+          <button
+            className="text-[#FDE8E9] bg-gray-800 hover:bg-gray-700 font-bold py-2 px-4 rounded"
+            onClick={handleSearch}
+          >
+            🔍️ &nbsp; 搜尋{" "}
+            {venues.find((venue) => venue.id === selectedVenue)?.Name} 的資訊
+          </button>
         </div>
       )}
     </div>

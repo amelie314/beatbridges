@@ -14,7 +14,7 @@ import {
 } from "firebase/firestore";
 import { Review } from "../types/types";
 
-const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
+const FavoriteReviews = ({ favoriteReviewIds, updatedUserData }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
   const [userDetails, setUserDetails] = useState({});
 
@@ -42,12 +42,13 @@ const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
       }
       setFavoriteReviews(reviews);
       setUserDetails(details);
+      fetchFavoriteReviews();
     };
 
     if (favoriteReviewIds && favoriteReviewIds.length > 0) {
       fetchFavoriteReviews();
     }
-  }, [favoriteReviewIds]);
+  }, [favoriteReviewIds, updatedUserData]);
 
   const handleRemoveFavorite = async (reviewId) => {
     if (!auth.currentUser) return; // 確保用戶已登錄
@@ -73,30 +74,31 @@ const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
   };
 
   return (
-    <div>
-      <h2 className="text-xl font-bold text-white mb-4">我收藏的評論</h2>
-      <ul>
+    <div className="bg-black p-5 w-full max-w-2xl mx-auto shadow-lg rounded-md">
+      <h2 className="text-xl font-bold text-white mb-4 text-center">
+        我收藏的評論
+      </h2>
+      <ul className="space-y-4">
         {favoriteReviews.map((review) => (
-          <li
-            key={review.id}
-            className="bg-primary-color text-white p-4 rounded-lg mb-4"
-          >
+          <li key={review.id} className="border p-4 rounded-lg text-white">
             <div className="flex justify-between items-center">
-              <div>
+              <div className="flex items-center space-x-4">
                 <img
                   src={userDetails[review.userId]?.photoURL}
                   alt={userDetails[review.userId]?.userName}
                   className="w-10 h-10 rounded-full object-cover"
                 />
-                <div className="font-bold">
-                  {userDetails[review.userId]?.userName}
+                <div className="flex flex-col">
+                  <span className="font-bold">
+                    {userDetails[review.userId]?.userName}
+                  </span>
+                  <p className="text-sm">{review.text}</p>
+                  {/* 其他评论数据如日期等 */}
                 </div>
-                <p className="text-gray-400">{review.text}</p>
-                {/* 其他評論數據如日期等 */}
               </div>
               <button
                 onClick={() => handleRemoveFavorite(review.id)}
-                className="text-red-500 hover:text-red-700"
+                className="px-4 py-2 bg-red-500 text-white font-medium text-xs leading-tight uppercase rounded shadow-md hover:bg-red-700 hover:shadow-lg focus:outline-none focus:ring-0 active:bg-red-800 transition duration-150 ease-in-out"
               >
                 取消收藏
               </button>
@@ -104,6 +106,7 @@ const FavoriteReviews = ({ favoriteReviewIds, currentUserId }) => {
           </li>
         ))}
       </ul>
+      {/* 可以添加一个关闭按钮或者其他元素 */}
     </div>
   );
 };

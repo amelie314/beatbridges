@@ -13,7 +13,7 @@ const config: Config = {
         'secondary-color': '#B7E21B',
         'tertiary-color':  '#49DE80',
         'show-color': '#4A13EE'
-      }
+      },
     },
   },
   plugins: [],

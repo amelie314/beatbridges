@@ -2,7 +2,7 @@
 
 // /src/pages/index.tsx
 import "../app/globals.css";
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { auth } from "../firebaseConfig";
@@ -12,6 +12,7 @@ import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
 
 // 登入函數
 const login = async (email: string, password: string) => {
+  const [showSignup, setShowSignup] = useState(false); // 新增狀態來控制SignupModal
   try {
     await signInWithEmailAndPassword(auth, email, password);
     // 登入成功後的處理...
