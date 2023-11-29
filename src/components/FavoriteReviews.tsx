@@ -3,6 +3,8 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
 
+import { useUserContext } from "../contexts/UserContext";
+
 import {
   collection,
   query,
@@ -17,32 +19,40 @@ import { Review } from "../types/types";
 const FavoriteReviews = ({ favoriteReviewIds, updatedUserData }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
   const [userDetails, setUserDetails] = useState({});
+  const [localPhotoURL, setLocalPhotoURL] = useState("");
+
+  const { userInfo } = useUserContext();
+  let usernameNew = userInfo?.username || "";
 
   useEffect(() => {
     const fetchFavoriteReviews = async () => {
-      const reviews: Review[] = [];
-      const details = {};
-      for (const reviewId of favoriteReviewIds) {
-        const reviewRef = doc(db, "reviews", reviewId);
-        const reviewSnap = await getDoc(reviewRef);
-        if (reviewSnap.exists()) {
-          const reviewData = reviewSnap.data() as any;
-          reviews.push({ id: reviewSnap.id, ...reviewData });
+      try {
+        const reviews: Review[] = [];
+        const details = {};
+        for (const reviewId of favoriteReviewIds) {
+          const reviewRef = doc(db, "reviews", reviewId);
+          const reviewSnap = await getDoc(reviewRef);
+          if (reviewSnap.exists()) {
+            const reviewData = reviewSnap.data() as any;
+            reviews.push({ id: reviewSnap.id, ...reviewData });
 
-          // 加載用戶詳細信息
-          const userRef = doc(db, "users", reviewData.userId);
-          const userSnap = await getDoc(userRef);
-          if (userSnap.exists()) {
-            details[reviewData.userId] = {
-              photoURL: userSnap.data()?.photoURL || "default-avatar.png",
-              userName: userSnap.data()?.username || "匿名用戶",
-            };
+            // 加載用戶詳細信息
+            const userRef = doc(db, "users", reviewData.userId);
+            const userSnap = await getDoc(userRef);
+            if (userSnap.exists()) {
+              details[reviewData.userId] = {
+                photoURL: userSnap.data()?.photoURL || "default-avatar.png",
+                userName: userSnap.data()?.username || "匿名用戶",
+
+              };
+            }
           }
         }
+        setFavoriteReviews(reviews);
+        setUserDetails(details);
+      } catch (error) {
+        console.error("Error fetching favorite reviews:", error);
       }
-      setFavoriteReviews(reviews);
-      setUserDetails(details);
-      fetchFavoriteReviews();
     };
 
     if (favoriteReviewIds && favoriteReviewIds.length > 0) {
@@ -90,7 +100,9 @@ const FavoriteReviews = ({ favoriteReviewIds, updatedUserData }) => {
                 />
                 <div className="flex flex-col">
                   <span className="font-bold">
-                    {userDetails[review.userId]?.userName}
+                    {usernameNew
+                      ? usernameNew
+                      : userDetails[review.userId]?.userName}
                   </span>
                   <p className="text-sm">{review.text}</p>
                   {/* 其他评论数据如日期等 */}

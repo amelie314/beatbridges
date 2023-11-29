@@ -1,5 +1,8 @@
 /** @format */
 
+// pages/profile/[username].tsx
+import { useUserContext } from "../../contexts/UserContext";
+
 import React, { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/router";
 import { useAuthState } from "react-firebase-hooks/auth";
@@ -18,8 +21,12 @@ import Modal from "../../components/Modal"; // 确保路径正确
 import FavoriteReviews from "../../components/FavoriteReviews";
 
 const UserProfile = () => {
+  const { setUserInfo } = useUserContext();
+
   const router = useRouter();
+
   const { username } = router.query;
+
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [isCurrentUser, setIsCurrentUser] = useState(false);
@@ -38,6 +45,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
+      console.log("useEffect 開始執行- fetchUserData", { username, user });
       if (username) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", username));
@@ -45,9 +53,9 @@ const UserProfile = () => {
 
         if (!querySnapshot.empty) {
           const fetchedUserData = querySnapshot.docs[0].data();
-          console.log("Fetched User Data:", fetchedUserData);
           setUserData(fetchedUserData);
           setIsCurrentUser(user && user.uid === fetchedUserData.uid);
+          console.log("Fetched User Data:", fetchedUserData);
         } else {
           console.log("No such user!");
         }
@@ -55,6 +63,7 @@ const UserProfile = () => {
     };
 
     fetchUserData();
+    console.log("useEffect 結束執行 - fetchUserData");
   }, [username, user]);
 
   useEffect(() => {
@@ -92,6 +101,7 @@ const UserProfile = () => {
   const handleUpdate = useCallback(
     async (event) => {
       event.preventDefault();
+
       if (!user) {
         alert("用户未登录，无法更新个人资料。");
         return;
@@ -130,6 +140,10 @@ const UserProfile = () => {
 
         // 关闭 Modal 并重定向（如果需要）
         setShowModal(false);
+
+        // context
+        setUserInfo({ user, username: editableUsername });
+
         if (editableUsername !== username) {
           router.push(`/profile/${editableUsername}`);
         }

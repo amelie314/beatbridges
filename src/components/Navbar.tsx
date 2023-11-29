@@ -1,10 +1,15 @@
 /** @format */
 
 // /src/components/Navbar.tsx
+import { useUserContext } from "../contexts/UserContext";
+
 import Link from "next/link";
-import { auth, db } from "../firebaseConfig";
+
 import React, { useState, useEffect } from "react";
+
+import { auth, db } from "../firebaseConfig";
 import { User } from "firebase/auth";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useRouter } from "next/router"; // 導入 useRouter
 import {
@@ -19,9 +24,21 @@ import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 
 const Navbar = ({ currentUser }: { currentUser: User | null }) => {
-  const [username, setUsername] = useState("");
+  // const Navbar = () => {
+
+  const { userInfo } = useUserContext();
+  const { resetUserInfo } = useUserContext();
+  let usernameNew = userInfo?.username || "";
+
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+
+  const router = useRouter(); // 使用 useRouter 鉤子
+
+  const [username, setUsername] = useState("");
+
+  // let usernameNew = userInfo?.username;
+  // setUserName(usernameNew );
 
   useEffect(() => {
     if (currentUser) {
@@ -38,10 +55,10 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
     }
   }, [currentUser, currentUser?.uid]); // 添加 currentUser?.uid 作为依赖
 
-  const router = useRouter(); // 使用 useRouter 鉤子
   const handleLogout = async () => {
     try {
       await auth.signOut();
+      resetUserInfo(); // 登出時重置 userInfo
       router.push("/"); // 使用 router.push 來跳轉路由
     } catch (error) {
       console.error("Logout failed:", error);
@@ -57,13 +74,14 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
       </Link>
       <div>
         {currentUser ? (
+          // {/* {userInfo?.user ? ( */}
           <div className="flex items-center space-x-3">
             <Link href="/concert">
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
               </div>
             </Link>
-            <Link href={`/profile/${username}`}>
+            <Link href={`/profile/${usernameNew ? usernameNew : username}`}>
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faUser} />
               </div>
