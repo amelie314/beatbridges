@@ -118,14 +118,6 @@ const SignupModal: React.FC<SignupModalProps> = ({ show, onClose }) => {
             placeholder="Username"
             required
           />
-          <input
-            className="p-2 rounded-md text-primary-color"
-            type="text"
-            value={displayName}
-            onChange={(e) => setDisplayName(e.target.value)}
-            placeholder="Display Name"
-            required
-          />
           <button
             className="p-2 bg-tertiary-color font-bold text-white rounded-md hover:bg-green-500 transition duration-300"
             type="submit"

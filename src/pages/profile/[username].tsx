@@ -11,6 +11,7 @@ import {
   collection,
   where,
   getDocs,
+  getDoc,
   doc,
   updateDoc,
 } from "firebase/firestore";
@@ -35,6 +36,8 @@ const UserProfile = () => {
   const [bio, setBio] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [updatedUserData, setUpdatedUserData] = useState(null);
+  const [userReviews, setUserReviews] = useState([]); // 用於存儲用戶評論的狀態
+  const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
 
   const [profilePicUrl, setProfilePicUrl] = useState(
     user?.photoURL || "default-profile.png"
@@ -152,9 +155,41 @@ const UserProfile = () => {
     [user, displayName, editableUsername, bio, username, router]
   );
 
-  const handleDisplayNameChange = (e) => {
-    setDisplayName(e.target.value);
-  };
+  // 加載用戶的評論和相關場地資訊
+  useEffect(() => {
+    const fetchUserReviewsAndVenues = async () => {
+      if (!userData) return;
+
+      const reviewsRef = collection(db, "reviews");
+      const q = query(reviewsRef, where("userId", "==", userData.uid));
+      const querySnapshot = await getDocs(q);
+
+      const venuesData = {}; // 暫存場地資訊
+      const reviewsData = await Promise.all(
+        querySnapshot.docs.map(async (reviewDoc) => {
+          const reviewData = reviewDoc.data();
+          const venueRef = doc(db, "venues", reviewData.venueId); // 這裡使用不同的名稱來避免衝突
+          const venueSnap = await getDoc(venueRef);
+
+          // 如果場地資訊還未加載，則加載並保存到 venuesData
+          if (!venuesData[reviewData.venueId] && venueSnap.exists()) {
+            venuesData[reviewData.venueId] = venueSnap.data().Name; // 假設場地集合中有 "Name" 欄位
+          }
+
+          return {
+            id: reviewDoc.id,
+            ...reviewData,
+            venueName: venuesData[reviewData.venueId],
+          };
+        })
+      );
+
+      setUserReviews(reviewsData); // 設置評論
+      setVenues(venuesData); // 設置場地資訊
+    };
+
+    fetchUserReviewsAndVenues();
+  }, [userData]);
 
   const handleImageUpload = async () => {
     if (!selectedFile) {
@@ -183,8 +218,8 @@ const UserProfile = () => {
     } catch (error) {
       console.error("Error uploading profile picture:", error);
     }
-
-    setSelectedFile(null); // 清除已選擇的檔案
+    // 不論成功與否，上傳後都重置 selectedFile 狀態
+    setSelectedFile(null);
   };
 
   // 取消收藏的處理函數
@@ -238,7 +273,7 @@ const UserProfile = () => {
             </dt>
             <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
               <img
-                src={user?.photoURL ? user.photoURL : profilePicUrl}
+                src={userData.photoURL || "default-profile.png"}
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover"
               />
@@ -258,23 +293,41 @@ const UserProfile = () => {
   );
 
   return (
-    <div>
+    <div className="bg-primary-color pb-4">
       {/* 用戶資料展示 */}
-      {/* ... */}
       {userProfileInfo}
-
       {/* 編輯個人資料按鈕 */}
-
       {isCurrentUser && (
-        <div className="flex justify-center items-center">
+        <div className="flex justify-center items-center mt-4">
+          {" "}
+          {/* 在此增加間隔 */}
           <button
-            className="px-4 py-2 bg-indigo-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-indigo-400 focus:outline-none focus:ring-2 focus:ring-indigo-300"
+            className="px-4 py-2 bg-secondary-color text-white text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-show-color"
             onClick={() => setShowModal(true)}
           >
             Edit Profile
           </button>
         </div>
       )}
+
+      {/* 用戶的評論和場地資訊 */}
+      {!isCurrentUser && userReviews.length > 0 && (
+        <div className="mt-4">
+          <h3 className="text-lg leading-6 font-medium text-gray-900">
+            User Reviews
+          </h3>
+          <ul>
+            {userReviews.map((review) => (
+              <li key={review.id} className="mt-2">
+                <p>{review.text}</p>
+                <p>{review.venueName}</p>
+                <p>{review.performanceName}</p>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
       <div className="mt-8 bg-primary-color">
         {isCurrentUser && (
           <>
@@ -282,7 +335,8 @@ const UserProfile = () => {
             <FavoriteReviews
               favoriteReviewIds={favorites}
               currentUserId={user?.uid}
-              updatedUserData={updatedUserData} // 將更新後的用户數據傳遞給子组件
+              updatedUserData={updatedUserData}
+              venuesData={venues} // 確保這裡的名稱和子組件中接收的名稱一致
             />
           </>
         )}
@@ -291,10 +345,7 @@ const UserProfile = () => {
       {/* 編輯用户資料的Modal */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
-          {/* 模态框内容 */}
           <form onSubmit={handleUpdate}>
-            {/* 显示名称输入 */}
-            {/* ... */}
             {/* 用户名输入 */}
             <div className="mb-4">
               <label
@@ -312,6 +363,52 @@ const UserProfile = () => {
                 onChange={(e) => setEditableUsername(e.target.value)}
               />
             </div>
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="displayName"
+              >
+                Display Name
+              </label>
+              <input
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+                id="displayName"
+                type="text"
+                placeholder="Display Name"
+                value={displayName}
+                onChange={(e) => setDisplayName(e.target.value)}
+              />
+            </div>
+            {/* 頭貼上傳 */}
+            <div className="mb-4">
+              <label
+                className="block text-gray-700 text-sm font-bold mb-2"
+                htmlFor="profilePicture"
+              >
+                Profile Picture
+              </label>
+              <input
+                type="file"
+                id="profilePicture"
+                accept="image/*"
+                onChange={(e) => {
+                  // 如果選擇了檔案，則設置 selectedFile 狀態；否則設置為 null
+                  if (e.target.files && e.target.files.length > 0) {
+                    setSelectedFile(e.target.files[0]);
+                  }
+                }}
+                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+              />
+              {selectedFile && (
+                <button
+                  type="button"
+                  onClick={handleImageUpload}
+                  className="mt-2 inline-flex items-center px-4 py-2 bg-secondary-color text-white text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
+                >
+                  Upload Image
+                </button>
+              )}
+            </div>
             {/* 個人簡介輸入 */}
             <div className="mb-4">
               <label
@@ -328,37 +425,6 @@ const UserProfile = () => {
                 onChange={(e) => setBio(e.target.value)}
               />
             </div>
-            {/* 頭貼上傳 */}
-            <div className="mb-4">
-              <label
-                className="block text-gray-700 text-sm font-bold mb-2"
-                htmlFor="profilePicture"
-              >
-                Profile Picture
-              </label>
-              <input
-                type="file"
-                id="profilePicture"
-                accept="image/*"
-                onChange={(e) => {
-                  if (e.target.files && e.target.files.length > 0) {
-                    setSelectedFile(e.target.files[0]);
-                  }
-                }}
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-              />
-              {selectedFile && (
-                <button
-                  type="button"
-                  onClick={handleImageUpload}
-                  className="mt-2 inline-flex items-center px-4 py-2 bg-blue-500 text-white text-base font-medium rounded-md shadow-sm hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  Upload Image
-                </button>
-              )}
-            </div>
-            {/* 頭貼上傳 */}
-            {/* ... */}
             <div className="flex items-center justify-between">
               <button
                 className="absolute top-0 right-0 text-primary-color p-2"
@@ -368,7 +434,7 @@ const UserProfile = () => {
               </button>
             </div>
             <button
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+              className="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
             >
               Save Changes

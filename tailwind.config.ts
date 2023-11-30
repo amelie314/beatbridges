@@ -11,8 +11,9 @@ const config: Config = {
       colors: {
         'primary-color': '#131313',
         'secondary-color': '#B7E21B',
-        'tertiary-color':  '#49DE80',
-        'show-color': '#4A13EE'
+        'tertiary-color': '#49DE80',
+        'show-color': '#4A13EE',
+        'light-gray': '#F5F5F5', // 新增淺灰色
       },
     },
   },
