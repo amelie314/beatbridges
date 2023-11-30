@@ -21,16 +21,14 @@ import Modal from "../../components/Modal"; // 确保路径正确
 import FavoriteReviews from "../../components/FavoriteReviews";
 
 const UserProfile = () => {
-  const { setUserInfo } = useUserContext();
-
   const router = useRouter();
-
   const { username } = router.query;
-
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
-  const [isCurrentUser, setIsCurrentUser] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const { currentUser, setCurrentUser, userInfo, setUserInfo } =
+    useUserContext();
+  const [isCurrentUser, setIsCurrentUser] = useState(false); // 添加這行來定義 isCurrentUser
 
   const [displayName, setDisplayName] = useState("");
   const [editableUsername, setEditableUsername] = useState("");
@@ -120,7 +118,6 @@ const UserProfile = () => {
       try {
         // 更新 Firebase Authentication 中的 displayName
         await updateProfile(user, { displayName });
-
         // 更新 Firestore 中的用戶資料
         const userDocRef = doc(db, "users", user.uid);
         await updateDoc(userDocRef, {
