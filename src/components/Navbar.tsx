@@ -1,17 +1,11 @@
 /** @format */
 
 // /src/components/Navbar.tsx
+import React, { useState } from "react";
 import { useUserContext } from "../contexts/UserContext";
-
 import Link from "next/link";
-
-import React, { useState, useEffect } from "react";
-
-import { auth, db } from "../firebaseConfig";
-import { User } from "firebase/auth";
-
+import { useRouter } from "next/router";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useRouter } from "next/router"; // 導入 useRouter
 import {
   faHouse,
   faDoorOpen,
@@ -19,46 +13,19 @@ import {
   faUserPlus,
   faUser,
 } from "@fortawesome/free-solid-svg-icons";
-import { doc, getDoc } from "firebase/firestore";
+import { auth } from "../firebaseConfig"; // 確保導入了 auth
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 
-const Navbar = ({ currentUser }: { currentUser: User | null }) => {
-  // const Navbar = () => {
-
-  const { userInfo } = useUserContext();
-  const { resetUserInfo } = useUserContext();
-  let usernameNew = userInfo?.username || "";
-
+const Navbar = () => {
+  const { currentUser, userInfo } = useUserContext();
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
-
-  const router = useRouter(); // 使用 useRouter 鉤子
-
-  const [username, setUsername] = useState("");
-
-  // let usernameNew = userInfo?.username;
-  // setUserName(usernameNew );
-
-  useEffect(() => {
-    if (currentUser) {
-      const fetchUsername = async () => {
-        const userDocRef = doc(db, "users", currentUser.uid);
-        const userDoc = await getDoc(userDocRef);
-        if (userDoc.exists()) {
-          setUsername(userDoc.data().username);
-        }
-      };
-      fetchUsername();
-    } else {
-      setUsername(""); // 当没有用户登录时重置用户名
-    }
-  }, [currentUser, currentUser?.uid]); // 添加 currentUser?.uid 作为依赖
+  const router = useRouter();
 
   const handleLogout = async () => {
     try {
       await auth.signOut();
-      resetUserInfo(); // 登出時重置 userInfo
       router.push("/"); // 使用 router.push 來跳轉路由
     } catch (error) {
       console.error("Logout failed:", error);
@@ -74,14 +41,13 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
       </Link>
       <div>
         {currentUser ? (
-          // {/* {userInfo?.user ? ( */}
           <div className="flex items-center space-x-3">
             <Link href="/concert">
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
               </div>
             </Link>
-            <Link href={`/profile/${usernameNew ? usernameNew : username}`}>
+            <Link href={`/profile/${userInfo?.username || ""}`}>
               <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faUser} />
               </div>
@@ -100,7 +66,6 @@ const Navbar = ({ currentUser }: { currentUser: User | null }) => {
                 <FontAwesomeIcon icon={faMapLocationDot} />
               </div>
             </Link>
-
             <button
               onClick={() => setShowLoginModal(true)}
               className="hover:bg-show-color px-3 py-1 rounded font-bold"
