@@ -20,6 +20,8 @@ import { updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Modal from "../../components/Modal"; // 确保路径正确
 import FavoriteReviews from "../../components/FavoriteReviews";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
 
 const UserProfile = () => {
   const router = useRouter();
@@ -242,28 +244,28 @@ const UserProfile = () => {
   };
 
   const userProfileInfo = userData ? (
-    <div className="mx-auto mt-8 p-5 border w-96 shadow-lg rounded-md bg-white">
+    <div className="relative mx-auto mt-12 p-5 w-80 shadow-lg rounded-md  bg-[#F6F1E6]">
       <div className="px-4 py-5 sm:px-6">
-        <h3 className="text-lg leading-6 font-medium text-gray-900">
+        <h3 className="text-lg leading-6 font-medium text-gray-500">
           User Profile
         </h3>
         <p className="mt-1 max-w-2xl text-sm text-gray-500">
           Personal details and application.
         </p>
       </div>
-      <div className="border-t border-gray-200">
+      <div className="border-t border-gray-200 border rounded-md">
         <dl>
           {/* Username  */}
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 rounded-t-md">
             <dt className="text-sm font-medium text-gray-500">Username</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <dd className="mt-1 text-sm text-gray-800 sm:col-span-2 sm:mt-0">
               {userData.username || "No username"}
             </dd>
           </div>
           {/* Full name 栏目 */}
           <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
             <dt className="text-sm font-medium text-gray-500">Full name</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <dd className="mt-1 text-sm text-gray-800 sm:col-span-2 sm:mt-0">
               {userData.displayName}
             </dd>
           </div>
@@ -271,7 +273,7 @@ const UserProfile = () => {
             <dt className="text-sm font-medium text-gray-500">
               Profile picture
             </dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <dd className="mt-1 text-sm text-gray-800 sm:col-span-2 sm:mt-0">
               <img
                 src={userData.photoURL || "default-profile.png"}
                 alt="Profile"
@@ -279,14 +281,25 @@ const UserProfile = () => {
               />
             </dd>
           </div>
-          <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+          <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6 rounded-b-md">
             <dt className="text-sm font-medium text-gray-500">Bio</dt>
-            <dd className="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+            <dd className="mt-1 text-sm text-gray-800 sm:col-span-2 sm:mt-0">
               {userData.bio || "No bio available"}
             </dd>
           </div>
         </dl>
       </div>
+      {/* 編輯個人資料按鈕 */}
+      {isCurrentUser && (
+        <div className="absolute top-0 right-0 mt-2 mr-2">
+          <button
+            className="px-3 py-2 bg-purple-color text-white text-base font-medium rounded-md shadow-sm"
+            onClick={() => setShowModal(true)}
+          >
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </button>
+        </div>
+      )}
     </div>
   ) : (
     <div>Loading...</div>
@@ -297,18 +310,6 @@ const UserProfile = () => {
       {/* 用戶資料展示 */}
       {userProfileInfo}
       {/* 編輯個人資料按鈕 */}
-      {isCurrentUser && (
-        <div className="flex justify-center items-center mt-4">
-          {" "}
-          {/* 在此增加間隔 */}
-          <button
-            className="px-4 py-2 bg-secondary-color text-white text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-show-color"
-            onClick={() => setShowModal(true)}
-          >
-            Edit Profile
-          </button>
-        </div>
-      )}
 
       {/* 用戶的評論和場地資訊 */}
       {!isCurrentUser && userReviews.length > 0 && (
