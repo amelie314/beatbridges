@@ -244,7 +244,8 @@ const UserProfile = () => {
   };
 
   const userProfileInfo = userData ? (
-    <div className="relative mx-auto mt-12 p-5 w-80 shadow-lg rounded-md  bg-[#F6F1E6]">
+    // <div className="relative mx-auto mt-12 p-5 w-80 shadow-lg rounded-md  bg-[#F6F1E6]">
+    <div className="relative mx-auto mt-12 p-5 w-4/5 sm:w-96 lg:w-80 shadow-lg rounded-md bg-[#F6F1E6]">
       <div className="px-4 py-5 sm:px-6">
         <h3 className="text-lg leading-6 font-medium text-gray-500">
           User Profile
@@ -306,46 +307,64 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="bg-primary-color pb-4">
-      {/* 用戶資料展示 */}
-      {userProfileInfo}
-      {/* 編輯個人資料按鈕 */}
+    <div className="w-4/5  mx-auto">
+      <div className="grid grid-cols-1 lg:grid-cols-5">
+        {/* UserProfile 組件容器 */}
+        <div className="lg:col-span-2">{userProfileInfo}</div>
+        {/* User Reviews */}
+        {!isCurrentUser && userReviews.length > 0 && (
+          <div className="lg:col-span-3">
+            <div className="w-4/5 mx-auto">
+              <h2 className="text-xl font-bold text-gray-300 mb-4 text-center mt-12">
+                Echoes from the Past &nbsp; 🔊
+              </h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
+                {userReviews.map((review) => (
+                  <div
+                    key={review.id}
+                    className="border border-gray-500 rounded-lg shadow-lg overflow-hidden flex flex-col justify-between p-4"
+                  >
+                    <div className="min-w-0 ml-1">
+                      <p className="text-xs mb-1 text-gray-500 truncate">
+                        {review.date
+                          ? new Date(review.date).toLocaleDateString("zh-TW")
+                          : "未知日期"}
+                      </p>
+                      <p className="text-sm text-secondary-color text-bold truncate">
+                        {review.venueName}
+                      </p>
+                      <p className="text-sm text-gray-300 mt-1 truncate">
+                        {review.performanceName}
+                      </p>
+                      <p className="text-sm text-gray-500 truncate">
+                        {review.text}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
 
-      {/* 用戶的評論和場地資訊 */}
-      {!isCurrentUser && userReviews.length > 0 && (
-        <div className="mt-4">
-          <h3 className="text-lg leading-6 font-medium text-gray-900">
-            User Reviews
-          </h3>
-          <ul>
-            {userReviews.map((review) => (
-              <li key={review.id} className="mt-2">
-                <p>{review.text}</p>
-                <p>{review.venueName}</p>
-                <p>{review.performanceName}</p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-
-      <div className="mt-8 bg-primary-color">
+        {/* FavoriteReviews 組件容器 */}
         {isCurrentUser && (
-          <>
-            {/* 其他組件 */}
+          <div className="lg:col-span-3">
+            {/* 收藏的評論列表 */}
             <FavoriteReviews
               favoriteReviewIds={favorites}
               currentUserId={user?.uid}
               updatedUserData={updatedUserData}
-              venuesData={venues} // 確保這裡的名稱和子組件中接收的名稱一致
+              venuesData={venues}
             />
-          </>
+          </div>
         )}
       </div>
 
-      {/* 編輯用户資料的Modal */}
+      {/* 編輯用戶資料的 Modal */}
       {showModal && (
         <Modal onClose={() => setShowModal(false)}>
+          {/* Modal 中的表單內容 */}
           <form onSubmit={handleUpdate}>
             {/* 用户名输入 */}
             <div className="mb-4">
