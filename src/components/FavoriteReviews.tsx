@@ -15,7 +15,7 @@ import {
 import { Review } from "../types/types";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faFolder } from "@fortawesome/free-solid-svg-icons";
+import { faFolder, faBookmark } from "@fortawesome/free-solid-svg-icons";
 
 const FavoriteReviews = ({ favoriteReviewIds, venuesData }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
@@ -77,60 +77,57 @@ const FavoriteReviews = ({ favoriteReviewIds, venuesData }) => {
   };
 
   return (
-    <div className="p-5 w-full max-w-4xl mx-auto">
-      <h2 className="text-xl font-bold text-white mb-4 text-center">
-        我收藏的評論
+    <div className="w-4/5 mx-auto">
+      <h2 className="text-xl font-bold mb-4 text-center mt-12 text-gray-300">
+        Check out my faves! 🌟
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-2 gap-4">
         {favoriteReviews.map((review) => (
           <div
             key={review.id}
-            className="bg-primary-color  rounded-lg shadow-lg flex flex-col justify-between p-4 h-full "
+            // className="border border-gray-500 rounded-lg shadow-lg overflow-hidden flex flex-col justify-between p-4"
+            className="favorite-review-card border-gray-500 rounded-lg overflow-hidden flex flex-col justify-between p-4"
+            onMouseEnter={(e) =>
+              e.currentTarget.classList.add("favorite-review-card-slide-in")
+            }
           >
             <div>
-              {/* 使用 Link 包裹用戶名和大頭貼 */}
-              <Link
-                href={`/profile/${userDetails[review.userId]?.userName}`}
-                passHref
-              >
-                <div className="flex items-center space-x-3">
-                  {/* 顯示場地名稱 */}
+              <Link href={`/profile/${userDetails[review.userId]?.userName}`}>
+                <div className="flex items-center space-x-7">
                   <img
                     src={userDetails[review.userId]?.photoURL}
                     alt={userDetails[review.userId]?.userName}
                     className="w-16 h-16 rounded-full object-cover"
                   />
-                  <div>
-                    <h4 className="text-white text-lg font-semibold">
+                  <div className="min-w-0">
+                    <h4 className="text-lg font-semibold text-secondary-color truncate mb-2">
                       {userDetails[review.userId]?.userName}
                     </h4>
-                    <p className="text-xs text-white mt-1">
+                    <p className="text-xs text-gray-500 truncate">
                       {review.date
                         ? new Date(review.date).toLocaleDateString("zh-TW")
                         : "未知日期"}
                     </p>
-                    <span>{venuesData[review.venueId]}</span>
+                    <p className="text-sm text-gray-300 truncate">
+                      {venuesData[review.venueId]}
+                    </p>
                     {review.performanceName && (
-                      <p className="text-sm text-white mt-1 truncate">
+                      <p className="text-sm text-gray-500 mt-1 truncate">
                         {review.performanceName}
                       </p>
                     )}
-
-                    <p className="text-sm">{review.text}</p>
-                    {/* 其他评论数据如日期等 */}
+                    <p className="text-sm text-gray-500 truncate">
+                      {review.text}
+                    </p>
                   </div>
                 </div>
               </Link>
             </div>
-            {/* 按钮放在这里，确保它总是在底部 */}
             <button
               onClick={() => handleRemoveFavorite(review.id)}
-              className="mt-4 text-sm py-2 px-4 rounded transition duration-300 self-end"
+              className="text-sm px-2 rounded transition duration-300 self-end bg-rebeccapurple text-purple-color"
             >
-              <FontAwesomeIcon
-                icon={faFolder}
-                className="text-xs hover:text-red-700 text-[#FF2F40]"
-              />
+              <FontAwesomeIcon icon={faFolder} className="text-xs" />
             </button>
           </div>
         ))}
