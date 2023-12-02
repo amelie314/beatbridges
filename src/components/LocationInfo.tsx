@@ -106,8 +106,8 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
   };
 
   return (
-    <div>
-      <div>目前選擇的縣市為: {activeCounty}</div>
+    <div className="mb-4">
+      <div>目前選擇的縣市為： {activeCounty}</div>
       <div className="mt-4">
         <label
           htmlFor="district-select"
@@ -159,11 +159,11 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
       {selectedVenue && (
         <div className="mt-4">
           <button
-            className="text-[#FDE8E9] bg-gray-800 hover:bg-gray-700 font-bold py-2 px-4 rounded"
+            className="text-white border border-[#353535] hover:text-white hover:bg-[#353535] font-bold py-2 px-4 rounded-lg"
             onClick={handleSearch}
           >
-            🔍️ &nbsp; 搜尋{" "}
-            {venues.find((venue) => venue.id === selectedVenue)?.Name} 的資訊
+            🔍️ &nbsp;
+            {venues.find((venue) => venue.id === selectedVenue)?.Name}
           </button>
         </div>
       )}

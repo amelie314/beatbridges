@@ -288,14 +288,14 @@ function ConcertPage({ venues }) {
   return (
     <div className="min-h-screen flex bg-primary-color">
       {/* Flex container */}
-      <div className="flex w-full max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto">
         {/* Left side: Map component */}
-        <div className="w-full md:w-1/2 p-6">
+        <div className="w-full md:w-1/2 p-10">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
         </div>
 
         {/* Right side: Selection and ReviewForm */}
-        <div className="w-full md:w-1/2 p-6 flex flex-col">
+        <div className="w-full  md:w-1/3 p-10 flex flex-col">
           {/* Selection menus */}
           <div className="flex flex-col space-y-4">
             {/* 展演空間選擇菜單的組件 */}

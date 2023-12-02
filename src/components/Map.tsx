@@ -52,7 +52,7 @@ const Map = (props) => {
             c-0.8,1.9,0.2,10.1,1.2,13.9c1,3.7-0.4,6.8,2.7,10.1c3.1,3.3-4.1,2.9-4.2,4.3c-0.1,1.5-0.7,7.2,1.1,8.1c1.9,0.8,6.2-0.4,4.1,4.8
             c-2.1,5.2,2.1,4.1,1.5,7C209.2,474.8,213.3,472.3,214.8,473.1z M141.3,456c-2.8,6.5-0.9,8.4,3.4,10.3c4.4,1.9,9-7.4,9-11.8
             C153.7,444.3,144.1,449.5,141.3,456z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "屏東縣" ? "is-active" : ""
             }`}
             onClick={() => {
@@ -71,7 +71,7 @@ const Map = (props) => {
                 c1.3,0.2,2.5,0.8,3.3,1.2c-3.1,1.7-1.6,8.3-3.3,9.6c-1.9,1.5-8.2,10.8-10.7,13.9c-2.5,3.1-8.7,8.3-11.8,9.5
                 c-3.1,1.2-2.3,4.1-2.1,6.6c0.2,2.5-2.1,3.9-4.3,4.1c-2.3,0.2-2.9,1-4.6,3.3c-1.7,2.3-4.6,1.7-7,0c-2.5-1.7-6.8-0.8-8.7-1
                 c-1.9-0.2-6.4-1.9-7.9-2.9C127.1,376,124.5,374.1,122.6,372z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺南市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("臺南市")}
@@ -90,7 +90,7 @@ const Map = (props) => {
                 c0.9-2.9,3.4-4.1,6.1-5c2.7-0.8,4.1-1,2.3-4.4c-1.9-3.3-1.4-3.5,0.8-5.8c2.3-2.3,4.5-3.7,6.4-3.7c1.9,0,6.6-1.2,7.3-3.3
                 c0.6-2.1,0.2-2.5,4.3-2.9c4.1-0.4,6.2-4.6,6.6-6c0.4-1.4,2.5-1.9,5-1.9c2.5,0,3.5-3.1,2.1-5c-1.5-1.9-1-3.9,3.7-3.3
                 C352.7,80.4,352.5,76.7,356.3,77.1z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "宜蘭縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("宜蘭縣")}
@@ -110,7 +110,7 @@ const Map = (props) => {
                 c-5.4-0.4-6.6-3.7-9.5-2.9c-1.4,0.4-2.9,1.1-4,1.8c0.2,1.1,0.3,2.1,0.5,3.1c1.2,9.3,3.7,14-0.6,18c-2.2,2.1-2.5,3.2-2.1,4.1
                 c2.3,0,5.6,0.6,7.3,1.6C125.9,320.9,127,323.6,129.3,323.2z M158.8,291.3c3.8-0.4,4.6,0.4,7.1,1.8c2.5,1.3,6.6,4.9,5.2,5.9
                 c-1.4,1-2.7,0.6-4.8,1.7c-2.1,1-5.4,4.4-5.9,2.8c-0.5-1.6-1.6-4-3-4.3c-1.4-0.2-5.6,0.2-5.6-4.3C151.8,293.1,155,291.7,158.8,291.3z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "嘉義縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("嘉義縣")}
@@ -134,7 +134,7 @@ const Map = (props) => {
                 C292.9,303.5,292.3,302.3,296.6,302.5z M302.5,407c1.4,2.9,2.5,4.3,2.5,9.9c0,5.6,16.8,12.7,17.7,10.6c0.9-2.2-2.8-12.7-2.8-22.4
                 C318.9,402,301,404,302.5,407z M288.5,487.1c-0.9,3.4,3.7,6.8,6.5,9c2.8,2.2,3.7-0.9,7.4,1.2c3.6,2.2,8.2,6.5,10.2,4.3
                 c2-2.2,1.4-9-1.4-9.3c-2.8-0.3-8.7-2.2-5.9-3.4c2.8-1.2,2.5-9.9,0-11.3c-2.5-1.3-15-0.7-19,0C281.6,478.6,289.5,483.7,288.5,487.1z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺東縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("臺東縣")}
@@ -148,7 +148,7 @@ const Map = (props) => {
                 c-3.1-0.6-6.2,0.9-8.1,4.8c-1.9,3.8-5.6,9.8-11.5,8.6c-5.9-1.2-2.2-8.1,0-8.6C31.9,291.2,32.8,287.7,30.7,283.9z M28.7,272.4
                 c-0.1-3.7-7.4-6.8-6.5-1.8c0.9,5-1.2,4.9-4.7,9.9c-3.4,5,2.2,9.1,6.2,7.4C27.6,286.4,28.8,276.2,28.7,272.4z M30,270.6
                 c0.9,2.5,9,6.9,10.6,5.3c1.6-1.6,4-6.2,0-9.8C36.6,262.5,27.6,264,30,270.6z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "澎湖縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("澎湖縣")}
@@ -161,7 +161,7 @@ const Map = (props) => {
                 c0,3.1,6,3.2,1.9,7.8c-4.1,4.7-4.1,10.6,1.6,12.1c5.8,1.6,6.1-10.6,18.5-10c4,0,5.4,3.8,9.7,3.8c4.3,0,9-5.1,6.5-8.6
                 c-2.5-3.5-0.9-9.4-3.1-12.2c-2.2-2.8-5.6-4.7-9.3-3c-3.7,1.7-0.9,6.4-5.9,7.6c-5,1.2-5.8,3.7-11,0.9
                 C24.4,172.4,20.7,171.3,20.7,176.7z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "金門縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("金門縣")}
@@ -176,7 +176,7 @@ const Map = (props) => {
                 c4.5,1.2,4.4-3.9,4.4-3.9c-0.4-2.3,1.8-5.1,1.8-5.1c0.9-2.5,4.4-3.1,4.4-3.1c3.5,1.4,4.9-1.1,4.9-1.1c1.3-1.7,5.7-1.1,5.7-1.1
                 c1.3,0.4,2.6-0.3,2.6-0.3c0.9-0.1,1.1-5.5,1.1-5.5c-0.3-3.9-6.2-2.5-6.2-2.5c-2.2-0.7-4.2-3-4.2-3c-3.4-3-3.5-0.4-5.4,0
                 C50.1,66.8,41.6,74,41.6,74c-2.3,2.3,0,4.7,0,4.7C44.6,80.2,40.6,85.9,40.6,85.9z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "連江縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("連江縣")}
@@ -188,7 +188,7 @@ const Map = (props) => {
             d="M317.1,71.5c1.2,4.1-2.5,2.9-4.1,3.9c-1.7,1,2.3,5.2,0,5.8c-7.7,0.4-8.1-3.1-11-5c-2.9-1.9-4.3-3.9-4.3-7
                     c0-3-1.4-5.5-5.6-8.4c-4.1-2.9-2.9-5.2-0.8-5.6c2.1-0.4,15-8.2,16.4-8.7c1.4-0.5,2.7,1.9,1.9,3.7c-0.8,1.9,0.2,3.9,1,7.7
                     c0.8,3.7,4.4,2.9,4.3,4.1C314.8,63.4,315.9,67.4,317.1,71.5z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺北市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("臺北市")}
@@ -199,7 +199,7 @@ const Map = (props) => {
             data-name="嘉義市"
             d="M151.8,294.8c0-1.7,3.2-3.1,7-3.5c3.8-0.4,4.6,0.4,7.1,1.8c2.5,1.3,6.6,4.9,5.2,5.9c-1.4,1-2.7,0.6-4.8,1.7
                     c-2.1,1-5.4,4.4-5.9,2.8c-0.5-1.6-1.6-4-3-4.3C156,298.9,151.8,299.4,151.8,294.8z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "嘉義市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("嘉義市")}
@@ -219,7 +219,7 @@ const Map = (props) => {
                  c-1.5-1.5-1,0.8-3.7,1.3c-2.7,0.4-7.9,0.6-9.7,0c-1.9-0.6-1.9,2.9-2.5,3.7c-0.6,0.8-3.7,10.1-7,12.4c-3.3,2.3-7.5,0.6-11.4,0
                  c-3.5-0.5-4.2-0.6-5.8-1.6l0,0c-0.2-0.1-0.4-0.3-0.7-0.4c-2.1-1.5-2.7-2.1-2.5-4.3c0.2-2.3-1.7-5.6-3.9-6.4
                  c-2.3-0.8-9.5-2.7-9.7-6.6C171.9,197.2,172.1,195.2,168.4,194.1z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺中市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("臺中市")}
@@ -235,7 +235,7 @@ const Map = (props) => {
                  c-0.6-0.6-0.8-1.3-0.8-1.9c-2.3-0.5-4.9-1-6.3-1c-2.5,0-7-0.6-8.5-2.1c-1.5-1.5-7.7-1.9-11.2-1.9s-4.8-3.7-7.5-3.1
                  c-2.7,0.6-12.4,0.8-16.2,1c-2.5,0.1-4.6-0.3-6.5-0.6c-5.7,6-7.7,10.5-7.7,15.8c-8.9,8.6-7.1,19.9-5.7,28.9c1.1-0.6,2.5-1.4,4-1.8
                  C125.3,290,126.6,293.3,131.9,293.8z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "雲林縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("雲林縣")}
@@ -257,7 +257,7 @@ const Map = (props) => {
                  c-1.9,0.8-4.3,1.6-4.3-2.1c0-3.7-5.2-5.1-7.7-3.3c-2.5,1.9-6.2,3.1-6.6,1.2c-0.4-1.9-2.7-2.3-5-0.4c-2.3,1.9-5.4,7-7.5,6.6
                  c-2.1-0.4-9.5-0.8-10.6-1.5c-1-0.6-2.3,3.5-2.7,5.2c-0.4,1.7-0.2,11.4-1.2,15.1c-1,3.7-2.3,9.5-1.7,16.2
                  C161.6,431.5,160.1,437.9,157.9,441.7z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "高雄市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("高雄市")}
@@ -277,7 +277,7 @@ const Map = (props) => {
                     C364.4,75.6,366.6,72.6,361.5,72.3z M313,75.4c-1.7,1,2.3,5.2,0,5.8c-7.7,0.4-8.1-3.1-11-5c-2.9-1.9-4.3-3.9-4.3-7
                     c0-3-1.4-5.5-5.6-8.4c-4.1-2.9-2.9-5.2-0.8-5.6c2.1-0.4,15-8.2,16.4-8.7c1.4-0.5,2.7,1.9,1.9,3.7c-0.8,1.9,0.2,3.9,1,7.7
                     c0.8,3.7,4.4,2.9,4.3,4.1c0,1.2,1.1,5.2,2.3,9.3C318.4,75.7,314.6,74.4,313,75.4z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新北市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("新北市")}
@@ -289,7 +289,7 @@ const Map = (props) => {
             d="M215.3,113.5c0.3-0.3,0.6-0.5,0.9-0.8c3.7-3.7,4-8.4,4-14c0-0.2,0-0.3,0-0.5c5.4,0.5,14.6,4.1,17.2,5.3
                     c2.9,1.5,6.2,6.4,2.9,6.8c-3.3,0.4-5.6-0.6-7.7,2.3c-2.1,2.9-3.9,6-3.9,7c0,0.4-0.2,1.4-0.5,2.5c-2.4-2.1-4.8-4.4-5.7-5.6
                     C221.1,114.9,218.8,114.4,215.3,113.5z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新竹市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("新竹市")}
@@ -305,7 +305,7 @@ const Map = (props) => {
                    c3.1,0.8,5,1,4.6,3.3c-0.4,2.3,1,6,5.6,6.8c4.6,0.8,6.6,1.7,8.1,4.4c1.4,2.7,2.5,2.7,5,2.5c2.5-0.2,1.2,6,0,9.1
                    c-1.2,3.1-4.1,6.8-1.7,8.1c2.5,1.2,6.4,1.9,7.7,3.5c1.2,1.7,3.5,5,5.4,5c1.4,0,2.4,0.3,3.7,0.3c-0.6,1.9-1.4,3.9-1,5.3
                    c0.6,2.1,0.2,3.6-3.1,5.4c-3.3,1.8-7.5,5.6-7.5,7.4c0,1.8,3.5,3.3,0,4.2L275.1,157.9z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新竹縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("新竹縣")}
@@ -317,7 +317,7 @@ const Map = (props) => {
             d="M315.9,53.9c1.1-0.7,4.2-1.7,7.7-3.2c0.2,0.4,0.4,0.7,0.7,0.9c1.3,1,4,3.1,7.9,4.3c1.2,2.3,0.3,3.6,0.7,6.3
                    c0.4,2.9,0.6,4.4,0,6.4c-0.6,2.1-11.8-0.6-15.3-6C314,57.2,314.4,54.7,315.9,53.9z M371.8,12.4c0.9,2.2,4,2.5,7.1,2.5
                    c3.1,0,0.3,2.5,9,2.5c8.7,0,8.7-2.5,4-5c-4.7-2.5-17.7-7.1-18.6-5.6C372.4,8.3,371.8,12.4,371.8,12.4z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "基隆市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("基隆市")}
@@ -333,7 +333,7 @@ const Map = (props) => {
                  c-0.6,1.9,1.2,3.5-1.9,4.1c-3.1,0.6-5.3-1.9-6.8,1c-1.5,2.9-3.6,4.6-6.3,6c-2.7,1.5-1,3.7-3.9,3.7c-2.9,0-6.6-0.8-7.1,1.2
                  c-0.6,2.1-4.1,1.4-4.5,0c-0.4-1.5-2.5-2.5-6.2-2.7c-3.7-0.2-6.4-0.4-6.4,1.9c0,2.3-2.7,4.8-7.5,4.1c-4.8-0.6-6-2.1-8.7-3.7
                  c-2.7-1.7-2.9,0.6-8.3-3.9c-5.4-4.6-11.8-8.9-13-11.8C186.2,158.1,184,155.8,182.3,154.3z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "苗栗縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("苗栗縣")}
@@ -349,7 +349,7 @@ const Map = (props) => {
                     c-1.9,1.9-5.8,4.3-7.7,3.9c-1.9-0.4-2.1,7.9-1.3,10.4c0.7,2.5,3.8,2.5,2.6,4.6c-1.2,2.1-0.4,5,3.1,4.8c3.5-0.2,5.2,1.4,6.8,2.7
                     c1.7,1.2,3,7,1.2,7.7c-1.8,0.6-1.8,2.5,0.9,5.4c2.7,2.9,3.5,6.9,4.3,7.6c-0.3,0.8-0.5,1.6-0.8,2.3c-0.8,2.3,2.5,5,1.7,7.2
                     c-0.8,2.3-3.6,2.2-5.7,2.8L287.8,135.2"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "桃園市" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("桃園市")}
@@ -364,7 +364,7 @@ const Map = (props) => {
                     c-0.8,2.1-2.5,8.3-1,10.4c1.5,2.1,1.9,5.6,4.1,6.2c2.3,0.6,5-0.4,5.6,2.3c0.6,2.7-2.9,2.3-5.4,2.7c-1.6,0.3-2.6,1.2-2.7,2.2
                     c-2.3-0.5-4.9-1-6.3-1c-2.5,0-7-0.6-8.5-2.1c-1.5-1.5-7.7-1.9-11.2-1.9s-4.8-3.7-7.5-3.1c-2.7,0.6-12.4,0.8-16.2,1
                     C135.9,248.7,133.8,248.3,131.9,248z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "彰化縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("彰化縣")}
@@ -385,7 +385,7 @@ const Map = (props) => {
                     c0-3.9,3.1-2.9,5.8-3.5c2-0.4,2.4-2.5,2.2-5.6c0.4-0.2,0.8-0.5,1.3-1.2c1.5-2.1,2.7-0.4,3.5-2.9c0.8-2.5,3.3-6.2,5-7.3
                     c1.3-0.8,3.2-4,4.5-8.5c1,1,2.6,1.1,4.8,1.7c2.9,0.8,8.5,0.8,9.9,2.3c1.5,1.5,3.5,0,5.6-0.8c2.1-0.8,1.5-3.1,0.9-4.6
                     c-0.6-1.5,7,1.4,8.4,3.3C325.3,172,328.8,174.7,335.2,173.5z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "花蓮縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("花蓮縣")}
@@ -406,7 +406,7 @@ const Map = (props) => {
                  c3.3-2.3,6.4-11.6,7-12.4c0.6-0.8,0.6-4.3,2.5-3.7c1.9,0.6,7,0.4,9.7,0c2.7-0.4,2.3-2.7,3.7-1.3c1.4,1.5,1.4,1.2,3.5,1.2
                  c2.1,0,4.8-2.5,5-4.6c0.2-2.1,3.1-1.7,5.6-1.9c2.5-0.2,3.1-3.5,4.8-4.1c1.7-0.6,2.9,0,4.8-1.7c1.9-1.7,3.1-2.3,6.3-3.8
                  c3.2-1.5,5.7,0.7,8.7-0.8c3-1.5,5.7,0.2,8.7,0.4C278.4,188.3,279.4,188.7,280.2,188.3z"
-            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(236,181,126,0.8)] ${
+            className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "南投縣" ? "is-active" : ""
             }`}
             onClick={() => handlePathClick("南投縣")}
