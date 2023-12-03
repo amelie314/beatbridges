@@ -112,7 +112,7 @@ function ConcertPage({ venues }) {
           id: doc.id,
           ...doc.data(),
         }));
-        setReviews(fetchedReviews);
+        setReviews(fetchedReviews as Review[]); // 使用類型斷言，假設所有必要的字段都存在
         setReviewsLoading(false);
       };
       fetchReviews();
