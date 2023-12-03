@@ -85,7 +85,7 @@ const UserProfile = () => {
     };
 
     fetchUserData();
-  }, [username]);
+  }, [username, user]);
 
   useEffect(() => {
     if (isCurrentUser && userData) {
@@ -198,7 +198,8 @@ const UserProfile = () => {
       setIsUpdating(false); // 更新完成，啟用保存按鈕
       setShowModal(false); // 關閉 Modal
     },
-    [router, setUserInfo, userData, username]
+    [user, displayName, editableUsername, bio, selectedFile, userInfo]
+    // [router, setUserInfo, userData, username]
   );
   // 加載用戶的評論和相關場地資訊
   useEffect(() => {
