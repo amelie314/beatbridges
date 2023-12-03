@@ -73,7 +73,7 @@ const UserProfile = () => {
           if (!querySnapshot.empty) {
             const fetchedUserData = querySnapshot.docs[0].data() as UserData; // 使用類型斷言
             setUserData(fetchedUserData);
-            setIsCurrentUser(user.uid === fetchedUserData.uid);
+            setIsCurrentUser(user?.uid === fetchedUserData.uid);
           } else {
             console.log("No such user!");
           }
