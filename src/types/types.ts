@@ -37,3 +37,14 @@ export interface UserData {
   photoURL: string;
   uid?: string;
 }
+
+export interface ReviewInfo {
+  venueName: string;
+  id: string;
+  date: string;
+  performanceName: string;
+  text: string; 
+  // 可能還有其他屬性
+}
+
+
