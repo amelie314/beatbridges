@@ -25,7 +25,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
   );
 
   const venueOptions = venues
-    .filter((venue) => venue.District === selectedDistrict?.value)
+    .filter((venue) => venue.District === selectedDistrict)
     .map((venue) => ({
       value: venue.id,
       label: venue.Name,
