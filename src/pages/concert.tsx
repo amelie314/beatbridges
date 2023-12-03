@@ -295,7 +295,7 @@ function ConcertPage({ venues }) {
         </div>
 
         {/* Right side: Selection and ReviewForm */}
-        <div className="w-full  md:w-1/3 p-10 flex flex-col">
+        <div className="w-full  md:w-1/3 p-5 flex flex-col">
           {/* Selection menus */}
           <div className="flex flex-col space-y-4">
             {/* 展演空間選擇菜單的組件 */}
