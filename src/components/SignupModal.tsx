@@ -4,8 +4,15 @@
 import React, { useState } from "react";
 import { useRouter } from "next/router";
 import { auth, db } from "../firebaseConfig";
+import {
+  doc,
+  setDoc,
+  collection,
+  where,
+  query,
+  getDocs,
+} from "firebase/firestore";
 import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faTimes } from "@fortawesome/free-solid-svg-icons"; // 導入 X 圖標
 
@@ -40,6 +47,15 @@ const SignupModal: React.FC<SignupModalProps> = ({ show, onClose }) => {
     }
 
     try {
+      // 檢查用戶名是否唯一
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("username", "==", username));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty) {
+        alert("用戶名已被占用，請選擇其他用戶名。");
+        return;
+      }
+      // 創建帳戶
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         email,
