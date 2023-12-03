@@ -33,6 +33,7 @@ const UserProfile = () => {
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [showModal, setShowModal] = useState(false);
+
   const { userInfo, setUserInfo } = useUserContext();
   const [isCurrentUser, setIsCurrentUser] = useState(false); // 添加這行來定義 isCurrentUser
 
@@ -61,7 +62,7 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       console.log("useEffect 開始執行- fetchUserData", { username, user });
-      if (username && user) {
+      if (username) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", username));
         try {
@@ -80,7 +81,7 @@ const UserProfile = () => {
     };
 
     fetchUserData();
-  }, [username, user]);
+  }, [username]);
 
   useEffect(() => {
     if (isCurrentUser && userData) {
@@ -192,9 +193,8 @@ const UserProfile = () => {
       setIsUpdating(false); // 更新完成，啟用保存按鈕
       setShowModal(false); // 關閉 Modal
     },
-    [user, displayName, editableUsername, bio, selectedFile, userInfo]
+    [router, setUserInfo, userData, username]
   );
-
   // 加載用戶的評論和相關場地資訊
   useEffect(() => {
     const fetchUserReviewsAndVenues = async () => {
