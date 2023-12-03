@@ -74,8 +74,9 @@ const UserProfile = () => {
             const fetchedUserData = querySnapshot.docs[0].data() as UserData; // 使用類型斷言
             setUserData(fetchedUserData);
             setIsCurrentUser(user?.uid === fetchedUserData.uid);
+            console.log("userData", fetchedUserData);
           } else {
-            console.log("No such user!");
+            console.log("No user found");
           }
         } catch (error) {
           console.error("Error fetching user data:", error);

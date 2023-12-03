@@ -35,4 +35,5 @@ export interface UserData {
   username: string;
   bio: string;
   photoURL: string;
+  uid?: string;
 }
