@@ -18,7 +18,7 @@ import {
 import { auth, db, storage } from "../../firebaseConfig";
 import { updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Modal from "../../components/Modal"; // 确保路径正确
+import Modal from "../../components/Modal"; // 確保路徑正確
 import FavoriteReviews from "../../components/FavoriteReviews";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -33,8 +33,7 @@ const UserProfile = () => {
   const [user] = useAuthState(auth);
   const [userData, setUserData] = useState(null);
   const [showModal, setShowModal] = useState(false);
-  const { currentUser, setCurrentUser, userInfo, setUserInfo } =
-    useUserContext();
+  const { userInfo, setUserInfo } = useUserContext();
   const [isCurrentUser, setIsCurrentUser] = useState(false); // 添加這行來定義 isCurrentUser
 
   const [displayName, setDisplayName] = useState("");
@@ -44,10 +43,10 @@ const UserProfile = () => {
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [userReviews, setUserReviews] = useState([]); // 用於存儲用戶評論的狀態
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
+  const [isUpdating, setIsUpdating] = useState(false); // 新增狀態來追蹤更新狀態
 
   // 用於控制顯示的評論數量
   const [isExpanded, setIsExpanded] = useState(false);
-
   const [profilePicUrl, setProfilePicUrl] = useState(
     user?.photoURL || "default-profile.png"
   );
@@ -118,59 +117,85 @@ const UserProfile = () => {
   const handleUpdate = useCallback(
     async (event) => {
       event.preventDefault();
+      setIsUpdating(true); // 開始更新，禁用保存按鈕
 
       if (!user) {
-        alert("用户未登录，无法更新个人资料。");
+        alert("用戶未登錄，無法更新個人資料。");
+        setIsUpdating(false); // 更新失敗，啟用保存按鈕
         return;
       }
 
-      // 检查用户名是否符合规则
+      // 檢查用戶名是否符合規則
       if (!validateUsername(editableUsername)) {
         alert(
-          "用户名格式不正确，请确保它只包含字母、数字以及标点符号（例如：username.123）。"
+          "用戶名格式不正確，請確保它只包含字母、數字以及標點符號（例如：username.123）。"
         );
+        setIsUpdating(false); // 更新失敗，啟用保存按鈕
         return;
-        // 假設 userData 是更新後的用户資料
-        setUpdatedUserData(userData); // 新增一個狀態来保存更新后的數據
       }
 
+      // 如果有選擇圖片，則先上傳圖片
+      let profileUrl = user.photoURL; // 使用已經存在的 photoURL 作為預設值
+      if (selectedFile) {
+        try {
+          const storageRef = ref(storage, `profilePics/${user.uid}`);
+          const uploadTaskSnapshot = await uploadBytes(
+            storageRef,
+            selectedFile
+          );
+          const downloadURL = await getDownloadURL(uploadTaskSnapshot.ref);
+          profileUrl = downloadURL; // 更新為新上傳的圖片 URL
+          await updateProfile(user, { photoURL: downloadURL });
+        } catch (error) {
+          console.error("圖片上傳錯誤：", error);
+          alert("圖片上傳失敗：" + error.message);
+          setIsUpdating(false); // 上傳失敗，啟用保存按鈕
+          return;
+        }
+      }
+
+      // 更新其他用戶資料
       try {
-        // 更新 Firebase Authentication 中的 displayName
-        await updateProfile(user, { displayName });
-        // 更新 Firestore 中的用戶資料
         const userDocRef = doc(db, "users", user.uid);
         await updateDoc(userDocRef, {
           username: editableUsername,
           bio,
           displayName,
+          photoURL: profileUrl, // 使用最新的圖片 URL 或者原有的 URL
         });
 
-        // 更新本地状态
+        // 更新本地狀態和 Context
         setUserData({
+          ...userData,
           displayName,
           username: editableUsername,
           bio,
+          photoURL: profileUrl,
+        });
+        setUserInfo({
+          ...userInfo,
+          displayName,
+          username: editableUsername,
+          bio,
+          photoURL: profileUrl,
         });
 
         alert("個人資料更新成功");
-
-        // 关闭 Modal 并重定向（如果需要）
-        setShowModal(false);
-
-        // context
-        setUserInfo({ user, username: editableUsername });
-
         if (editableUsername !== username) {
           router.push(`/profile/${editableUsername}`);
         }
       } catch (error) {
-        console.error("更新錯誤：", error);
-        alert(`更新失敗：${error.message}`);
+        console.error("更新用戶資料錯誤：", error);
+        alert("更新用戶資料失敗：" + error.message);
       }
+
+      setIsUpdating(false); // 更新完成，啟用保存按鈕
+      setShowModal(false); // 關閉 Modal
     },
-    [user, displayName, editableUsername, bio, username, router]
+    [user, displayName, editableUsername, bio, selectedFile, userInfo]
   );
 
+  // 加載用戶的評論和相關場地資訊
   useEffect(() => {
     const fetchUserReviewsAndVenues = async () => {
       // 確保 userData 有效
@@ -181,15 +206,16 @@ const UserProfile = () => {
         const q = query(reviewsRef, where("userId", "==", userData.uid));
         const querySnapshot = await getDocs(q);
 
-        const venuesData = {};
+        const venuesData = {}; // 暫存場地資訊
         const reviewsData = await Promise.all(
           querySnapshot.docs.map(async (reviewDoc) => {
             const reviewData = reviewDoc.data();
-            const venueRef = doc(db, "venues", reviewData.venueId);
+            const venueRef = doc(db, "venues", reviewData.venueId); // 這裡使用不同的名稱來避免衝突
             const venueSnap = await getDoc(venueRef);
 
+            // 如果場地資訊還未加載，則加載並保存到 venuesData
             if (!venuesData[reviewData.venueId] && venueSnap.exists()) {
-              venuesData[reviewData.venueId] = venueSnap.data().Name;
+              venuesData[reviewData.venueId] = venueSnap.data().Name; // 假設場地集合中有 "Name" 欄位
             }
 
             return {
@@ -209,37 +235,6 @@ const UserProfile = () => {
 
     fetchUserReviewsAndVenues();
   }, [userData]);
-
-  const handleImageUpload = async () => {
-    if (!selectedFile) {
-      return;
-    }
-    try {
-      if (user) {
-        const storageRef = ref(storage, `profilePics/${user.uid}`);
-        const uploadTask = await uploadBytes(storageRef, selectedFile);
-
-        // 獲取圖片的下載 URL
-        const downloadURL = await getDownloadURL(uploadTask.ref);
-        setProfilePicUrl(downloadURL); // 更新頭像的 URL
-
-        // 更新 Firebase auth 中的 photoURL
-        await updateProfile(user, { photoURL: downloadURL });
-
-        // 更新 Firestore 中的用戶資料
-        const userDocRef = doc(db, "users", user.uid);
-        await updateDoc(userDocRef, {
-          photoURL: downloadURL, // 更新 Firestore 中的 photoURL 欄位
-        });
-      } else {
-        console.error("User is not authenticated.");
-      }
-    } catch (error) {
-      console.error("Error uploading profile picture:", error);
-    }
-    // 不論成功與否，上傳後都重置 selectedFile 狀態
-    setSelectedFile(null);
-  };
 
   // 取消收藏的處理函數
   const handleRemoveFavorite = async (reviewId) => {
@@ -293,7 +288,9 @@ const UserProfile = () => {
             </dt>
             <dd className="mt-1 text-sm text-gray-800 sm:col-span-2 sm:mt-0">
               <img
-                src={userData.photoURL || "default-profile.png"}
+                src={`${
+                  userData.photoURL || "default-profile.png"
+                }?${new Date().getTime()}`}
                 alt="Profile"
                 className="w-20 h-20 rounded-full object-cover"
               />
@@ -451,15 +448,6 @@ const UserProfile = () => {
                 }}
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
               />
-              {selectedFile && (
-                <button
-                  type="button"
-                  onClick={handleImageUpload}
-                  className="mt-2 inline-flex items-center px-4 py-2 bg-secondary-color text-white text-base font-medium rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-300"
-                >
-                  Upload Image
-                </button>
-              )}
             </div>
             {/* 個人簡介輸入 */}
             <div className="mb-4">
@@ -488,6 +476,7 @@ const UserProfile = () => {
             <button
               className="bg-green-500 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
               type="submit"
+              disabled={isUpdating}
             >
               Save Changes
             </button>
