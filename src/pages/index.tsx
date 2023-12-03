@@ -1,6 +1,5 @@
 /** @format */
 
-// /src/pages/index.tsx
 import "../app/globals.css";
 import React, { useState } from "react";
 import Link from "next/link";
@@ -10,19 +9,27 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
 
-// 登入函數
-const login = async (email: string, password: string) => {
-  const [showSignup, setShowSignup] = useState(false); // 新增狀態來控制SignupModal
+// 將login函數改為接收email, password和狀態更新函數
+async function login(
+  email: string,
+  password: string,
+  setError: React.Dispatch<React.SetStateAction<boolean>>
+) {
   try {
     await signInWithEmailAndPassword(auth, email, password);
     // 登入成功後的處理...
   } catch (error) {
     console.error(error);
-    // 處理錯誤...
+    setError(true); // 使用傳入的狀態更新函數來處理錯誤
   }
-};
-
+}
 export default function Home() {
+  const [showSignup, setShowSignup] = useState(false); // 將狀態放在Home組件內部
+
+  // 使用login函數時需要傳入setError
+  const handleLogin = (email: string, password: string) =>
+    login(email, password, setShowSignup);
+
   return (
     <div className="flex flex-col bg-primary-color h-screen items-center text-secondary-color">
       <Head>
