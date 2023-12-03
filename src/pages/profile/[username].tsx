@@ -60,7 +60,7 @@ const UserProfile = () => {
     setIsExpanded(!isExpanded);
   };
 
-  const [favorites, setFavorites] = useState([]);
+  const [favorites, setFavorites] = useState<string[]>([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -74,7 +74,7 @@ const UserProfile = () => {
             const fetchedUserData = querySnapshot.docs[0].data() as UserData; // 使用類型斷言
             setUserData(fetchedUserData);
             setIsCurrentUser(user?.uid === fetchedUserData.uid);
-            console.log("userData", fetchedUserData);
+            // console.log("userData", fetchedUserData);
           } else {
             console.log("No user found");
           }
