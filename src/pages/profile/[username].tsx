@@ -21,7 +21,11 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Modal from "../../components/Modal"; // 确保路径正确
 import FavoriteReviews from "../../components/FavoriteReviews";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faPenToSquare } from "@fortawesome/free-solid-svg-icons";
+import {
+  faPenToSquare,
+  faCircleChevronDown,
+  faCircleChevronUp,
+} from "@fortawesome/free-solid-svg-icons";
 
 const UserProfile = () => {
   const router = useRouter();
@@ -41,9 +45,18 @@ const UserProfile = () => {
   const [userReviews, setUserReviews] = useState([]); // 用於存儲用戶評論的狀態
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
 
+  // 用於控制顯示的評論數量
+  const [isExpanded, setIsExpanded] = useState(false);
+
   const [profilePicUrl, setProfilePicUrl] = useState(
     user?.photoURL || "default-profile.png"
   );
+
+  const toggleReviews = () => {
+    console.log("Toggling reviews");
+    setIsExpanded(!isExpanded);
+  };
+
   const [favorites, setFavorites] = useState([]);
 
   useEffect(() => {
@@ -307,7 +320,7 @@ const UserProfile = () => {
   );
 
   return (
-    <div className="w-4/5  mx-auto">
+    <div className="w-4/5  mx-auto mt-4">
       <div className="grid grid-cols-1 lg:grid-cols-5">
         {/* UserProfile 組件容器 */}
         <div className="lg:col-span-2">{userProfileInfo}</div>
@@ -319,30 +332,45 @@ const UserProfile = () => {
                 Echoes from the Past &nbsp; 🔊
               </h2>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-1 gap-4">
-                {userReviews.map((review) => (
-                  <div
-                    key={review.id}
-                    className="border border-gray-500 rounded-lg shadow-lg overflow-hidden flex flex-col justify-between p-4"
-                  >
-                    <div className="min-w-0 ml-1">
-                      <p className="text-xs mb-1 text-gray-500 truncate">
-                        {review.date
-                          ? new Date(review.date).toLocaleDateString("zh-TW")
-                          : "未知日期"}
-                      </p>
-                      <p className="text-sm text-secondary-color text-bold truncate">
-                        {review.venueName}
-                      </p>
-                      <p className="text-sm text-gray-300 mt-1 truncate">
-                        {review.performanceName}
-                      </p>
-                      <p className="text-sm text-gray-500 truncate">
-                        {review.text}
-                      </p>
+                {userReviews
+                  .slice(0, isExpanded ? userReviews.length : 3)
+                  .map((review) => (
+                    <div
+                      key={review.id}
+                      className="favorite-review-card border border-gray-500 rounded-lg shadow-lg overflow-hidden flex flex-col justify-between p-4 transition duration-300 ease-in-out"
+                    >
+                      <div className="min-w-0 ml-1">
+                        <p className="text-xs mb-1 text-gray-500 truncate">
+                          {review.date
+                            ? new Date(review.date).toLocaleDateString("zh-TW")
+                            : "未知日期"}
+                        </p>
+                        <p className="text-sm text-secondary-color font-bold truncate">
+                          {review.venueName}
+                        </p>
+                        <p className="text-sm text-gray-300 mt-1 truncate">
+                          {review.performanceName}
+                        </p>
+                        <p className="text-sm text-gray-500 truncate">
+                          {review.text}
+                        </p>
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
               </div>
+
+              {userReviews.length > 3 && (
+                <button
+                  onClick={toggleReviews}
+                  className="favorite-review-card-slide-in mt-4 ml-1 p-2 text-purple-color rounded-lg hover:text-purple-500 flex items-center justify-center"
+                >
+                  {isExpanded ? "Less" : "More"}
+                  <FontAwesomeIcon
+                    icon={isExpanded ? faCircleChevronUp : faCircleChevronDown}
+                    className="ml-2"
+                  />
+                </button>
+              )}
             </div>
           </div>
         )}
