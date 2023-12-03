@@ -14,7 +14,6 @@ import {
   getDoc,
   doc,
   updateDoc,
-  deleteDoc,
 } from "firebase/firestore";
 import { auth, db, storage } from "../../firebaseConfig";
 import { updateProfile } from "firebase/auth";
@@ -23,7 +22,6 @@ import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import Modal from "../../components/Modal";
 import FavoriteReviews from "../../components/FavoriteReviews";
 import { UserData } from "../../types/types";
-import { ReviewInfo } from "../../types/types";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -47,9 +45,7 @@ const UserProfile = () => {
   const [bio, setBio] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [updatedUserData, setUpdatedUserData] = useState(null);
-  const [userReviews, setUserReviews] = useState<ReviewInfo[]>([]);
-
-  // 用於存儲用戶評論的狀態
+  const [userReviews, setUserReviews] = useState([]); // 用於存儲用戶評論的狀態
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
   const [isUpdating, setIsUpdating] = useState(false); // 新增狀態來追蹤更新狀態
 
@@ -180,14 +176,14 @@ const UserProfile = () => {
           displayName,
           username: editableUsername,
           bio,
-          photoURL: profileUrl || "default-profile-url", // 如果 profileUrl 為 null，則使用 'default-profile-url'
+          photoURL: profileUrl,
         });
         setUserInfo({
           ...userInfo,
           displayName,
           username: editableUsername,
           bio,
-          photoURL: profileUrl || "default-profile-url",
+          photoURL: profileUrl,
         });
 
         alert("個人資料更新成功");
@@ -229,13 +225,8 @@ const UserProfile = () => {
 
             return {
               id: reviewDoc.id,
-              venueName: venueSnap.exists()
-                ? venueSnap.data().Name
-                : "未知場地", // 假設場地名稱存在於 "Name" 欄位
-              date: reviewData.date, // 確保這個欄位存在於您的文檔中
-              // 其他需要的屬性，如 performanceName, text 等
-              performanceName: reviewData.performanceName,
-              text: reviewData.text,
+              ...reviewData,
+              venueName: venuesData[reviewData.venueId],
             };
           })
         );
