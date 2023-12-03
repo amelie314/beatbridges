@@ -30,4 +30,9 @@ export interface Review {
   createdAt: FieldValue;
 }
 
-
+export interface UserData {
+  displayName: string;
+  username: string;
+  bio: string;
+  photoURL: string;
+}

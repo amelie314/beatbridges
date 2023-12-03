@@ -18,8 +18,11 @@ import {
 import { auth, db, storage } from "../../firebaseConfig";
 import { updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import Modal from "../../components/Modal"; // 確保路徑正確
+
+import Modal from "../../components/Modal";
 import FavoriteReviews from "../../components/FavoriteReviews";
+import { UserData } from "../../types/types";
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faPenToSquare,
@@ -31,7 +34,7 @@ const UserProfile = () => {
   const router = useRouter();
   const { username } = router.query;
   const [user] = useAuthState(auth);
-  const [userData, setUserData] = useState(null);
+  const [userData, setUserData] = useState<UserData | null>(null);
   const [showModal, setShowModal] = useState(false);
 
   const { userInfo, setUserInfo } = useUserContext();
@@ -68,7 +71,7 @@ const UserProfile = () => {
         try {
           const querySnapshot = await getDocs(q);
           if (!querySnapshot.empty) {
-            const fetchedUserData = querySnapshot.docs[0].data();
+            const fetchedUserData = querySnapshot.docs[0].data() as UserData; // 使用類型斷言
             setUserData(fetchedUserData);
             setIsCurrentUser(user.uid === fetchedUserData.uid);
           } else {
