@@ -139,6 +139,16 @@ const UserProfile = () => {
         return;
       }
 
+      // 檢查用戶名是否唯一
+      const usersRef = collection(db, "users");
+      const q = query(usersRef, where("username", "==", editableUsername));
+      const querySnapshot = await getDocs(q);
+      if (!querySnapshot.empty && querySnapshot.docs[0].id !== user.uid) {
+        alert("用戶名已被占用，請選擇其他用戶名。");
+        setIsUpdating(false);
+        return;
+      }
+
       // 如果有選擇圖片，則先上傳圖片
       let profileUrl = user.photoURL; // 使用已經存在的 photoURL 作為預設值
       if (selectedFile) {
