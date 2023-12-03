@@ -1,3 +1,6 @@
+// 導入方式對於 Firebase v9 或更新的版本
+import { FieldValue } from "firebase/firestore";
+
 // types.ts
 export interface LocationInfoProps {
   venues: Venue[];
@@ -17,13 +20,14 @@ export interface Venue {
   
 export interface Review {
   id: string;
-  createdAt: Date;
+  // createdAt: Date;
   userId: string;
   venueId: string;
   text: string;
   performanceName: string;
   date: string;
   likes: number;
+  createdAt: FieldValue;
 }
 
 
