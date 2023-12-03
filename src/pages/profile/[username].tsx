@@ -166,7 +166,8 @@ const UserProfile = () => {
           username: editableUsername,
           bio,
           displayName,
-          photoURL: profileUrl, // 使用最新的圖片 URL 或者原有的 URL
+          // photoURL: profileUrl,
+          photoURL: profileUrl || "default-profile-url", // 如果 profileUrl 為 null，則使用 'default-profile-url'
         });
 
         // 更新本地狀態和 Context
