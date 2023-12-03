@@ -62,24 +62,25 @@ const UserProfile = () => {
   useEffect(() => {
     const fetchUserData = async () => {
       console.log("useEffect 開始執行- fetchUserData", { username, user });
-      if (username) {
+      if (username && user) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", username));
-        const querySnapshot = await getDocs(q);
-
-        if (!querySnapshot.empty) {
-          const fetchedUserData = querySnapshot.docs[0].data();
-          setUserData(fetchedUserData);
-          setIsCurrentUser(user && user.uid === fetchedUserData.uid);
-          console.log("Fetched User Data:", fetchedUserData);
-        } else {
-          console.log("No such user!");
+        try {
+          const querySnapshot = await getDocs(q);
+          if (!querySnapshot.empty) {
+            const fetchedUserData = querySnapshot.docs[0].data();
+            setUserData(fetchedUserData);
+            setIsCurrentUser(user.uid === fetchedUserData.uid);
+          } else {
+            console.log("No such user!");
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
         }
       }
     };
 
     fetchUserData();
-    console.log("useEffect 結束執行 - fetchUserData");
   }, [username, user]);
 
   useEffect(() => {
@@ -170,37 +171,40 @@ const UserProfile = () => {
     [user, displayName, editableUsername, bio, username, router]
   );
 
-  // 加載用戶的評論和相關場地資訊
   useEffect(() => {
     const fetchUserReviewsAndVenues = async () => {
-      if (!userData) return;
+      // 確保 userData 有效
+      if (!userData || !userData.uid) return;
 
-      const reviewsRef = collection(db, "reviews");
-      const q = query(reviewsRef, where("userId", "==", userData.uid));
-      const querySnapshot = await getDocs(q);
+      try {
+        const reviewsRef = collection(db, "reviews");
+        const q = query(reviewsRef, where("userId", "==", userData.uid));
+        const querySnapshot = await getDocs(q);
 
-      const venuesData = {}; // 暫存場地資訊
-      const reviewsData = await Promise.all(
-        querySnapshot.docs.map(async (reviewDoc) => {
-          const reviewData = reviewDoc.data();
-          const venueRef = doc(db, "venues", reviewData.venueId); // 這裡使用不同的名稱來避免衝突
-          const venueSnap = await getDoc(venueRef);
+        const venuesData = {};
+        const reviewsData = await Promise.all(
+          querySnapshot.docs.map(async (reviewDoc) => {
+            const reviewData = reviewDoc.data();
+            const venueRef = doc(db, "venues", reviewData.venueId);
+            const venueSnap = await getDoc(venueRef);
 
-          // 如果場地資訊還未加載，則加載並保存到 venuesData
-          if (!venuesData[reviewData.venueId] && venueSnap.exists()) {
-            venuesData[reviewData.venueId] = venueSnap.data().Name; // 假設場地集合中有 "Name" 欄位
-          }
+            if (!venuesData[reviewData.venueId] && venueSnap.exists()) {
+              venuesData[reviewData.venueId] = venueSnap.data().Name;
+            }
 
-          return {
-            id: reviewDoc.id,
-            ...reviewData,
-            venueName: venuesData[reviewData.venueId],
-          };
-        })
-      );
+            return {
+              id: reviewDoc.id,
+              ...reviewData,
+              venueName: venuesData[reviewData.venueId],
+            };
+          })
+        );
 
-      setUserReviews(reviewsData); // 設置評論
-      setVenues(venuesData); // 設置場地資訊
+        setUserReviews(reviewsData); // 設置評論
+        setVenues(venuesData); // 設置場地資訊
+      } catch (error) {
+        console.error("Error fetching user reviews and venues:", error);
+      }
     };
 
     fetchUserReviewsAndVenues();
