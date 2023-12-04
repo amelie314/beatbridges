@@ -46,7 +46,8 @@ const UserProfile = () => {
   const [displayName, setDisplayName] = useState("");
   const [editableUsername, setEditableUsername] = useState("");
   const [bio, setBio] = useState("");
-  const [selectedFile, setSelectedFile] = useState(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+
   const [updatedUserData, setUpdatedUserData] = useState(null);
   const [userReviews, setUserReviews] = useState<ReviewWithVenue[]>([]);
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
