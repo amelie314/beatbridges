@@ -176,8 +176,8 @@ const UserProfile = () => {
           username: editableUsername,
           bio,
           displayName,
-          // photoURL: profileUrl,
-          photoURL: profileUrl || "default-profile-url", // 如果 profileUrl 為 null，則使用 'default-profile-url'
+          photoURL: profileUrl || "default-profile.png",
+          // 如果 profileUrl 為 null，則使用 'default-profile-url'
         });
 
         // 更新本地狀態和 Context
@@ -186,14 +186,14 @@ const UserProfile = () => {
           displayName,
           username: editableUsername,
           bio,
-          photoURL: profileUrl,
+          photoURL: profileUrl || "default-profile.png",
         });
         setUserInfo({
           ...userInfo,
           displayName,
           username: editableUsername,
           bio,
-          photoURL: profileUrl,
+          photoURL: profileUrl || "default-profile.png",
         });
 
         alert("個人資料更新成功");
