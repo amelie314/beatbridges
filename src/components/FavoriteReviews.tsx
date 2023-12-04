@@ -16,8 +16,21 @@ import { Review } from "../types/types";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder, faBookmark } from "@fortawesome/free-solid-svg-icons";
+import { UserData } from "../types/types";
 
-const FavoriteReviews = ({ favoriteReviewIds, venuesData }) => {
+interface FavoriteReviewsProps {
+  favoriteReviewIds: string[];
+  venuesData: { [key: string]: string };
+  currentUserId?: string;
+  updatedUserData: UserData | null | undefined;
+}
+
+const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
+  favoriteReviewIds,
+  venuesData,
+  currentUserId,
+  updatedUserData, // 添加這個參數
+}) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
   const [userDetails, setUserDetails] = useState({});
   const { userInfo } = useUserContext();
