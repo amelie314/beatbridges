@@ -244,6 +244,13 @@ const UserProfile = () => {
             };
           })
         );
+        // 對 reviewsData 進行排序，最近的日期在前
+        reviewsData.sort((a, b) => {
+          const dateA = new Date(a.date);
+          const dateB = new Date(b.date);
+          return dateB.getTime() - dateA.getTime(); // 降序排列
+        });
+
         setUserReviews(reviewsData); // 設置評論
         setVenues(venuesData); // 設置場地資訊
       } catch (error) {

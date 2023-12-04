@@ -28,8 +28,11 @@ export interface Review {
   date: string;
   likes: number;
   createdAt: FieldValue;
-  venueName?: string; // 可選屬性
 }
+export interface ReviewWithVenue extends Review {
+  venueName: string;
+}
+
 
 export interface UserData {
   displayName: string;
