@@ -66,7 +66,10 @@ function ConcertPage({ venues }) {
   const handleVenueSelected = (venueId) => {
     setSelectedVenueId(venueId); // 設置選中的 venueId
   };
-
+  // 排序函數
+  const sortReviews = (reviews: Review[]) => {
+    return reviews.sort((a, b) => b.date.localeCompare(a.date));
+  };
   // 當用戶提交評論時，確保 venueId 被傳遞给 handleAddReview
   const handleAddReview = async (
     text,
@@ -97,27 +100,6 @@ function ConcertPage({ venues }) {
       console.error("Error adding review:", error);
     }
   };
-
-  // 加載評論
-  useEffect(() => {
-    if (selectedVenueId) {
-      setReviewsLoading(true);
-      const fetchReviews = async () => {
-        const q = query(
-          collection(db, "reviews"),
-          where("venueId", "==", selectedVenueId)
-        );
-        const querySnapshot = await getDocs(q);
-        const fetchedReviews = querySnapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setReviews(fetchedReviews as Review[]); // 使用類型斷言，假設所有必要的字段都存在
-        setReviewsLoading(false);
-      };
-      fetchReviews();
-    }
-  }, [selectedVenueId]);
 
   // 處理點讚
   const handleLike = async (reviewId) => {
@@ -182,7 +164,7 @@ function ConcertPage({ venues }) {
         const reviewsRef = collection(db, "reviews");
         const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
         const querySnapshot = await getDocs(q);
-        const fetchedReviews = querySnapshot.docs.map((doc) => ({
+        let fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           text: doc.data().text,
           userId: doc.data().userId,
@@ -192,12 +174,16 @@ function ConcertPage({ venues }) {
           date: doc.data().date,
           likes: doc.data().likes,
         }));
-        setReviews(fetchedReviews as Review[]); // 使用类型断言
+
+        // 對評論按日期進行降序排序
+        setReviews(sortReviews(fetchedReviews as Review[]));
+        // setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
       fetchReviews().catch(console.error);
     }
   }, [selectedVenueId]);
 
+  //刪除評論
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm("確定要刪除這則評論嗎？")) {
       await deleteDoc(doc(db, "reviews", reviewId));
@@ -237,7 +223,9 @@ function ConcertPage({ venues }) {
           likes: doc.data().likes,
         }));
 
-        setReviews(fetchedReviews);
+        // setReviews(fetchedReviews);
+        // 使用排序函數
+        setReviews(sortReviews(fetchedReviews));
       }
     };
 
