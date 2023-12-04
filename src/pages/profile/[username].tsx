@@ -14,6 +14,7 @@ import {
   getDoc,
   doc,
   updateDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { auth, db, storage } from "../../firebaseConfig";
 import { updateProfile } from "firebase/auth";
@@ -29,6 +30,8 @@ import {
   faCircleChevronDown,
   faCircleChevronUp,
 } from "@fortawesome/free-solid-svg-icons";
+import { ReviewWithVenue } from "../../types/types"; // 引入新介面
+import { Review } from "../../types/types";
 
 const UserProfile = () => {
   const router = useRouter();
@@ -45,7 +48,7 @@ const UserProfile = () => {
   const [bio, setBio] = useState("");
   const [selectedFile, setSelectedFile] = useState(null);
   const [updatedUserData, setUpdatedUserData] = useState(null);
-  const [userReviews, setUserReviews] = useState([]); // 用於存儲用戶評論的狀態
+  const [userReviews, setUserReviews] = useState<ReviewWithVenue[]>([]);
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
   const [isUpdating, setIsUpdating] = useState(false); // 新增狀態來追蹤更新狀態
 
@@ -223,9 +226,9 @@ const UserProfile = () => {
         const querySnapshot = await getDocs(q);
 
         const venuesData = {}; // 暫存場地資訊
-        const reviewsData = await Promise.all(
+        const reviewsData: ReviewWithVenue[] = await Promise.all(
           querySnapshot.docs.map(async (reviewDoc) => {
-            const reviewData = reviewDoc.data();
+            const reviewData = reviewDoc.data() as Review; // 將 data 強制轉換為 Review 類型
             const venueRef = doc(db, "venues", reviewData.venueId); // 這裡使用不同的名稱來避免衝突
             const venueSnap = await getDoc(venueRef);
 
@@ -235,13 +238,12 @@ const UserProfile = () => {
             }
 
             return {
-              id: reviewDoc.id,
               ...reviewData,
+              id: reviewDoc.id, // 確保這裡的 id 是最後一個添加的屬性
               venueName: venuesData[reviewData.venueId],
             };
           })
         );
-
         setUserReviews(reviewsData); // 設置評論
         setVenues(venuesData); // 設置場地資訊
       } catch (error) {
