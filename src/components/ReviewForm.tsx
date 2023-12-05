@@ -1,6 +1,8 @@
 /** @format */
 
 import React, { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faMessage } from "@fortawesome/free-solid-svg-icons";
 
 const ReviewForm = ({ venueId, userId, onAddReview }) => {
   const [reviewText, setReviewText] = useState("");
@@ -27,17 +29,19 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
     setDate(""); // 清空日期输入
   };
 
+  // 統一的間距樣式
+  const inputClass =
+    "text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5 mb-4";
+  const labelClass = "block mb-2 text-sm font-medium text-white";
+
   return (
-    <form onSubmit={handleSubmit} className="space-y-4">
-      <label
-        htmlFor="performanceName"
-        className="block text-sm font-medium text-white"
-      >
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="performanceName" className={labelClass}>
         表演名稱
       </label>
       <input
         id="performanceName"
-        className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+        className={inputClass}
         type="text"
         value={performanceName}
         onChange={(e) => setPerformanceName(e.target.value)}
@@ -46,12 +50,12 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       />
 
       <div>
-        <label htmlFor="date" className="block text-sm font-medium text-white">
+        <label htmlFor="date" className={labelClass}>
           日期
         </label>
         <input
           id="date"
-          className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          className={inputClass}
           type="date"
           value={date}
           onChange={(e) => setDate(e.target.value)}
@@ -61,29 +65,31 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
       </div>
 
       <div>
-        <label
-          htmlFor="reviewText"
-          className="block mb-2 text-sm font-medium text-white "
-        >
+        <label htmlFor="reviewText" className={labelClass}>
           評論
         </label>
         <textarea
           id="reviewText"
-          className="text-black border border-gray-300 text-sm rounded-lg block w-full p-2.5"
+          className={inputClass}
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
           placeholder="請輸入評論"
           required
         />
       </div>
-      <button
-        type="submit"
-        className="bg-white hover:bg-green-500 text-black font-medium rounded-lg text-sm px-4 py-2"
-      >
-        提交評論
-      </button>
+      <div className="flex justify-end">
+        {" "}
+        {/* 這將按鈕放到右邊 */}
+        <button
+          type="submit"
+          className="mt-2 mb-4 bg-secondary-color text-white font-medium rounded-lg text-sm px-4 py-2 flex items-center justify-center" // flex和items-center使圖標和文本垂直居中
+        >
+          Submit {/* 直接寫入Submit文字 */}
+          <FontAwesomeIcon icon={faMessage} className="ml-2" />{" "}
+          {/* ml-2給圖標和文本之間一些間隔 */}
+        </button>
+      </div>
     </form>
   );
 };
-
 export default ReviewForm;

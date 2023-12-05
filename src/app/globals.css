@@ -4,6 +4,7 @@
 
 :root {
   --foreground-rgb: 0, 0, 0;
+  --background-default-rgb: 19, 19, 19; 
   --background-start-rgb: 214, 219, 220;
   --background-end-rgb: 255, 255, 255;
 }
@@ -11,6 +12,7 @@
 @media (prefers-color-scheme: dark) {
   :root {
     --foreground-rgb: 255, 255, 255;
+    --background-default-rgb: 19, 19, 19; 
     --background-start-rgb: 0, 0, 0;
     --background-end-rgb: 0, 0, 0;
   }
@@ -18,14 +20,40 @@
 
 body {
   color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  background-color: rgb(var(--background-default-rgb)); /* 使用 primary-color 為背景色 */
+  /* 背景漸變可以保留或刪除，取決於您的需求 */
+ 
 }
 
 .is-active {
-  fill: rgba(236, 181, 126, 0.8);
+  /* fill: rgba(236, 181, 126, 0.8); */
+  fill: rgba(200, 175, 254,0.8);
+  /* fill: rebeccapurple; */
 }
+
+.favorite-review-card {
+  border: 1px solid #ccc; /* 更新邊框顏色 */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* 添加陰影 */
+  transition: transform 0.3s ease, box-shadow 0.3s ease; /* 添加過渡效果 */
+  
+  /* 從右側滑入 */
+   /* transform: translateX(50%);  */
+
+  /* 初始狀態設為透明 */
+    /* opacity: 0;  */
+  
+  /* 設定過渡動畫 */
+  /* transition: transform 0.5s ease, opacity 0.5s ease;  */
+}
+
+.favorite-review-card:hover {
+  transform: translateY(5px); /* 滑鼠懸停時上提效果 */
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* 滑鼠懸停時增加陰影 */
+}
+
+
+.favorite-review-card-slide-in {
+  transform: translateX(0);
+  opacity: 1; /* 滑入後設為完全不透明 */
+}
+

@@ -23,7 +23,7 @@ const ImageUpload = ({ userId }) => {
     uploadBytes(imageRef, image)
       .then(() => {
         getDownloadURL(imageRef).then((url) => {
-          // 更新用户头像 URL 的逻辑
+          // 更新用户頭像 URL 的邏輯
         });
       })
       .catch((error) => {
