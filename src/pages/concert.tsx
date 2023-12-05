@@ -66,10 +66,11 @@ function ConcertPage({ venues }) {
   const handleVenueSelected = (venueId) => {
     setSelectedVenueId(venueId); // 設置選中的 venueId
   };
-  // 排序函數
+  //排序函數
   const sortReviews = (reviews: Review[]) => {
-    return reviews.sort((a, b) => b.date.localeCompare(a.date));
+    return reviews.sort((a, b) => b.createdAt - a.createdAt); // 降序排序
   };
+
   // 當用戶提交評論時，確保 venueId 被傳遞给 handleAddReview
   const handleAddReview = async (
     text,
@@ -84,18 +85,29 @@ function ConcertPage({ venues }) {
     }
 
     try {
+      const currentTime = new Date().getTime(); // 獲取客戶端當前時間
       const newReview = {
         userId: user.uid,
         venueId: venueId,
         text: text,
         performanceName: performanceName,
         date: date,
-        createdAt: serverTimestamp(),
+        createdAt: currentTime, // 使用客戶端時間而不是 serverTimestamp()
         likes: 0,
       };
 
-      const docRef = await addDoc(collection(db, "reviews"), newReview);
-      setReviews([...reviews, { id: docRef.id, ...newReview }]);
+      //   const docRef = await addDoc(collection(db, "reviews"), newReview);
+      //   setReviews([...reviews, { id: docRef.id, ...newReview }]);
+      // } catch (error) {
+      //   console.error("Error adding review:", error);
+      // }
+      const docRef = await addDoc(collection(db, "reviews"), {
+        ...newReview,
+        createdAt: serverTimestamp(), // 確保 Firestore 中的記錄使用服務器時間戳
+      });
+
+      // 將新評論添加到評論陣列，並根據 createdAt 進行排序
+      setReviews(sortReviews([...reviews, { ...newReview, id: docRef.id }]));
     } catch (error) {
       console.error("Error adding review:", error);
     }
@@ -168,7 +180,10 @@ function ConcertPage({ venues }) {
           id: doc.id,
           text: doc.data().text,
           userId: doc.data().userId,
-          createdAt: doc.data().createdAt,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
+          favoritedAt: doc.data().favoritedAt
+            ? doc.data().favoritedAt.toDate().getTime()
+            : undefined, // 可選，同樣轉換
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
@@ -177,7 +192,6 @@ function ConcertPage({ venues }) {
 
         // 對評論按日期進行降序排序
         setReviews(sortReviews(fetchedReviews as Review[]));
-        // setReviews(fetchedReviews as Review[]); // 使用类型断言
       };
       fetchReviews().catch(console.error);
     }
@@ -216,14 +230,13 @@ function ConcertPage({ venues }) {
           text: doc.data().text,
           userId: doc.data().userId,
           isFavorite: favoriteIds.has(doc.id),
-          createdAt: doc.data().createdAt,
+          date: doc.data().date,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
-          date: doc.data().date,
           likes: doc.data().likes,
         }));
 
-        // setReviews(fetchedReviews);
         // 使用排序函數
         setReviews(sortReviews(fetchedReviews));
       }
