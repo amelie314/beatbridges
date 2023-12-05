@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
-import { useUserContext } from "../contexts/UserContext";
+import { useAuthState } from "react-firebase-hooks/auth";
 import {
   collection,
   query,
@@ -33,18 +33,43 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
 }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
   const [userDetails, setUserDetails] = useState({});
-  const { userInfo } = useUserContext();
+  const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
 
   useEffect(() => {
     const fetchFavoriteReviews = async () => {
+      if (!user) {
+        console.error("User not logged in or undefined");
+        return;
+      }
+
       const reviews: Review[] = [];
       const details = {};
       for (const reviewId of favoriteReviewIds) {
+        // 獲取評論數據
         const reviewRef = doc(db, "reviews", reviewId);
         const reviewSnap = await getDoc(reviewRef);
         if (reviewSnap.exists()) {
           const reviewData = reviewSnap.data() as any;
-          reviews.push({ id: reviewSnap.id, ...reviewData });
+
+          // 獲取收藏時間
+          const favQuery = query(
+            collection(db, "userFavorites"),
+            where("userId", "==", user.uid),
+            where("reviewId", "==", reviewId)
+          );
+          const favQuerySnapshot = await getDocs(favQuery);
+          let favoritedAtTimestamp;
+          if (!favQuerySnapshot.empty) {
+            const favData = favQuerySnapshot.docs[0].data();
+            favoritedAtTimestamp = favData.favoritedAt.toDate().getTime();
+          }
+
+          reviews.push({
+            ...reviewData,
+            id: reviewSnap.id,
+            createdAt: reviewData.createdAt.toDate().getTime(),
+            favoritedAt: favoritedAtTimestamp,
+          });
 
           // 加載每個評論的用戶詳細信息
           const userRef = doc(db, "users", reviewData.userId);
@@ -57,14 +82,18 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
           }
         }
       }
+
+      // 按收藏時間排序
+      reviews.sort((a, b) => (b.favoritedAt || 0) - (a.favoritedAt || 0));
+
       setFavoriteReviews(reviews);
       setUserDetails(details);
     };
 
-    if (favoriteReviewIds && favoriteReviewIds.length > 0) {
+    if (favoriteReviewIds.length > 0) {
       fetchFavoriteReviews();
     }
-  }, [favoriteReviewIds, userInfo]); // 添加 userInfo 作為依賴
+  }, [favoriteReviewIds, currentUserId]);
 
   const handleRemoveFavorite = async (reviewId) => {
     if (!auth.currentUser) return; // 确保用户已登录

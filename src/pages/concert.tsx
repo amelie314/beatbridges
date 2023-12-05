@@ -181,9 +181,9 @@ function ConcertPage({ venues }) {
           text: doc.data().text,
           userId: doc.data().userId,
           createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
-          favoritedAt: doc.data().favoritedAt
-            ? doc.data().favoritedAt.toDate().getTime()
-            : undefined, // 可選，同樣轉換
+          // favoritedAt: doc.data().favoritedAt
+          //   ? doc.data().favoritedAt.toDate().getTime()
+          //   : undefined, // 可選，同樣轉換
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
@@ -272,6 +272,7 @@ function ConcertPage({ venues }) {
       await addDoc(favoritesRef, {
         userId: user.uid,
         reviewId: reviewId,
+        favoritedAt: serverTimestamp(), // 儲存收藏的時間戳
       });
     }
 
