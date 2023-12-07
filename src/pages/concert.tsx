@@ -20,6 +20,7 @@ import {
   addDoc,
   deleteDoc,
   query,
+  setDoc,
   where,
   serverTimestamp,
 } from "firebase/firestore";
@@ -115,12 +116,31 @@ function ConcertPage({ venues }) {
 
   // 處理點讚
   const handleLike = async (reviewId) => {
-    const reviewRef = doc(db, "reviews", reviewId);
-    await updateDoc(reviewRef, { likes: increment(1) });
+    if (!user) {
+      setShowLoginModal(true); // 如果用户未登錄，顯示登錄對話框
+      return;
+    }
 
+    const reviewRef = doc(db, "reviews", reviewId);
+    const userLikeRef = doc(db, "userLikes", `${user.uid}_${reviewId}`);
+    const userLikeDoc = await getDoc(userLikeRef);
+
+    if (userLikeDoc.exists()) {
+      // 如果用戶已經點過讚，則取消讚（減少讚數）
+      await deleteDoc(userLikeRef);
+      await updateDoc(reviewRef, { likes: increment(-1) });
+    } else {
+      // 如果用戶未點過讚，則點讚（增加讚數）
+      await setDoc(userLikeRef, {
+        userId: user.uid,
+        reviewId: reviewId,
+      });
+      await updateDoc(reviewRef, { likes: increment(1) });
+    }
+
+    // 更新 reviews 狀態
     const updatedReviewDoc = await getDoc(reviewRef);
     const updatedLikes = updatedReviewDoc.data()?.likes;
-
     setReviews(
       reviews.map((review) =>
         review.id === reviewId ? { ...review, likes: updatedLikes } : review
@@ -178,6 +198,7 @@ function ConcertPage({ venues }) {
         const querySnapshot = await getDocs(q);
         let fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
+          username: doc.data().username,
           text: doc.data().text,
           userId: doc.data().userId,
           createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
@@ -197,7 +218,6 @@ function ConcertPage({ venues }) {
     }
   }, [selectedVenueId]);
 
-  //刪除評論
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm("確定要刪除這則評論嗎？")) {
       await deleteDoc(doc(db, "reviews", reviewId));
@@ -251,6 +271,7 @@ function ConcertPage({ venues }) {
       console.error("User is not logged in.");
       return;
     }
+
     // 檢查評論是否已經被當前用戶收藏
     const favoritesRef = collection(db, "userFavorites");
     const q = query(
