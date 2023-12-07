@@ -9,6 +9,8 @@ import ReviewList from "../components/ReviewList";
 //
 import { Venue } from "../types/types";
 import { Review } from "../types/types";
+// import LoginModal from "../components/LoginModal";
+import { increment, updateDoc } from "firebase/firestore";
 
 import {
   collection,
@@ -18,6 +20,7 @@ import {
   addDoc,
   deleteDoc,
   query,
+  setDoc,
   where,
   serverTimestamp,
 } from "firebase/firestore";
@@ -57,16 +60,16 @@ function ConcertPage({ venues }) {
   const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
   const router = useRouter();
-
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login"); // 如果不在加載過程中，且用戶未登錄，則導向至登錄頁面
-    }
-  }, [user, loading, router]); // 確保依賴項中包含用戶和加載狀態
+  const [showLoginModal, setShowLoginModal] = useState(false);
+  const [reviewsLoading, setReviewsLoading] = useState(true); // 加載狀態
 
   // 确保定義了 handleVenueSelected 函數来更新 selectedVenueId 狀態
   const handleVenueSelected = (venueId) => {
     setSelectedVenueId(venueId); // 設置選中的 venueId
+  };
+  //排序函數
+  const sortReviews = (reviews: Review[]) => {
+    return reviews.sort((a, b) => b.createdAt - a.createdAt); // 降序排序
   };
 
   // 當用戶提交評論時，確保 venueId 被傳遞给 handleAddReview
@@ -83,39 +86,67 @@ function ConcertPage({ venues }) {
     }
 
     try {
-      // 从 Firebase 获取用户信息，包括 username
-      const userDoc = await getDoc(doc(db, "users", user.uid));
-      const username = userDoc.data()?.username; // 这里获取了 username
-      // 創建新評論對象
+      const currentTime = new Date().getTime(); // 獲取客戶端當前時間
       const newReview = {
         userId: user.uid,
         venueId: venueId,
         text: text,
         performanceName: performanceName,
         date: date,
-        createdAt: serverTimestamp(),
+        createdAt: currentTime, // 使用客戶端時間而不是 serverTimestamp()
+        likes: 0,
       };
 
-      // 將新評論添加到 Firestore
-      const docRef = await addDoc(collection(db, "reviews"), newReview);
+      //   const docRef = await addDoc(collection(db, "reviews"), newReview);
+      //   setReviews([...reviews, { id: docRef.id, ...newReview }]);
+      // } catch (error) {
+      //   console.error("Error adding review:", error);
+      // }
+      const docRef = await addDoc(collection(db, "reviews"), {
+        ...newReview,
+        createdAt: serverTimestamp(), // 確保 Firestore 中的記錄使用服務器時間戳
+      });
 
-      // 添加成功後，更新評論列表狀態
-      setReviews((prevReviews) => [
-        ...prevReviews,
-        {
-          id: docRef.id,
-          ...newReview,
-          createdAt: new Date(), // 因為 serverTimestamp() 需要從服務器同步，這裡只能先用客戶端時間
-        },
-      ]);
-      alert("評論已成功提交！");
+      // 將新評論添加到評論陣列，並根據 createdAt 進行排序
+      setReviews(sortReviews([...reviews, { ...newReview, id: docRef.id }]));
     } catch (error) {
       console.error("Error adding review:", error);
     }
   };
 
-  //
+  // 處理點讚
+  const handleLike = async (reviewId) => {
+    if (!user) {
+      setShowLoginModal(true); // 如果用户未登錄，顯示登錄對話框
+      return;
+    }
 
+    const reviewRef = doc(db, "reviews", reviewId);
+    const userLikeRef = doc(db, "userLikes", `${user.uid}_${reviewId}`);
+    const userLikeDoc = await getDoc(userLikeRef);
+
+    if (userLikeDoc.exists()) {
+      // 如果用戶已經點過讚，則取消讚（減少讚數）
+      await deleteDoc(userLikeRef);
+      await updateDoc(reviewRef, { likes: increment(-1) });
+    } else {
+      // 如果用戶未點過讚，則點讚（增加讚數）
+      await setDoc(userLikeRef, {
+        userId: user.uid,
+        reviewId: reviewId,
+      });
+      await updateDoc(reviewRef, { likes: increment(1) });
+    }
+
+    // 更新 reviews 狀態
+    const updatedReviewDoc = await getDoc(reviewRef);
+    const updatedLikes = updatedReviewDoc.data()?.likes;
+    setReviews(
+      reviews.map((review) =>
+        review.id === reviewId ? { ...review, likes: updatedLikes } : review
+      )
+    );
+  };
   useEffect(() => {
     const fetchVenues = async () => {
       if (activeCounty) {
@@ -165,28 +196,79 @@ function ConcertPage({ venues }) {
         const reviewsRef = collection(db, "reviews");
         const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
         const querySnapshot = await getDocs(q);
-        const fetchedReviews = querySnapshot.docs.map((doc) => ({
+        let fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          userName: doc.data().userName,
+          username: doc.data().username,
           text: doc.data().text,
           userId: doc.data().userId,
-          createdAt: doc.data().createdAt,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
+          // favoritedAt: doc.data().favoritedAt
+          //   ? doc.data().favoritedAt.toDate().getTime()
+          //   : undefined, // 可選，同樣轉換
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
           date: doc.data().date,
+          likes: doc.data().likes,
         }));
-        setReviews(fetchedReviews as Review[]); // 使用类型断言
+
+        // 對評論按日期進行降序排序
+        setReviews(sortReviews(fetchedReviews as Review[]));
       };
       fetchReviews().catch(console.error);
     }
   }, [selectedVenueId]);
 
+  useEffect(() => {
+    const fetchAndProcessReviews = async () => {
+      if (selectedVenueId) {
+        const reviewsRef = collection(db, "reviews");
+        const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
+        const querySnapshot = await getDocs(q);
+        let fetchedReviews = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          text: doc.data().text,
+          userId: doc.data().userId,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
+          venueId: doc.data().venueId,
+          performanceName: doc.data().performanceName,
+          date: doc.data().date,
+          likes: doc.data().likes,
+        }));
+
+        // 如果用户已登錄，檢查評論的點讚狀態
+        if (user) {
+          const userLikesRef = collection(db, "userLikes");
+          const userLikesQuery = query(
+            userLikesRef,
+            where("userId", "==", user.uid)
+          );
+          const userLikesSnapshot = await getDocs(userLikesQuery);
+          const likedReviewIds = new Set(
+            userLikesSnapshot.docs.map((doc) => doc.data().reviewId)
+          );
+
+          fetchedReviews = fetchedReviews.map((review) => ({
+            ...review,
+            isLikedByCurrentUser: likedReviewIds.has(review.id),
+          }));
+        }
+
+        // 使用排序函數並更新評論狀態
+        setReviews(sortReviews(fetchedReviews as Review[]));
+      }
+    };
+
+    fetchAndProcessReviews().catch(console.error);
+  }, [selectedVenueId, user]);
+
+  //刪除評論
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm("確定要刪除這則評論嗎？")) {
       await deleteDoc(doc(db, "reviews", reviewId));
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
+
   useEffect(() => {
     const fetchReviewsAndFavorites = async () => {
       // 清空評論列表
@@ -209,17 +291,18 @@ function ConcertPage({ venues }) {
         // 組合評論數據和收藏狀態
         const fetchedReviews = querySnapshot.docs.map((doc) => ({
           id: doc.id,
-          userName: doc.data().userName,
           text: doc.data().text,
           userId: doc.data().userId,
           isFavorite: favoriteIds.has(doc.id),
-          createdAt: doc.data().createdAt,
+          date: doc.data().date,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
           venueId: doc.data().venueId,
           performanceName: doc.data().performanceName,
-          date: doc.data().date,
+          likes: doc.data().likes,
         }));
 
-        setReviews(fetchedReviews);
+        // 使用排序函數
+        setReviews(sortReviews(fetchedReviews));
       }
     };
 
@@ -228,9 +311,11 @@ function ConcertPage({ venues }) {
 
   const handleToggleFavorite = async (reviewId) => {
     if (!user) {
+      setShowLoginModal(true); // 如果用户未登錄，顯示登錄對話框
       console.error("User is not logged in.");
       return;
     }
+
     // 檢查評論是否已經被當前用戶收藏
     const favoritesRef = collection(db, "userFavorites");
     const q = query(
@@ -252,6 +337,7 @@ function ConcertPage({ venues }) {
       await addDoc(favoritesRef, {
         userId: user.uid,
         reviewId: reviewId,
+        favoritedAt: serverTimestamp(), // 儲存收藏的時間戳
       });
     }
 
@@ -269,19 +355,14 @@ function ConcertPage({ venues }) {
   return (
     <div className="min-h-screen flex bg-primary-color">
       {/* Flex container */}
-      <div className="flex w-full max-w-5xl mx-auto">
+      <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto">
         {/* Left side: Map component */}
-        <div className="w-full md:w-1/2 p-6">
+        <div className="w-full md:w-1/2 p-10">
           <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
-          <Link href="/">
-            <div className="inline-block px-3 py-1 bg-green-500 text-white rounded hover:bg-tertiary-color">
-              返回首頁
-            </div>
-          </Link>
         </div>
 
         {/* Right side: Selection and ReviewForm */}
-        <div className="w-full md:w-1/2 p-6 flex flex-col">
+        <div className="w-full  md:w-1/3 p-5 flex flex-col">
           {/* Selection menus */}
           <div className="flex flex-col space-y-4">
             {/* 展演空間選擇菜單的組件 */}
@@ -300,12 +381,24 @@ function ConcertPage({ venues }) {
                 onAddReview={handleAddReview}
               />
             )}
+
             <ReviewList
               reviews={reviews}
               currentUserId={user?.uid}
               onDelete={handleDeleteReview}
               onToggleFavorite={handleToggleFavorite}
+              onLike={handleLike}
             />
+
+            {showLoginModal && (
+              <LoginModal
+                show={showLoginModal}
+                onClose={() => setShowLoginModal(false)}
+                onShowSignup={() => {
+                  /* 如果你需要处理注册逻辑 */
+                }}
+              />
+            )}
           </div>
         </div>
       </div>
