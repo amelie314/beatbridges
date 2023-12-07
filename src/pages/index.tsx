@@ -8,11 +8,8 @@ import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
-<<<<<<< HEAD
-=======
 import dynamic from "next/dynamic";
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
->>>>>>> feature/comments-complete
 
 // 將login函數改為接收email, password和狀態更新函數
 async function login(
@@ -30,15 +27,28 @@ async function login(
 }
 export default function Home() {
   const [showSignup, setShowSignup] = useState(false); // 將狀態放在Home組件內部
-<<<<<<< HEAD
-=======
   const [runJoyride, setRunJoyride] = useState(true);
 
   const joyrideSteps = [
     {
       target: ".welcome",
-      content: "Hey there! Ready to rock the Taiwan Concert Map? 🎸  ",
+      content: "Welcome to explore Taiwan Concert Venues Map ✨ ",
       showProgress: true,
+      styles: {
+        options: {
+          backgroundColor: "black", // 黑色背景
+          borderRadius: "8px", // 圓角邊框
+          width: "250px", // 調整寬度
+          padding: "10px", // 內部填充
+          borderWidth: "2px", // 邊框寬度
+          borderColor: "white", // 白色邊框
+          color: "white", // 文字顏色
+        },
+      },
+    },
+    {
+      target: ".map-step",
+      content: "",
       styles: {
         options: {
           backgroundColor: "black", // 黑色背景
@@ -54,23 +64,7 @@ export default function Home() {
     // 更多步驟...
     {
       target: ".login-step",
-      content: "Join the crew! Sign in to connect and share your vibe ✨",
-      styles: {
-        options: {
-          backgroundColor: "black", // 黑色背景
-          borderRadius: "8px", // 圓角邊框
-          width: "250px", // 調整寬度
-          padding: "10px", // 內部填充
-          borderWidth: "2px", // 邊框寬度
-          borderColor: "white", // 白色邊框
-          color: "white", // 文字顏色
-        },
-      },
-    },
-    {
-      target: ".map-step",
-      content:
-        "Discover where the magic happens! Pinpoint cool venues and events. 📍🎶",
+      content: "Let's login to explore more!",
       styles: {
         options: {
           backgroundColor: "black", // 黑色背景
@@ -91,7 +85,6 @@ export default function Home() {
       setRunJoyride(false);
     }
   };
->>>>>>> feature/comments-complete
 
   // 使用login函數時需要傳入setError
   const handleLogin = (email: string, password: string) =>
@@ -140,8 +133,6 @@ export default function Home() {
           Enter
         </div>
       </Link>
-<<<<<<< HEAD
-=======
       <div className="welcome"></div>
       <Joyride
         steps={joyrideSteps}
@@ -157,7 +148,6 @@ export default function Home() {
         showProgress={true}
         continuous={true}
       />
->>>>>>> feature/comments-complete
     </div>
   );
 }
