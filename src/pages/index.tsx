@@ -32,51 +32,51 @@ export default function Home() {
   const joyrideSteps = [
     {
       target: ".welcome",
-      content: "Welcome to explore Taiwan Concert Venues Map ✨ ",
-      showProgress: true,
+      content: "Hey there! Ready to rock the Taiwan Concert Map? 🎸",
       styles: {
         options: {
-          backgroundColor: "black", // 黑色背景
-          borderRadius: "8px", // 圓角邊框
-          width: "250px", // 調整寬度
-          padding: "10px", // 內部填充
-          borderWidth: "2px", // 邊框寬度
-          borderColor: "white", // 白色邊框
-          color: "white", // 文字顏色
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
+        },
+      },
+    },
+    {
+      target: ".login-step",
+      content: "Join the crew! Sign in to connect and share your vibe. 🌟",
+      styles: {
+        options: {
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
         },
       },
     },
     {
       target: ".map-step",
-      content: "",
+      content:
+        "Discover where the magic happens! Pinpoint cool venues and events. 📍🎶",
       styles: {
         options: {
-          backgroundColor: "black", // 黑色背景
-          borderRadius: "8px", // 圓角邊框
-          width: "250px", // 調整寬度
-          padding: "10px", // 內部填充
-          borderWidth: "2px", // 邊框寬度
-          borderColor: "white", // 白色邊框
-          color: "white", // 文字顏色
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
         },
       },
     },
-    // 更多步驟...
-    {
-      target: ".login-step",
-      content: "Let's login to explore more!",
-      styles: {
-        options: {
-          backgroundColor: "black", // 黑色背景
-          borderRadius: "8px", // 圓角邊框
-          width: "250px", // 調整寬度
-          padding: "10px", // 內部填充
-          borderWidth: "2px", // 邊框寬度
-          borderColor: "white", // 白色邊框
-          color: "white", // 文字顏色
-        },
-      },
-    },
+    // Additional steps can be added based on other features of your site
   ];
 
   const handleJoyrideCallback = (data) => {
