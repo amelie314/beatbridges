@@ -20,6 +20,7 @@ import {
   addDoc,
   deleteDoc,
   query,
+  setDoc,
   where,
   serverTimestamp,
 } from "firebase/firestore";
@@ -115,18 +116,38 @@ function ConcertPage({ venues }) {
 
   // 處理點讚
   const handleLike = async (reviewId) => {
-    const reviewRef = doc(db, "reviews", reviewId);
-    await updateDoc(reviewRef, { likes: increment(1) });
+    if (!user) {
+      setShowLoginModal(true); // 如果用户未登錄，顯示登錄對話框
+      return;
+    }
 
+    const reviewRef = doc(db, "reviews", reviewId);
+    const userLikeRef = doc(db, "userLikes", `${user.uid}_${reviewId}`);
+    const userLikeDoc = await getDoc(userLikeRef);
+
+    if (userLikeDoc.exists()) {
+      // 如果已點讚，取消讚
+      await deleteDoc(userLikeRef);
+      await updateDoc(reviewRef, { likes: increment(-1) });
+    } else {
+      // 如果未點讚，增加讚
+      await setDoc(userLikeRef, {
+        userId: user.uid,
+        reviewId: reviewId,
+      });
+      await updateDoc(reviewRef, { likes: increment(1) });
+    }
+
+    // 更新 reviews 狀態
     const updatedReviewDoc = await getDoc(reviewRef);
     const updatedLikes = updatedReviewDoc.data()?.likes;
-
     setReviews(
       reviews.map((review) =>
         review.id === reviewId ? { ...review, likes: updatedLikes } : review
       )
     );
   };
+
   useEffect(() => {
     const fetchVenues = async () => {
       if (activeCounty) {
@@ -197,14 +218,57 @@ function ConcertPage({ venues }) {
     }
   }, [selectedVenueId]);
 
-  //刪除評論
+  useEffect(() => {
+    const fetchAndProcessReviews = async () => {
+      if (selectedVenueId) {
+        const reviewsRef = collection(db, "reviews");
+        const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
+        const querySnapshot = await getDocs(q);
+        let fetchedReviews = querySnapshot.docs.map((doc) => ({
+          id: doc.id,
+          text: doc.data().text,
+          userId: doc.data().userId,
+          createdAt: doc.data().createdAt.toDate().getTime(), // 將 Timestamp 轉換為毫秒時間戳
+          venueId: doc.data().venueId,
+          performanceName: doc.data().performanceName,
+          date: doc.data().date,
+          likes: doc.data().likes,
+        }));
+
+        // 如果用户已登錄，檢查評論的點讚狀態
+        if (user) {
+          const userLikesRef = collection(db, "userLikes");
+          const userLikesQuery = query(
+            userLikesRef,
+            where("userId", "==", user.uid)
+          );
+          const userLikesSnapshot = await getDocs(userLikesQuery);
+          const likedReviewIds = new Set(
+            userLikesSnapshot.docs.map((doc) => doc.data().reviewId)
+          );
+
+          fetchedReviews = fetchedReviews.map((review) => ({
+            ...review,
+            isLikedByCurrentUser: likedReviewIds.has(review.id),
+          }));
+        }
+
+        // 使用排序函數並更新評論狀態
+        setReviews(sortReviews(fetchedReviews as Review[]));
+      }
+    };
+
+    fetchAndProcessReviews().catch(console.error);
+  }, [selectedVenueId, user]);
+
+  //刪除評
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm("確定要刪除這則評論嗎？")) {
       await deleteDoc(doc(db, "reviews", reviewId));
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
-
+  //
   useEffect(() => {
     const fetchReviewsAndFavorites = async () => {
       // 清空評論列表
@@ -251,6 +315,7 @@ function ConcertPage({ venues }) {
       console.error("User is not logged in.");
       return;
     }
+
     // 檢查評論是否已經被當前用戶收藏
     const favoritesRef = collection(db, "userFavorites");
     const q = query(

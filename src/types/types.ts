@@ -29,6 +29,7 @@ export interface Review {
   likes: number;
   createdAt: number; // 使用 number 存儲毫秒時間戳
   favoritedAt?: number; // 可選，因為不是每個評論都會被收藏
+  isLikedByCurrentUser?: boolean;
 }
 export interface ReviewWithVenue extends Review {
   venueName: string;

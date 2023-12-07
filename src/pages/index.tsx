@@ -8,6 +8,8 @@ import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
+import dynamic from "next/dynamic";
+const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 // 將login函數改為接收email, password和狀態更新函數
 async function login(
@@ -25,6 +27,64 @@ async function login(
 }
 export default function Home() {
   const [showSignup, setShowSignup] = useState(false); // 將狀態放在Home組件內部
+  const [runJoyride, setRunJoyride] = useState(true);
+
+  const joyrideSteps = [
+    {
+      target: ".welcome",
+      content: "Hey there! Ready to rock the Taiwan Concert Map? 🎸",
+      styles: {
+        options: {
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
+        },
+      },
+    },
+    {
+      target: ".login-step",
+      content: "Join the crew! Sign in to connect and share your vibe. 🌟",
+      styles: {
+        options: {
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
+        },
+      },
+    },
+    {
+      target: ".map-step",
+      content:
+        "Discover where the magic happens! Pinpoint cool venues and events. 📍🎶",
+      styles: {
+        options: {
+          backgroundColor: "black",
+          borderRadius: "8px",
+          width: "250px",
+          padding: "10px",
+          borderWidth: "2px",
+          borderColor: "white",
+          color: "white",
+        },
+      },
+    },
+    // Additional steps can be added based on other features of your site
+  ];
+
+  const handleJoyrideCallback = (data) => {
+    const { status } = data;
+    if (status === "finished" || status === "skipped") {
+      setRunJoyride(false);
+    }
+  };
 
   // 使用login函數時需要傳入setError
   const handleLogin = (email: string, password: string) =>
@@ -73,6 +133,21 @@ export default function Home() {
           Enter
         </div>
       </Link>
+      <div className="welcome"></div>
+      <Joyride
+        steps={joyrideSteps}
+        run={runJoyride}
+        callback={handleJoyrideCallback}
+        locale={{
+          last: "Finish", // 最後一步的按鈕文本
+          next: "Next", // 下一步的按鈕文本
+          skip: "Skip", // 跳過按鈕文本
+          close: "Close", // 關閉按鈕文本
+        }}
+        showSkipButton={true}
+        showProgress={true}
+        continuous={true}
+      />
     </div>
   );
 }

@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { auth, db } from "../firebaseConfig";
 import { useAuthState } from "react-firebase-hooks/auth";
+import { useUserContext } from "../contexts/UserContext";
 import {
   collection,
   query,
@@ -33,7 +34,8 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
 }) => {
   const [favoriteReviews, setFavoriteReviews] = useState<Review[]>([]);
   const [userDetails, setUserDetails] = useState({});
-  const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
+  const [user, loading, error] = useAuthState(auth);
+  const { userInfo } = useUserContext();
 
   useEffect(() => {
     const fetchFavoriteReviews = async () => {
@@ -45,13 +47,12 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
       const reviews: Review[] = [];
       const details = {};
       for (const reviewId of favoriteReviewIds) {
-        // 獲取評論數據
         const reviewRef = doc(db, "reviews", reviewId);
         const reviewSnap = await getDoc(reviewRef);
         if (reviewSnap.exists()) {
           const reviewData = reviewSnap.data() as any;
 
-          // 獲取收藏時間
+          // 獲取收藏時間戳
           const favQuery = query(
             collection(db, "userFavorites"),
             where("userId", "==", user.uid),
@@ -71,13 +72,13 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
             favoritedAt: favoritedAtTimestamp,
           });
 
-          // 加載每個評論的用戶詳細信息
           const userRef = doc(db, "users", reviewData.userId);
           const userSnap = await getDoc(userRef);
           if (userSnap.exists()) {
+            let userData = userSnap.data();
             details[reviewData.userId] = {
-              photoURL: userSnap.data()?.photoURL || "default-avatar.png",
-              userName: userSnap.data()?.username || "匿名用户",
+              photoURL: userData.photoURL || "default-avatar.png",
+              userName: userData.username || "匿名用户",
             };
           }
         }
@@ -93,12 +94,12 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
     if (favoriteReviewIds.length > 0) {
       fetchFavoriteReviews();
     }
-  }, [favoriteReviewIds, currentUserId]);
+  }, [favoriteReviewIds, userInfo]);
 
   const handleRemoveFavorite = async (reviewId) => {
-    if (!auth.currentUser) return; // 确保用户已登录
+    if (!auth.currentUser) return; // 確保用户已登錄
 
-    // 在 userFavorites 集合中查找与当前用户和评论ID相符的文档
+    // 在 userFavorites 集合中查找與當前用户和評論ID相符的文檔
     const favoritesRef = collection(db, "userFavorites");
     const q = query(
       favoritesRef,
@@ -107,12 +108,12 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
     );
 
     const querySnapshot = await getDocs(q);
-    // 如果找到了相符的文档，则删除它们
+    // 如果找到了相符的文檔，则刪除他們
     querySnapshot.forEach(async (docSnapshot) => {
       await deleteDoc(docSnapshot.ref);
     });
 
-    // 更新状态以移除UI上的收藏评论
+    // 更新狀態以移除UI上的收藏評論
     setFavoriteReviews((prev) =>
       prev.filter((review) => review.id !== reviewId)
     );

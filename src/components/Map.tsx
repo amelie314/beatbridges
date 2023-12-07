@@ -419,11 +419,14 @@ const Map = (props) => {
         className="tooltip"
         style={{
           display: isTooltipVisible ? "block" : "none",
-          backgroundColor: "primary-color",
+          backgroundColor: "#29255A", // 背景色設為白色
+          color: "white", // 文字顏色設為黑色
+          borderRadius: "5px", // 圓角的大小，可以根據需求調整
           left: tooltipPosition.x,
           top: tooltipPosition.y,
           position: "absolute",
-          fontSize: "12px",
+          fontSize: "11px",
+          padding: "4px",
         }}
       >
         {tooltipContent}
