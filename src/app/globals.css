@@ -57,3 +57,16 @@ body {
   opacity: 1; /* 滑入後設為完全不透明 */
 }
 
+.react-joyride__overlay {
+  z-index: 1000; /* 一個足夠高的 z-index 值 */
+  background-color: black; /* 黑色背景 */
+  color: white; /* 白色文字 */
+  border: 2px solid white; /* 白色邊框 */
+}
+.react-joyride__tooltip {
+  color: white !important; /* 強制白色文字 */
+}
+
+/* .react-joyride__beacon {
+  /* 自定義信標（紅點點）樣式 */
+

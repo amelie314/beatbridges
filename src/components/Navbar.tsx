@@ -43,7 +43,7 @@ const Navbar = () => {
         {currentUser ? (
           <div className="flex items-center space-x-3">
             <Link href="/concert">
-              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+              <div className=" hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
               </div>
             </Link>
@@ -62,13 +62,13 @@ const Navbar = () => {
         ) : (
           <div className="flex items-center space-x-3">
             <Link href="/concert">
-              <div className="hover:bg-show-color px-3 py-1 rounded font-bold">
+              <div className="map-step  hover:bg-show-color px-3 py-1 rounded font-bold">
                 <FontAwesomeIcon icon={faMapLocationDot} />
               </div>
             </Link>
             <button
               onClick={() => setShowLoginModal(true)}
-              className="hover:bg-show-color px-3 py-1 rounded font-bold"
+              className="login-step hover:bg-show-color px-3 py-1 rounded font-bold"
             >
               <FontAwesomeIcon icon={faUserPlus} />
             </button>
