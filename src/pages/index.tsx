@@ -79,6 +79,14 @@ export default function Home() {
     // Additional steps can be added based on other features of your site
   ];
 
+  // Demo 登入函數
+  const handleDemoLogin = () => {
+    const demoEmail = "demo@example.com"; // 預設的測試帳號電子郵件
+    const demoPassword = "demoPassword"; // 預設的測試帳號密碼
+
+    handleLogin(demoEmail, demoPassword);
+  };
+
   const handleJoyrideCallback = (data) => {
     const { status } = data;
     if (status === "finished" || status === "skipped") {
@@ -110,16 +118,16 @@ export default function Home() {
       </div>
       <div className="text-white text-3xl"></div>
       <div
-        className="absolute top-[570px] right-[20px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-white leading-[0.8]"
+        className="absolute top-[570px] right-[20px] md:top-[570px] md:right-[20px] sm:top-[450px] sm:right-[10px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-white leading-[0.8]"
         style={{ transformOrigin: "top right" }}
       >
         DRINK THE
         <br />
-        MAGIC-
+        POISON-
       </div>
       {/* 歡迎訊息部分 */}
       <div
-        className="absolute top-[230px] left-[200px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-tertiary-color leading-[0.8]"
+        className="absolute top-[230px] left-[200px] md:top-[250px] md:left-[200px] sm:top-[200px] sm:left-[150px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-tertiary-color leading-[0.8]"
         style={{ transformOrigin: "top left" }}
       >
         FROM THE
@@ -128,10 +136,20 @@ export default function Home() {
         <br /> <FontAwesomeIcon icon={faForwardStep} /> ıı|ıı|ıı|ıı 30 &quot;
       </div>
 
-      <Link href="/concert">
+      {/* <Link href="/concert">
         <div className="absolute bottom-7 left-[170px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg">
-          Enter
+          Enter 
         </div>
+      </Link> */}
+
+      {/* Demo 登入按鈕 */}
+      <Link href="/concert">
+        <button
+          onClick={handleDemoLogin}
+          className="absolute bottom-7 left-[170px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg"
+        >
+          Try Now!
+        </button>
       </Link>
       <div className="welcome"></div>
       <Joyride
