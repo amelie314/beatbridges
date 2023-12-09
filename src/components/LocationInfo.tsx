@@ -107,7 +107,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 
   return (
     <div className="mb-4">
-      <div>目前選擇的縣市為： {activeCounty}</div>
+      <div className="text-white">目前選擇的縣市為： {activeCounty}</div>
       <div className="mt-4">
         <label
           htmlFor="district-select"

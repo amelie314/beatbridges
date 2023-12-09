@@ -10,10 +10,23 @@ const Map = (props) => {
   const [tooltipContent, setTooltipContent] = useState("");
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
 
+  const isMobileDevice = () => {
+    return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(
+      navigator.userAgent
+    );
+  };
+
   const handlePathClick = (countyName) => {
     // console.log("點擊", countyName); // 加入此行來調試
     setActiveCounty(countyName);
     setIsTooltipVisible(false);
+    // 檢查是否為手機裝置
+    if (isMobileDevice()) {
+      // 在這裡添加你的提醒視窗邏輯
+      alert(
+        `You have selected 📍${countyName}. Please continue to select a specific location!`
+      );
+    }
   };
 
   // const handleMouseMove = (e, countyName) => {

@@ -59,21 +59,23 @@ const ReviewList = ({
             </div>
             <div className="ml-4 flex-1 min-w-0">
               <div className="flex items-center justify-between">
-                <h4 className="text-sm font-semibold neon-text truncate">
+                <h4 className="text-sm text-gray-300 font-semibold neon-text truncate">
                   <Link
                     href={`/profile/${userDetails[review.userId]?.userName}`}
                   >
                     {userDetails[review.userId]?.userName}
                   </Link>
                 </h4>
-                <span className="text-xs neon-text truncate">
+                <span className="text-xs text-gray-300 neon-text truncate">
                   {review.date
                     ? new Date(review.date).toLocaleDateString("zh-TW")
                     : "未知日期"}
                 </span>
               </div>
               <div className="mt-2">
-                <p className="text-sm truncate">{review.performanceName}</p>
+                <p className="text-sm truncate text-gray-300">
+                  {review.performanceName}
+                </p>
                 <p className="text-sm text-gray-300 mt-1 break-words">
                   {review.text}
                 </p>
