@@ -16,9 +16,25 @@ const Map = (props) => {
     setIsTooltipVisible(false);
   };
 
+  // const handleMouseMove = (e, countyName) => {
+  //   // console.log("移入", countyName); // 加入此行來調試
+  //   setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+  //   setTooltipContent(countyName);
+  //   setIsTooltipVisible(true);
+  // };
   const handleMouseMove = (e, countyName) => {
-    // console.log("移入", countyName); // 加入此行來調試
-    setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+    let x, y;
+    if (e.type === "touchmove" || e.type === "touchstart") {
+      // 對於觸摸事件，使用 touches 陣列的第一個觸點來獲取位置
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    } else {
+      // 對於滑鼠事件，直接使用 pageX 和 pageY
+      x = e.pageX;
+      y = e.pageY;
+    }
+
+    setTooltipPosition({ x: x + 8, y: y - 35 });
     setTooltipContent(countyName);
     setIsTooltipVisible(true);
   };
@@ -60,6 +76,9 @@ const Map = (props) => {
             }}
             onMouseMove={(e) => handleMouseMove(e, "屏東縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "屏東市")}
+            onTouchMove={(e) => handleMouseMove(e, "屏東市")} // 如果需要在觸摸移動時也更新浮窗位置
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺南市"
