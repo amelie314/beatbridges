@@ -115,11 +115,11 @@ export default function Home() {
       >
         DRINK THE
         <br />
-        POISON-
+        MAGIC-
       </div>
       {/* 歡迎訊息部分 */}
       <div
-        className="absolute top-[250px] left-[200px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-tertiary-color leading-[0.8]"
+        className="absolute top-[230px] left-[200px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-tertiary-color leading-[0.8]"
         style={{ transformOrigin: "top left" }}
       >
         FROM THE

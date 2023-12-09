@@ -5,38 +5,64 @@ import React, { useState, useEffect } from "react";
 const Map = (props) => {
   // const [activeCounty, setActiveCounty] = useState(null);
   const { activeCounty, setActiveCounty } = props;
-  const [venues, setVenues] = useState([]);
+  // const [venues, setVenues] = useState([]);
   const [tooltipPosition, setTooltipPosition] = useState({ x: 0, y: 0 });
   const [tooltipContent, setTooltipContent] = useState("");
   const [isTooltipVisible, setIsTooltipVisible] = useState(false);
+  const [longPressTimer, setLongPressTimer] = useState<number | null>(null);
 
-  const handlePathClick = (countyName) => {
-    // console.log("點擊", countyName); // 加入此行來調試
-    setActiveCounty(countyName);
-    setIsTooltipVisible(false);
+  // const handlePathClick = (countyName) => {
+  //   // console.log("點擊", countyName); // 加入此行來調試
+  //   setActiveCounty(countyName);
+  //   setIsTooltipVisible(false);
+  // };
+
+  const handleMouseMove = (e, countyName) => {
+    // console.log("移入", countyName); // 加入此行來調試
+    setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+    setTooltipContent(countyName);
+    setIsTooltipVisible(true);
   };
-
   // const handleMouseMove = (e, countyName) => {
-  //   // console.log("移入", countyName); // 加入此行來調試
-  //   setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+  //   let x, y;
+  //   if (e.type === "touchmove" || e.type === "touchstart") {
+  //     // 對於觸摸事件，使用 touches 陣列的第一個觸點來獲取位置
+  //     x = e.touches[0].pageX;
+  //     y = e.touches[0].pageY;
+  //   } else {
+  //     // 對於滑鼠事件，直接使用 pageX 和 pageY
+  //     x = e.pageX;
+  //     y = e.pageY;
+  //   }
+
+  //   setTooltipPosition({ x: x + 8, y: y - 35 });
   //   setTooltipContent(countyName);
   //   setIsTooltipVisible(true);
   // };
-  const handleMouseMove = (e, countyName) => {
-    let x, y;
-    if (e.type === "touchmove" || e.type === "touchstart") {
-      // 對於觸摸事件，使用 touches 陣列的第一個觸點來獲取位置
-      x = e.touches[0].pageX;
-      y = e.touches[0].pageY;
-    } else {
-      // 對於滑鼠事件，直接使用 pageX 和 pageY
-      x = e.pageX;
-      y = e.pageY;
-    }
+  const handleClick = (countyName: string, e: React.MouseEvent) => {
+    setActiveCounty(countyName);
 
-    setTooltipPosition({ x: x + 8, y: y - 35 });
+    // 更新浮窗位置
+    const newX = e.pageX;
+    const newY = e.pageY;
+    setTooltipPosition({ x: newX, y: newY + 15 });
+
+    // 顯示浮窗
     setTooltipContent(countyName);
     setIsTooltipVisible(true);
+
+    // 清除之前的計時器（如果有）
+    if (longPressTimer !== null) {
+      clearTimeout(longPressTimer);
+    }
+
+    // 設置一個新的計時器，500 毫秒後隱藏浮窗
+    const timerId = window.setTimeout(() => {
+      setIsTooltipVisible(false);
+      setLongPressTimer(null);
+    }, 500);
+
+    setLongPressTimer(timerId);
   };
 
   const handleMouseOut = () => {
@@ -71,14 +97,11 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "屏東縣" ? "is-active" : ""
             }`}
-            onClick={() => {
-              handlePathClick("屏東縣");
+            onClick={(e) => {
+              handleClick("屏東縣", e);
             }}
             onMouseMove={(e) => handleMouseMove(e, "屏東縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "屏東市")}
-            onTouchMove={(e) => handleMouseMove(e, "屏東市")} // 如果需要在觸摸移動時也更新浮窗位置
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺南市"
@@ -93,12 +116,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺南市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("臺南市")}
+            onClick={(e) => handleClick("臺南市", e)}
             onMouseMove={(e) => handleMouseMove(e, "臺南市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "臺南市")}
-            onTouchMove={(e) => handleMouseMove(e, "臺南市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="宜蘭縣"
@@ -115,12 +135,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "宜蘭縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("宜蘭縣")}
+            onClick={(e) => handleClick("宜蘭縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "宜蘭縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "宜蘭縣")}
-            onTouchMove={(e) => handleMouseMove(e, "宜蘭縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="嘉義縣"
@@ -138,12 +155,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "嘉義縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("嘉義縣")}
+            onClick={(e) => handleClick("嘉義縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "嘉義縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "嘉義縣")}
-            onTouchMove={(e) => handleMouseMove(e, "嘉義縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺東縣"
@@ -165,12 +179,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺東縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("臺東縣")}
+            onClick={(e) => handleClick("臺東縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "臺東縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "臺東縣")}
-            onTouchMove={(e) => handleMouseMove(e, "臺東縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
 
           <path
@@ -182,12 +193,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "澎湖縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("澎湖縣")}
+            onClick={(e) => handleClick("澎湖縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "澎湖縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "澎湖縣")}
-            onTouchMove={(e) => handleMouseMove(e, "澎湖縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="金門縣"
@@ -198,12 +206,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "金門縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("金門縣")}
+            onClick={(e) => handleClick("金門縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "金門縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "金門縣")}
-            onTouchMove={(e) => handleMouseMove(e, "金門縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="連江縣"
@@ -216,12 +221,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "連江縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("連江縣")}
+            onClick={(e) => handleClick("連江縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "連江縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "連江縣")}
-            onTouchMove={(e) => handleMouseMove(e, "連江縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺北市"
@@ -231,12 +233,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺北市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("臺北市")}
+            onClick={(e) => handleClick("臺北市", e)}
             onMouseMove={(e) => handleMouseMove(e, "臺北市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "臺北市")}
-            onTouchMove={(e) => handleMouseMove(e, "臺北市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="嘉義市"
@@ -245,12 +244,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "嘉義市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("嘉義市")}
+            onClick={(e) => handleClick("嘉義市", e)}
             onMouseMove={(e) => handleMouseMove(e, "嘉義市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "嘉義市")}
-            onTouchMove={(e) => handleMouseMove(e, "嘉義市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺中市"
@@ -268,12 +264,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "臺中市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("臺中市")}
+            onClick={(e) => handleClick("臺中市", e)}
             onMouseMove={(e) => handleMouseMove(e, "臺中市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "臺中市")}
-            onTouchMove={(e) => handleMouseMove(e, "臺中市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="雲林縣"
@@ -287,12 +280,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "雲林縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("雲林縣")}
+            onClick={(e) => handleClick("雲林縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "雲林縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "雲林縣")}
-            onTouchMove={(e) => handleMouseMove(e, "雲林縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="高雄市"
@@ -312,12 +302,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "高雄市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("高雄市")}
+            onClick={(e) => handleClick("高雄市", e)}
             onMouseMove={(e) => handleMouseMove(e, "高雄市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "高雄市")}
-            onTouchMove={(e) => handleMouseMove(e, "高雄市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新北市"
@@ -335,12 +322,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新北市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("新北市")}
+            onClick={(e) => handleClick("新北市", e)}
             onMouseMove={(e) => handleMouseMove(e, "新北市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "新北市")}
-            onTouchMove={(e) => handleMouseMove(e, "新北市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新竹市"
@@ -350,12 +334,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新竹市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("新竹市")}
+            onClick={(e) => handleClick("新竹市", e)}
             onMouseMove={(e) => handleMouseMove(e, "新竹市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "新竹市")}
-            onTouchMove={(e) => handleMouseMove(e, "新竹市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新竹縣"
@@ -369,12 +350,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "新竹縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("新竹縣")}
+            onClick={(e) => handleClick("新竹縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "新竹縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "新竹縣")}
-            onTouchMove={(e) => handleMouseMove(e, "新竹縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="基隆市"
@@ -384,12 +362,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "基隆市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("基隆市")}
+            onClick={(e) => handleClick("基隆市", e)}
             onMouseMove={(e) => handleMouseMove(e, "基隆市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "基隆市")}
-            onTouchMove={(e) => handleMouseMove(e, "基隆市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="苗栗縣"
@@ -403,12 +378,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "苗栗縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("苗栗縣")}
+            onClick={(e) => handleClick("苗栗縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "苗栗縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "苗栗縣")}
-            onTouchMove={(e) => handleMouseMove(e, "苗栗縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="桃園市"
@@ -422,12 +394,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "桃園市" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("桃園市")}
+            onClick={(e) => handleClick("桃園市", e)}
             onMouseMove={(e) => handleMouseMove(e, "桃園市")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "桃園市")}
-            onTouchMove={(e) => handleMouseMove(e, "桃園市")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="彰化縣"
@@ -440,12 +409,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "彰化縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("彰化縣")}
+            onClick={(e) => handleClick("彰化縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "彰化縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "彰化縣")}
-            onTouchMove={(e) => handleMouseMove(e, "彰化縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="花蓮縣"
@@ -464,12 +430,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "花蓮縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("花蓮縣")}
+            onClick={(e) => handleClick("花蓮縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "花蓮縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "花蓮縣")}
-            onTouchMove={(e) => handleMouseMove(e, "花蓮縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="南投縣"
@@ -488,12 +451,9 @@ const Map = (props) => {
             className={`stroke-white cursor-pointer fill-transparent opacity-75 hover:opacity-100 hover:fill-[rgba(200,175,254,0.8)] ${
               activeCounty === "南投縣" ? "is-active" : ""
             }`}
-            onClick={() => handlePathClick("南投縣")}
+            onClick={(e) => handleClick("南投縣", e)}
             onMouseMove={(e) => handleMouseMove(e, "南投縣")}
             onMouseOut={handleMouseOut}
-            onTouchStart={(e) => handleMouseMove(e, "南投縣")}
-            onTouchMove={(e) => handleMouseMove(e, "南投縣")}
-            onTouchEnd={handleMouseOut}
           ></path>
         </svg>
       </div>
