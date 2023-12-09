@@ -16,9 +16,25 @@ const Map = (props) => {
     setIsTooltipVisible(false);
   };
 
+  // const handleMouseMove = (e, countyName) => {
+  //   // console.log("移入", countyName); // 加入此行來調試
+  //   setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+  //   setTooltipContent(countyName);
+  //   setIsTooltipVisible(true);
+  // };
   const handleMouseMove = (e, countyName) => {
-    // console.log("移入", countyName); // 加入此行來調試
-    setTooltipPosition({ x: e.pageX + 8, y: e.pageY - 35 });
+    let x, y;
+    if (e.type === "touchmove" || e.type === "touchstart") {
+      // 對於觸摸事件，使用 touches 陣列的第一個觸點來獲取位置
+      x = e.touches[0].pageX;
+      y = e.touches[0].pageY;
+    } else {
+      // 對於滑鼠事件，直接使用 pageX 和 pageY
+      x = e.pageX;
+      y = e.pageY;
+    }
+
+    setTooltipPosition({ x: x + 8, y: y - 35 });
     setTooltipContent(countyName);
     setIsTooltipVisible(true);
   };
@@ -60,6 +76,9 @@ const Map = (props) => {
             }}
             onMouseMove={(e) => handleMouseMove(e, "屏東縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "屏東市")}
+            onTouchMove={(e) => handleMouseMove(e, "屏東市")} // 如果需要在觸摸移動時也更新浮窗位置
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺南市"
@@ -77,6 +96,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("臺南市")}
             onMouseMove={(e) => handleMouseMove(e, "臺南市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "臺南市")}
+            onTouchMove={(e) => handleMouseMove(e, "臺南市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="宜蘭縣"
@@ -96,6 +118,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("宜蘭縣")}
             onMouseMove={(e) => handleMouseMove(e, "宜蘭縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "宜蘭縣")}
+            onTouchMove={(e) => handleMouseMove(e, "宜蘭縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="嘉義縣"
@@ -116,6 +141,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("嘉義縣")}
             onMouseMove={(e) => handleMouseMove(e, "嘉義縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "嘉義縣")}
+            onTouchMove={(e) => handleMouseMove(e, "嘉義縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺東縣"
@@ -140,6 +168,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("臺東縣")}
             onMouseMove={(e) => handleMouseMove(e, "臺東縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "臺東縣")}
+            onTouchMove={(e) => handleMouseMove(e, "臺東縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
 
           <path
@@ -154,6 +185,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("澎湖縣")}
             onMouseMove={(e) => handleMouseMove(e, "澎湖縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "澎湖縣")}
+            onTouchMove={(e) => handleMouseMove(e, "澎湖縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="金門縣"
@@ -167,6 +201,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("金門縣")}
             onMouseMove={(e) => handleMouseMove(e, "金門縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "金門縣")}
+            onTouchMove={(e) => handleMouseMove(e, "金門縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="連江縣"
@@ -182,6 +219,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("連江縣")}
             onMouseMove={(e) => handleMouseMove(e, "連江縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "連江縣")}
+            onTouchMove={(e) => handleMouseMove(e, "連江縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺北市"
@@ -194,6 +234,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("臺北市")}
             onMouseMove={(e) => handleMouseMove(e, "臺北市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "臺北市")}
+            onTouchMove={(e) => handleMouseMove(e, "臺北市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="嘉義市"
@@ -205,6 +248,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("嘉義市")}
             onMouseMove={(e) => handleMouseMove(e, "嘉義市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "嘉義市")}
+            onTouchMove={(e) => handleMouseMove(e, "嘉義市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="臺中市"
@@ -225,6 +271,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("臺中市")}
             onMouseMove={(e) => handleMouseMove(e, "臺中市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "臺中市")}
+            onTouchMove={(e) => handleMouseMove(e, "臺中市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="雲林縣"
@@ -241,6 +290,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("雲林縣")}
             onMouseMove={(e) => handleMouseMove(e, "雲林縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "雲林縣")}
+            onTouchMove={(e) => handleMouseMove(e, "雲林縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="高雄市"
@@ -263,6 +315,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("高雄市")}
             onMouseMove={(e) => handleMouseMove(e, "高雄市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "高雄市")}
+            onTouchMove={(e) => handleMouseMove(e, "高雄市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新北市"
@@ -283,6 +338,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("新北市")}
             onMouseMove={(e) => handleMouseMove(e, "新北市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "新北市")}
+            onTouchMove={(e) => handleMouseMove(e, "新北市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新竹市"
@@ -295,6 +353,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("新竹市")}
             onMouseMove={(e) => handleMouseMove(e, "新竹市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "新竹市")}
+            onTouchMove={(e) => handleMouseMove(e, "新竹市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="新竹縣"
@@ -311,6 +372,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("新竹縣")}
             onMouseMove={(e) => handleMouseMove(e, "新竹縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "新竹縣")}
+            onTouchMove={(e) => handleMouseMove(e, "新竹縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="基隆市"
@@ -323,6 +387,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("基隆市")}
             onMouseMove={(e) => handleMouseMove(e, "基隆市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "基隆市")}
+            onTouchMove={(e) => handleMouseMove(e, "基隆市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="苗栗縣"
@@ -339,6 +406,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("苗栗縣")}
             onMouseMove={(e) => handleMouseMove(e, "苗栗縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "苗栗縣")}
+            onTouchMove={(e) => handleMouseMove(e, "苗栗縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="桃園市"
@@ -355,6 +425,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("桃園市")}
             onMouseMove={(e) => handleMouseMove(e, "桃園市")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "桃園市")}
+            onTouchMove={(e) => handleMouseMove(e, "桃園市")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="彰化縣"
@@ -370,6 +443,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("彰化縣")}
             onMouseMove={(e) => handleMouseMove(e, "彰化縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "彰化縣")}
+            onTouchMove={(e) => handleMouseMove(e, "彰化縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="花蓮縣"
@@ -391,6 +467,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("花蓮縣")}
             onMouseMove={(e) => handleMouseMove(e, "花蓮縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "花蓮縣")}
+            onTouchMove={(e) => handleMouseMove(e, "花蓮縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
           <path
             data-name="南投縣"
@@ -412,6 +491,9 @@ const Map = (props) => {
             onClick={() => handlePathClick("南投縣")}
             onMouseMove={(e) => handleMouseMove(e, "南投縣")}
             onMouseOut={handleMouseOut}
+            onTouchStart={(e) => handleMouseMove(e, "南投縣")}
+            onTouchMove={(e) => handleMouseMove(e, "南投縣")}
+            onTouchEnd={handleMouseOut}
           ></path>
         </svg>
       </div>
