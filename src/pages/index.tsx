@@ -123,7 +123,7 @@ export default function Home() {
       >
         DRINK THE
         <br />
-        POISON-
+        MAGIC-
       </div>
       {/* 歡迎訊息部分 */}
       <div
