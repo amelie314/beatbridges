@@ -112,14 +112,6 @@ const LandingPage = () => {
     handleLogin(demoEmail, demoPassword);
   };
 
-  // Demo 登入函數
-  const handleDemoLogin = () => {
-    const demoEmail = "demo@example.com"; // 預設的測試帳號電子郵件
-    const demoPassword = "demoPassword"; // 預設的測試帳號密碼
-
-    handleLogin(demoEmail, demoPassword);
-  };
-
   const handleJoyrideCallback = (data) => {
     const { status } = data;
     if (status === "finished" || status === "skipped") {
