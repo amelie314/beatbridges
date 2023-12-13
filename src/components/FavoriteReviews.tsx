@@ -18,6 +18,7 @@ import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faFolder, faBookmark } from "@fortawesome/free-solid-svg-icons";
 import { UserData } from "../types/types";
+import Image from "next/image";
 
 interface FavoriteReviewsProps {
   favoriteReviewIds: string[];
@@ -137,11 +138,25 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
             <div>
               <Link href={`/profile/${userDetails[review.userId]?.userName}`}>
                 <div className="flex items-center space-x-7">
-                  <img
+                  {/* <img
                     src={userDetails[review.userId]?.photoURL}
                     alt={userDetails[review.userId]?.userName}
                     className="w-16 h-16 rounded-full object-cover"
+                  /> */}
+
+                  <Image
+                    src={
+                      userDetails[review.userId]?.photoURL ||
+                      "/default-photo-url.jpg"
+                    }
+                    width={64}
+                    height={64}
+                    alt={userDetails[review.userId]?.userName}
+                    objectFit="cover" // 確保圖片填充容器但不變形
+                    className="rounded-full" // 直接在圖片上應用圓形效果
+                    layout="fixed" // 使用固定佈局
                   />
+
                   <div className="min-w-0">
                     <h4 className="text-lg font-semibold text-secondary-color truncate mb-2">
                       {userDetails[review.userId]?.userName}
