@@ -8,7 +8,6 @@ export interface LocationInfoProps {
   activeCounty: string | null;
   onVenueSelected: (venueId: string) => void;
 }
-
 export interface Venue {
     id: string;
     Address: string;
@@ -43,4 +42,21 @@ export interface UserData {
   photoURL: string;
   uid?: string;
 }
+export interface JoyrideStep {
+  target: string;
+  content: string;
+  disableBeacon: boolean;
+  styles: {
+    options: {
+      backgroundColor: string;
+      borderRadius: string;
+      width: string;
+      padding: string;
+      borderWidth: string;
+      borderColor: string;
+      color: string;
+    };
+  };
+}
+
 

@@ -1,8 +1,6 @@
 /** @format */
 import React, { useState, useEffect } from "react";
 import { useAuthState } from "react-firebase-hooks/auth";
-import { useRouter } from "next/router";
-import Link from "next/link";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
@@ -11,6 +9,9 @@ import { Venue } from "../types/types";
 import { Review } from "../types/types";
 import LoginModal from "../components/LoginModal";
 import { increment, updateDoc } from "firebase/firestore";
+import { useJoyride } from "../contexts/JoyrideContext";
+import dynamic from "next/dynamic";
+const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 import {
   collection,
@@ -59,9 +60,14 @@ function ConcertPage({ venues }) {
   const [districts, setDistricts] = useState<string[]>([]);
   const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
-  const router = useRouter();
   const [showLoginModal, setShowLoginModal] = useState(false);
-  const [reviewsLoading, setReviewsLoading] = useState(true); // 加載狀態
+  const {
+    runJoyride,
+    joyrideSteps,
+    startJoyride,
+    stopJoyride,
+    updateJoyrideSteps,
+  } = useJoyride();
 
   // 确保定義了 handleVenueSelected 函數来更新 selectedVenueId 狀態
   const handleVenueSelected = (venueId) => {
@@ -399,6 +405,24 @@ function ConcertPage({ venues }) {
                 }}
               />
             )}
+            <Joyride
+              steps={joyrideSteps}
+              run={runJoyride}
+              callback={(data) => {
+                if (data.status === "finished" || data.status === "skipped") {
+                  stopJoyride();
+                }
+              }}
+              locale={{
+                last: "Finish", // 最後一步的按鈕文本
+                next: "Next", // 下一步的按鈕文本
+                skip: "Skip", // 跳過按鈕文本
+                close: "Close", // 關閉按鈕文本
+              }}
+              showSkipButton={true}
+              showProgress={true}
+              continuous={true}
+            />
           </div>
         </div>
       </div>
