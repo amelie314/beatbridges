@@ -12,16 +12,24 @@ import {
   faMapLocationDot,
   faUserPlus,
   faUser,
+  faCircleQuestion,
 } from "@fortawesome/free-solid-svg-icons";
 import { auth } from "../firebaseConfig"; // 確保導入了 auth
+import { useJoyride } from "../contexts/JoyrideContext"; // 導入 useJoyride
 import SignupModal from "./SignupModal";
 import LoginModal from "./LoginModal";
 
 const Navbar = () => {
   const { currentUser, userInfo } = useUserContext();
+  const { startJoyride, updateJoyrideSteps } = useJoyride();
   const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
+
+  const handleStartJoyride = () => {
+    updateJoyrideSteps(!!currentUser); // 根據用戶是否登入來更新步驟
+    startJoyride();
+  };
 
   const handleLogout = async () => {
     try {
@@ -55,15 +63,21 @@ const Navbar = () => {
             </Link>
             <Link href={`/profile/${userInfo?.username || ""}`}>
               <div
-                className=" hover:bg-show-color px-3 py-1 rounded font-bold"
+                className="member-step hover:bg-show-color px-3 py-1 rounded font-bold"
                 title="Member-Center"
               >
                 <FontAwesomeIcon icon={faUser} />
               </div>
             </Link>
             <button
+              onClick={handleStartJoyride}
+              className="guide-step hover:bg-show-color px-3 py-1 rounded font-bold"
+            >
+              <FontAwesomeIcon icon={faCircleQuestion} />
+            </button>
+            <button
               onClick={handleLogout}
-              className="hover:bg-show-color px-3 py-1 rounded font-bold"
+              className="logout-step hover:bg-show-color px-3 py-1 rounded font-bold"
               title="Logout"
             >
               <FontAwesomeIcon icon={faDoorOpen} />
@@ -85,6 +99,12 @@ const Navbar = () => {
               title="Login"
             >
               <FontAwesomeIcon icon={faUserPlus} />
+            </button>
+            <button
+              onClick={handleStartJoyride}
+              className="guide-step hover:bg-show-color px-3 py-1 rounded font-bold"
+            >
+              <FontAwesomeIcon icon={faCircleQuestion} />
             </button>
           </div>
         )}
