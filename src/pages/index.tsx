@@ -6,10 +6,10 @@ import Link from "next/link";
 import Head from "next/head";
 import { auth } from "../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faForwardStep } from "@fortawesome/free-solid-svg-icons";
+import { useJoyride } from "../contexts/JoyrideContext";
 import dynamic from "next/dynamic";
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
+import Image from "next/image";
 
 // 將login函數改為接收email, password和狀態更新函數
 async function login(
@@ -28,7 +28,7 @@ async function login(
 
 const LandingPage = () => {
   const [showSignup, setShowSignup] = useState(false);
-  const [runJoyride, setRunJoyride] = useState(true);
+  const { runJoyride, joyrideSteps, stopJoyride } = useJoyride();
   // 明確地指定 useRef 的類型為 HTMLDivElement
   const sectionOneRef = useRef<HTMLDivElement>(null);
   const sectionTwoRef = useRef<HTMLDivElement>(null);
@@ -54,55 +54,6 @@ const LandingPage = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-  const joyrideSteps = [
-    {
-      target: ".welcome",
-      content: "Hey there! Ready to rock the Taiwan Concert Map? 🎸",
-      styles: {
-        options: {
-          backgroundColor: "black",
-          borderRadius: "8px",
-          width: "250px",
-          padding: "10px",
-          borderWidth: "2px",
-          borderColor: "white",
-          color: "white",
-        },
-      },
-    },
-    {
-      target: ".login-step",
-      content: "Join the crew! Sign in to connect and share your vibe. 🌟",
-      styles: {
-        options: {
-          backgroundColor: "black",
-          borderRadius: "8px",
-          width: "250px",
-          padding: "10px",
-          borderWidth: "2px",
-          borderColor: "white",
-          color: "white",
-        },
-      },
-    },
-    {
-      target: ".map-step",
-      content:
-        "Discover where the magic happens! Pinpoint cool venues and events. 📍🎶",
-      styles: {
-        options: {
-          backgroundColor: "black",
-          borderRadius: "8px",
-          width: "250px",
-          padding: "10px",
-          borderWidth: "2px",
-          borderColor: "white",
-          color: "white",
-        },
-      },
-    },
-    // Additional steps can be added based on other features of your site
-  ];
 
   // Demo 登入函數
   const handleDemoLogin = () => {
@@ -112,13 +63,6 @@ const LandingPage = () => {
     handleLogin(demoEmail, demoPassword);
   };
 
-  const handleJoyrideCallback = (data) => {
-    const { status } = data;
-    if (status === "finished" || status === "skipped") {
-      setRunJoyride(false);
-    }
-  };
-
   // 使用login函數時需要傳入setError
   const handleLogin = (email: string, password: string) =>
     login(email, password, setShowSignup);
@@ -126,72 +70,64 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <div className="flex flex-col bg-primary-color h-screen items-center text-secondary-color">
+      <div className="flex flex-col bg-primary-color h-screen  text-secondary-color">
         <Head>
           <title>Taiwan Concert Venues Map</title>
           <meta name="description" content="Welcome to Taiwan" />
         </Head>
         {/* 設置背景圖片 */}
-        {/* 背景圖片 */}
-        <div
-          className="absolute w-full h-full bg-center bg-cover bg-no-repeat z-0"
-          style={{
-            backgroundImage:
-              "url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
-          }}
-        >
-          {/* 遮罩层 */}
+        <div className="absolute w-full h-full bg-center bg-cover bg-no-repeat z-0">
+          <Image
+            src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+            fill
+            alt="Background Image"
+          />
           <div className="absolute inset-0 bg-black bg-opacity-30 z-10"></div>
         </div>
-        <div className="text-white text-3xl"></div>
-        <div
-          className="absolute top-[570px] right-[20px] md:top-[570px] md:right-[20px] sm:top-[450px] sm:right-[10px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-white leading-[0.8]"
-          style={{ transformOrigin: "top right" }}
-        >
-          DRINK THE
-          <br />
-          MAGIC-
-        </div>
+
         {/* 歡迎訊息部分 */}
-        <div
-          className="absolute top-[230px] left-[200px] md:top-[250px] md:left-[200px] sm:top-[200px] sm:left-[150px] transform rotate-90 writing-mode-vertical-rl text-[100px] text-tertiary-color leading-[0.8]"
-          style={{ transformOrigin: "top left" }}
-        >
-          FROM THE
-          <br />
-          SAME VIBE·
+        {/* 欢迎信息部分 */}
+        <div className="pt-32 pl-16 md:pl-16 sm:pl-4 text-tertiary-color z-20 relative">
+          <p className="text-[60px] font-bold leading-[0.8]">Discover</p>
+          <p className="text-[38px] mt-2">Taiwan's Concert Venues</p>
+        </div>
+        <div className="pt-60 pr-8 text-right text-white z-20 relative">
+          <p className="text-[60px] font-bold leading-[0.8]">Share </p>
+          <p className="text-[38px] mt-2">your experiences, </p>
+          <p className="text-[38px] mt-2">
+            and build friendships through reviews.
+          </p>
         </div>
 
-        {/* 調整位置使其偏左上 */}
-        {/* <div className="absolute top-1/4 left-1/4 transform -translate-x-1/4 -translate-y-1/4 text-white">
-          <h1 className="text-4xl font-bold mb-4 mt-8">OUTDOORMAN PROJECT</h1>
-          <p className="text-xl">
-            an open platform where outdoormen can publish their adventurous
-            stories, combining texts with map
-          </p> */}
-
-        {/* 其他文本或元素 */}
-
-        {/* 登入表單 */}
-        {/* <Link href="/concert">
-        <div className="absolute bottom-7 left-[170px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg">
-          Enter 
-        </div>
-      </Link> */}
         {/* Demo 登入按鈕 */}
         <Link href="/concert">
           <button
-            onClick={handleDemoLogin}
-            className="absolute bottom-7 left-[170px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg"
+            // onClick={handleDemoLogin}
+            className="absolute top-[380px] left-[200px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg z-20"
           >
-            即刻體驗
+            Quick Start
           </button>
         </Link>
         <div className="welcome"></div>
+
+        {/* <div className="absolute bottom-[-100px] left-0 z-10 overflow-visible max-w-3xl max-h-3xl">
+          <Image
+            src="/section_1.png"
+            layout="responsive"
+            width={700}
+            height={500}
+            objectFit="contain"
+            alt="Dynamic Image"
+          />
+        </div> */}
         <Joyride
           steps={joyrideSteps}
           run={runJoyride}
-          callback={handleJoyrideCallback}
+          callback={(data) => {
+            if (data.status === "finished" || data.status === "skipped") {
+              stopJoyride();
+            }
+          }}
           locale={{
             last: "Finish", // 最後一步的按鈕文本
             next: "Next", // 下一步的按鈕文本
@@ -205,7 +141,7 @@ const LandingPage = () => {
       </div>
 
       {/* Section One */}
-      <div ref={sectionOneRef} className="bg-primary-color p-8">
+      {/* <div ref={sectionOneRef} className="bg-primary-color p-8">
         <h2 className="text-3xl font-bold text-secondary-color">
           Discover Performance Spaces
         </h2>
@@ -214,10 +150,10 @@ const LandingPage = () => {
           underground band venues to established stages, find your next cultural
           adventure.
         </p>
-      </div>
+      </div> */}
 
       {/* Section Two */}
-      <div ref={sectionTwoRef} className="bg-primary-color p-8">
+      {/* <div ref={sectionTwoRef} className="bg-primary-color p-8">
         <h2 className="text-3xl font-bold text-secondary-color">
           Share Your Reviews
         </h2>
@@ -226,10 +162,10 @@ const LandingPage = () => {
           fellow art enthusiasts. Your voice could be the start of a new
           artistic friendship!
         </p>
-      </div>
+      </div> */}
 
       {/* Section Three */}
-      <div ref={sectionThreeRef} className="bg-primary-color p-8">
+      {/* <div ref={sectionThreeRef} className="bg-primary-color p-8">
         <h2 className="text-3xl font-bold text-secondary-color">
           Performance Art Enthusiasts Unite
         </h2>
@@ -238,7 +174,7 @@ const LandingPage = () => {
           map, it's a platform where Taiwan's performance art enthusiasts come
           together to exchange and interact.
         </p>
-      </div>
+      </div>*/}
     </div>
   );
 };
