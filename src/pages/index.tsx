@@ -70,16 +70,21 @@ const LandingPage = () => {
   return (
     <div className="flex flex-col">
       {/* Hero Section */}
-      <div className="flex flex-col bg-primary-color h-screen  text-secondary-color">
+      <div className="flex flex-col bg-primary-color h-screen  text-secondary-color z-0">
         <Head>
           <title>Taiwan Concert Venues Map</title>
           <meta name="description" content="Welcome to Taiwan" />
         </Head>
-        <div className="absolute w-full h-full bg-[url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3')] bg-cover bg-center bg-no-repeat"></div>
-        <div className="absolute inset-0 bg-black bg-opacity-30 z-10"></div>
+        <div
+          className="absolute w-full h-full bg-center bg-cover bg-no-repeat z-0"
+          style={{
+            backgroundImage:
+              "url('https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')",
+          }}
+        >
+          <div className="absolute inset-0 bg-black bg-opacity-30 z-10"></div>
+        </div>
 
-        {/* 歡迎訊息部分 */}
-        {/* 欢迎信息部分 */}
         <div className="pt-24 pl-16 md:pl-16 sm:pl-4 text-tertiary-color z-20 relative">
           <p className="text-[60px] font-bold leading-[0.8]">Discover</p>
           <p className="text-[35px] mt-2">Taiwan's Concert Venues</p>
