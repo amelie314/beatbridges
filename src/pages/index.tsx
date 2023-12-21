@@ -78,9 +78,10 @@ const LandingPage = () => {
         {/* 設置背景圖片 */}
         <div className="absolute w-full h-full bg-center bg-cover bg-no-repeat z-0">
           <Image
-            src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-            fill
+            src="https://images.unsplash.com/photo-1533174072545-7a4b6ad7a6c3?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYW7fHx8fGVufDB8fHx8fA%3D%3D"
             alt="Background Image"
+            fill
+            style={{ objectFit: "cover" }}
           />
           <div className="absolute inset-0 bg-black bg-opacity-30 z-10"></div>
         </div>
