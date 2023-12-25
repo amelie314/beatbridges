@@ -37,7 +37,7 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
   return (
     <form onSubmit={handleSubmit}>
       <label htmlFor="performanceName" className={labelClass}>
-        表演名稱
+        Performance Name
       </label>
       <input
         id="performanceName"
@@ -45,13 +45,13 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
         type="text"
         value={performanceName}
         onChange={(e) => setPerformanceName(e.target.value)}
-        placeholder="請輸入表演名稱"
+        placeholder=""
         required
       />
 
       <div>
         <label htmlFor="date" className={labelClass}>
-          日期
+          Date
         </label>
         <input
           id="date"
@@ -66,14 +66,14 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
 
       <div>
         <label htmlFor="reviewText" className={labelClass}>
-          評論
+          Share your journey ✍🏻
         </label>
         <textarea
           id="reviewText"
           className={inputClass}
           value={reviewText}
           onChange={(e) => setReviewText(e.target.value)}
-          placeholder="請輸入評論"
+          placeholder="Write a review here!"
           required
         />
       </div>

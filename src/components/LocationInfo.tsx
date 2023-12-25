@@ -107,7 +107,9 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 
   return (
     <div className="mb-4">
-      <div className="text-white">目前選擇的縣市為： {activeCounty}</div>
+      <div className="text-white">
+        Currently Selected County/City： {activeCounty}
+      </div>
       <div className="mt-4">
         <label
           htmlFor="district-select"
@@ -123,7 +125,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
           }}
         >
           <option value="" disabled>
-            選擇區域
+            Select District
           </option>
           {uniqueDistricts.map((district: string, index) => (
             <option key={index.toString()} value={district}>
@@ -146,7 +148,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
             onChange={handleVenueChange} // 使用 handleVenueChange 函数
           >
             <option value="" disabled>
-              選擇展演空間
+              Choose Performance Venue
             </option>
             {venuesInDistrict.map((venue) => (
               <option key={venue.id} value={venue.id}>
