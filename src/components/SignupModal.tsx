@@ -79,8 +79,8 @@ const SignupModal: React.FC<SignupModalProps> = ({ show, onClose }) => {
       // 先關閉 Modal
       onClose();
 
-      // 然後導向到 /concert
-      router.push("/concert");
+      // 然後導向到 /map
+      router.push("/map");
 
       // 清空表單欄位
       setEmail("");

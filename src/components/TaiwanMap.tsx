@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-const Map = (props) => {
+const TaiwanMap = (props) => {
   // const [activeCounty, setActiveCounty] = useState(null);
   const { activeCounty, setActiveCounty } = props;
   // const [venues, setVenues] = useState([]);
@@ -477,4 +477,4 @@ const Map = (props) => {
   );
 };
 
-export default Map;
+export default TaiwanMap;

@@ -98,10 +98,10 @@ const LandingPage = () => {
         </div>
 
         {/* Demo 登入按鈕 */}
-        <Link href="/concert">
+        <Link href="/map">
           <button
             // onClick={handleDemoLogin}
-            className="absolute top-[380px] left-[200px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg z-20"
+            className="absolute top-[380px] left-[200px] px-6 py-3 border-2 border-white text-white bg-opacity-100 bg-primary-color hover:bg-opacity-100 hover:bg-show-color hover:text-white transition duration-300 ease-in-out rounded-full shadow-lg z-20 transition duration-500 ease-in-out transform hover:-translate-y-1 hover:scale-110"
           >
             Quick Start
           </button>

@@ -27,7 +27,7 @@ import {
 } from "firebase/firestore";
 
 import { db, auth } from "../firebaseConfig";
-import Map from "../components/Map";
+import TaiwanMap from "../components/TaiwanMap";
 import LocationInfo from "../components/LocationInfo";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -52,7 +52,7 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
-function ConcertPage({ venues }) {
+function MapPage({ venues }) {
   const [user, loading, error] = useAuthState(auth); // 這裡使用 useAuthState 鉤子來獲取用戶狀態
   // 在組件中使用 useState 定義狀態
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -267,14 +267,43 @@ function ConcertPage({ venues }) {
     fetchAndProcessReviews().catch(console.error);
   }, [selectedVenueId, user]);
 
-  //刪除評
+  //刪除評論
   const handleDeleteReview = async (reviewId) => {
     if (window.confirm("確定要刪除這則評論嗎？")) {
       await deleteDoc(doc(db, "reviews", reviewId));
       setReviews(reviews.filter((review) => review.id !== reviewId));
     }
   };
-  //
+  //修改評論
+  const handleEditReview = async (reviewId, newText) => {
+    if (!user) {
+      console.error("User is not logged in.");
+      return;
+    }
+
+    // 指向評論文檔的引用
+    const reviewRef = doc(db, "reviews", reviewId);
+
+    try {
+      // 僅更新 text 字段
+      await updateDoc(reviewRef, {
+        text: newText,
+      });
+
+      // 更新本地狀態以反映修改
+      setReviews(
+        reviews.map((review) => {
+          if (review.id === reviewId) {
+            return { ...review, text: newText };
+          }
+          return review;
+        })
+      );
+    } catch (error) {
+      console.error("Error updating review:", error);
+    }
+  };
+
   useEffect(() => {
     const fetchReviewsAndFavorites = async () => {
       // 清空評論列表
@@ -364,7 +393,10 @@ function ConcertPage({ venues }) {
       <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto">
         {/* Left side: Map component */}
         <div className="w-full md:w-1/2 p-10">
-          <Map activeCounty={activeCounty} setActiveCounty={setActiveCounty} />
+          <TaiwanMap
+            activeCounty={activeCounty}
+            setActiveCounty={setActiveCounty}
+          />
         </div>
 
         {/* Right side: Selection and ReviewForm */}
@@ -394,6 +426,7 @@ function ConcertPage({ venues }) {
               onDelete={handleDeleteReview}
               onToggleFavorite={handleToggleFavorite}
               onLike={handleLike}
+              onEdit={handleEditReview}
             />
 
             {showLoginModal && (
@@ -430,4 +463,4 @@ function ConcertPage({ venues }) {
   );
 }
 
-export default ConcertPage;
+export default MapPage;

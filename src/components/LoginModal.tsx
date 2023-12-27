@@ -34,7 +34,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
       setEmail("");
       setPassword("");
       onClose(); // Close the modal before redirecting
-      router.push("/concert"); // Redirect to the concert page
+      router.push("/map"); // Redirect to the map page
     } catch (error) {
       console.error("Login process error:", error);
       // Set a user-friendly error message

@@ -53,7 +53,7 @@ const Navbar = () => {
       <div>
         {currentUser ? (
           <div className="flex items-center space-x-3">
-            <Link href="/concert">
+            <Link href="/map">
               <div
                 className="map-step  hover:bg-show-color px-3 py-1 rounded font-bold"
                 title="Map"
@@ -85,7 +85,7 @@ const Navbar = () => {
           </div>
         ) : (
           <div className="flex items-center space-x-3">
-            <Link href="/concert">
+            <Link href="/map">
               <div
                 className="map-step  hover:bg-show-color px-3 py-1 rounded font-bold"
                 title="Map"

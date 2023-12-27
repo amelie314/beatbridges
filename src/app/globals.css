@@ -66,7 +66,23 @@ body {
 .react-joyride__tooltip {
   color: white !important; /* 強制白色文字 */
 }
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.slide-in-right {
+  animation: slide-in-right 0.5s ease-out forwards;
+}
+
 
 /* .react-joyride__beacon {
   /* 自定義信標（紅點點）樣式 */
-
+ 
+  
