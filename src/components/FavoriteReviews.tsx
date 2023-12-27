@@ -143,19 +143,21 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
                     alt={userDetails[review.userId]?.userName}
                     className="w-16 h-16 rounded-full object-cover"
                   /> */}
-
-                  <Image
-                    src={
-                      userDetails[review.userId]?.photoURL ||
-                      "/default-photo-url.jpg"
-                    }
-                    width={64}
-                    height={64}
-                    alt={userDetails[review.userId]?.userName}
-                    objectFit="cover" // 確保圖片填充容器但不變形
-                    className="rounded-full" // 直接在圖片上應用圓形效果
-                    layout="fixed" // 使用固定佈局
-                  />
+                  <div className="relative rounded-full w-[64px] h-[64px] overflow-hidden ">
+                    <Image
+                      src={
+                        userDetails[review.userId]?.photoURL ||
+                        "/default-photo-url.jpg"
+                      }
+                      // width={64}
+                      // height={64}
+                      alt={userDetails[review.userId]?.userName}
+                      fill
+                      objectFit="cover"
+                      // 確保圖片填充容器但不變形
+                      className="min-w-full min-h-full" // 直接在圖片上應用圓形效果
+                    />
+                  </div>
 
                   <div className="min-w-0">
                     <h4 className="text-lg font-semibold text-secondary-color truncate mb-2">
