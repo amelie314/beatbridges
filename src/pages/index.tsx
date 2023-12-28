@@ -9,7 +9,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { useJoyride } from "../contexts/JoyrideContext";
 import dynamic from "next/dynamic";
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
-import Image from "next/image";
+import Footer from "../components/Footer";
 
 // 將login函數改為接收email, password和狀態更新函數
 async function login(
@@ -56,12 +56,12 @@ const LandingPage = () => {
   }, []);
 
   // Demo 登入函數
-  const handleDemoLogin = () => {
-    const demoEmail = "demo@example.com"; // 預設的測試帳號電子郵件
-    const demoPassword = "demoPassword"; // 預設的測試帳號密碼
+  // const handleDemoLogin = () => {
+  //   const demoEmail = "demo@example.com"; // 預設的測試帳號電子郵件
+  //   const demoPassword = "demoPassword"; // 預設的測試帳號密碼
 
-    handleLogin(demoEmail, demoPassword);
-  };
+  //   handleLogin(demoEmail, demoPassword);
+  // };
 
   // 使用login函數時需要傳入setError
   const handleLogin = (email: string, password: string) =>
@@ -87,12 +87,13 @@ const LandingPage = () => {
 
         <div className="pt-24 pl-16 md:pl-16 sm:pl-4 text-tertiary-color z-20 relative">
           <p className="text-[60px] font-bold leading-[0.8]">Discover</p>
-          <p className="text-[35px] mt-2">Taiwan's Concert Venues</p>
+          <p className="text-[30px] mt-2">Taiwan's Concert Venues</p>
         </div>
         <div className="pt-56 pr-8 text-right text-white z-20 relative">
           <p className="text-[60px] font-bold leading-[0.8]">Share </p>
-          <p className="text-[35px] mt-2">your experiences, </p>
-          <p className="text-[35px] mt-2">
+          <p className="text-[30px] mt-2">
+            your experiences,
+            <br />
             and build friendships through reviews.
           </p>
         </div>
@@ -173,6 +174,7 @@ const LandingPage = () => {
           together to exchange and interact.
         </p>
       </div>*/}
+      <Footer />
     </div>
   );
 };
