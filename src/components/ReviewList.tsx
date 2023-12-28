@@ -64,7 +64,6 @@ const ReviewList = ({
     setEditingId(null);
     setEditingText("");
   };
-
   return (
     <div>
       {reviews.map((review, index) => (
@@ -111,7 +110,7 @@ const ReviewList = ({
                 </span>
               </div>
               <div className="mt-2">
-                <p className="text-sm truncate text-gray-300">
+                <p className="text-sm truncate mb-1 text-gray-300">
                   {review.performanceName}
                 </p>
 
@@ -123,7 +122,7 @@ const ReviewList = ({
                           <textarea
                             value={editingText}
                             onChange={(e) => setEditingText(e.target.value)}
-                            className="w-full mt-2 text-sm p-4 pr-16 pt-4 border border-gray-300 rounded text-gray-700"
+                            className="w-full mt-2 mb-2 text-sm p-4 pr-16 pt-4 border border-gray-300 rounded text-gray-700"
                           />
                           <div className="absolute top-4 right-4 flex space-x-1">
                             <button
@@ -150,13 +149,13 @@ const ReviewList = ({
                         </div>
                       </form>
                     ) : (
-                      <p className="text-sm text-gray-300 mt-1 break-words">
+                      <p className="text-sm text-[12px] text-gray-300 break-words">
                         {review.text}
                       </p>
                     )}
                   </div>
                 ) : (
-                  <p className="text-sm text-gray-300 mt-1 break-words">
+                  <p className="text-sm text-gray-300 break-words">
                     {review.text}
                   </p>
                 )}

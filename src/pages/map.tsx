@@ -7,11 +7,12 @@ import ReviewList from "../components/ReviewList";
 //
 import { Venue } from "../types/types";
 import { Review } from "../types/types";
-import LoginModal from "../components/LoginModal";
 import { increment, updateDoc } from "firebase/firestore";
 import { useJoyride } from "../contexts/JoyrideContext";
 import dynamic from "next/dynamic";
 const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
+import LoginModal from "../components/LoginModal";
+import SignupModal from "../components/SignupModal";
 
 import {
   collection,
@@ -60,7 +61,9 @@ function MapPage({ venues }) {
   const [districts, setDistricts] = useState<string[]>([]);
   const [localVenues, setLocalVenues] = useState<Venue[]>([]);
   const [selectedVenueId, setSelectedVenueId] = useState(null);
+  const [showSignupModal, setShowSignupModal] = useState(false);
   const [showLoginModal, setShowLoginModal] = useState(false);
+  const [isReviewsLoading, setIsReviewsLoading] = useState(false);
   const {
     runJoyride,
     joyrideSteps,
@@ -200,6 +203,9 @@ function MapPage({ venues }) {
     // 僅在當選中了展演空間時才獲取評論資料
     if (selectedVenueId) {
       const fetchReviews = async () => {
+        setIsReviewsLoading(true); // 開始加載
+        const startTime = Date.now();
+
         const reviewsRef = collection(db, "reviews");
         const q = query(reviewsRef, where("venueId", "==", selectedVenueId));
         const querySnapshot = await getDocs(q);
@@ -219,6 +225,18 @@ function MapPage({ venues }) {
 
         // 對評論按日期進行降序排序
         setReviews(sortReviews(fetchedReviews as Review[]));
+
+        // 加載動畫設計
+        const endTime = Date.now();
+        const elapsedTime = endTime - startTime;
+        const minLoadingTime = 700;
+        if (elapsedTime < minLoadingTime) {
+          setTimeout(() => {
+            setIsReviewsLoading(false);
+          }, minLoadingTime - elapsedTime);
+        } else {
+          setIsReviewsLoading(false);
+        }
       };
       fetchReviews().catch(console.error);
     }
@@ -420,24 +438,69 @@ function MapPage({ venues }) {
               />
             )}
 
-            <ReviewList
+            {/* 如果有选定的场地且评论长度为0 */}
+            {selectedVenueId && reviews.length === 0 && !isReviewsLoading ? (
+              // 显示没有评论的提示
+              <div className="">
+                <p className="text-lg text-gray-300">
+                  No reviews yet!{" "}
+                  {user ? (
+                    "Be the first adventurer to leave a mark on this spot 🚀"
+                  ) : (
+                    <>
+                      <span
+                        className="cursor-pointer text-secondary-color underline"
+                        onClick={() => setShowLoginModal(true)}
+                      >
+                        {""} Log in {""}
+                      </span>
+                      to be the first adventurer to leave a mark on this spot 🚀
+                    </>
+                  )}
+                </p>
+              </div>
+            ) : isReviewsLoading ? (
+              <div className="flex justify-center">
+                <div className="loader mt-8"></div>
+              </div>
+            ) : (
+              // 显示评论列表
+              <ReviewList
+                reviews={reviews}
+                currentUserId={user?.uid}
+                onDelete={handleDeleteReview}
+                onToggleFavorite={handleToggleFavorite}
+                onLike={handleLike}
+                onEdit={handleEditReview}
+              />
+            )}
+
+            {/* <ReviewList
               reviews={reviews}
               currentUserId={user?.uid}
               onDelete={handleDeleteReview}
               onToggleFavorite={handleToggleFavorite}
               onLike={handleLike}
               onEdit={handleEditReview}
-            />
+            /> */}
 
             {showLoginModal && (
               <LoginModal
                 show={showLoginModal}
                 onClose={() => setShowLoginModal(false)}
                 onShowSignup={() => {
-                  /* 如果你需要处理注册逻辑 */
+                  setShowLoginModal(false);
+                  setShowSignupModal(true);
                 }}
               />
             )}
+            {showSignupModal && (
+              <SignupModal
+                show={showSignupModal}
+                onClose={() => setShowSignupModal(false)}
+              />
+            )}
+
             <Joyride
               steps={joyrideSteps}
               run={runJoyride}

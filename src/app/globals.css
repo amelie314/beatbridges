@@ -80,7 +80,33 @@ body {
 .slide-in-right {
   animation: slide-in-right 0.5s ease-out forwards;
 }
+.blink{
+  animation: blink 1s ease-out infinite;
+}
+@keyframes blink{
+  0%{
+    opacity: 0.5;
+  }
+  50%{
+    opacity: 1;
+  }
+  100%{
+    opacity: 0.5;
+  }
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
 
+.loader {
+  border: 6px solid #f3f3f3;  /* Light grey */
+  border-top: 6px solid #B7E21B; /* Blue */
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+}
 
 /* .react-joyride__beacon {
   /* 自定義信標（紅點點）樣式 */
