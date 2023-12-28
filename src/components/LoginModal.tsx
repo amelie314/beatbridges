@@ -19,8 +19,8 @@ const LoginModal: React.FC<LoginModalProps> = ({
   onClose,
   onShowSignup,
 }) => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("demo@example.com");
+  const [password, setPassword] = useState("demoPassword");
   const [loginError, setLoginError] = useState("");
   const router = useRouter();
 
@@ -31,8 +31,8 @@ const LoginModal: React.FC<LoginModalProps> = ({
     try {
       await signInWithEmailAndPassword(auth, email, password);
       // If the login is successful, close the modal and redirect
-      setEmail("");
-      setPassword("");
+      setEmail("demo@example.com");
+      setPassword("demoPassword");
       onClose(); // Close the modal before redirecting
       router.push("/map"); // Redirect to the map page
     } catch (error) {
