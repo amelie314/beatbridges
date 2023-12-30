@@ -11,19 +11,21 @@ import { auth, db } from "../firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import { User } from "firebase/auth";
 
-// 定義額外的用戶資料類型
-interface UserInfo {
+export interface UserInfo {
   username?: string;
   displayName?: string;
   bio?: string;
   photoURL?: string;
 }
 
+// 定義額外的用戶資料類型
 interface UserContextType {
   currentUser: User | null;
   setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
   userInfo: UserInfo | null;
   setUserInfo: React.Dispatch<React.SetStateAction<UserInfo | null>>;
+  isLoadingUserInfo: boolean; // 新增狀態
+  setIsLoadingUserInfo: React.Dispatch<React.SetStateAction<boolean>>; // 允許修改狀態的函數
 }
 
 // 定義 UserProviderProps 來包含 children
@@ -37,10 +39,12 @@ const UserContext = createContext<UserContextType | undefined>(undefined);
 export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
   const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [isLoadingUserInfo, setIsLoadingUserInfo] = useState(true);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged(async (user) => {
       setCurrentUser(user);
+      setIsLoadingUserInfo(true);
       if (user) {
         const userDocRef = doc(db, "users", user.uid);
         const userDoc = await getDoc(userDocRef);
@@ -52,6 +56,7 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
       } else {
         setUserInfo(null);
       }
+      setIsLoadingUserInfo(false);
     });
 
     return () => unsubscribe();
@@ -59,7 +64,14 @@ export const UserProvider: React.FC<UserProviderProps> = ({ children }) => {
 
   return (
     <UserContext.Provider
-      value={{ currentUser, setCurrentUser, userInfo, setUserInfo }}
+      value={{
+        currentUser,
+        setCurrentUser,
+        userInfo,
+        setUserInfo,
+        isLoadingUserInfo,
+        setIsLoadingUserInfo,
+      }}
     >
       {children}
     </UserContext.Provider>

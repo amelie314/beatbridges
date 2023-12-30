@@ -5,7 +5,11 @@
 
 const nextConfig = {
   images: {
-    domains: ["firebasestorage.googleapis.com", "images.unsplash.com"],
+    domains: [
+      "firebasestorage.googleapis.com",
+      "images.unsplash.com",
+      "lh3.googleusercontent.com",
+    ],
   },
   // 在這裡添加其他配置
 };
