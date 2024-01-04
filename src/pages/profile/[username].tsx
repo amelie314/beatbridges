@@ -32,6 +32,9 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 import { ReviewWithVenue } from "../../types/types"; // 引入新介面
 import { Review } from "../../types/types";
+import { useJoyride } from "../../contexts/JoyrideContext";
+import dynamic from "next/dynamic";
+const Joyride = dynamic(() => import("react-joyride"), { ssr: false });
 
 const UserProfile = () => {
   const router = useRouter();
@@ -52,6 +55,13 @@ const UserProfile = () => {
   const [userReviews, setUserReviews] = useState<ReviewWithVenue[]>([]);
   const [venues, setVenues] = useState({}); // 用於存儲場地資訊的狀態
   const [isUpdating, setIsUpdating] = useState(false); // 新增狀態來追蹤更新狀態
+  const {
+    runJoyride,
+    joyrideSteps,
+    startJoyride,
+    stopJoyride,
+    updateJoyrideSteps,
+  } = useJoyride();
 
   // 用於控制顯示的評論數量
   const [isExpanded, setIsExpanded] = useState(false);
@@ -509,6 +519,24 @@ const UserProfile = () => {
           </form>
         </Modal>
       )}
+      <Joyride
+        steps={joyrideSteps}
+        run={runJoyride}
+        callback={(data) => {
+          if (data.status === "finished" || data.status === "skipped") {
+            stopJoyride();
+          }
+        }}
+        locale={{
+          last: "Finish", // 最後一步的按鈕文本
+          next: "Next", // 下一步的按鈕文本
+          skip: "Skip", // 跳過按鈕文本
+          close: "Close", // 關閉按鈕文本
+        }}
+        showSkipButton={true}
+        showProgress={true}
+        continuous={true}
+      />
     </div>
   );
 };
