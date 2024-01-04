@@ -1,7 +1,7 @@
 /** @format */
 
 // /src/components/Navbar.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useUserContext } from "../contexts/UserContext";
 import Link from "next/link";
 import { useRouter } from "next/router";
@@ -26,6 +26,13 @@ const Navbar = () => {
   const [showLoginModal, setShowLoginModal] = useState(false);
   const router = useRouter();
 
+  useEffect(() => {
+    console.log("Navbar");
+    if (currentUser) {
+      setShowLoginModal(false);
+      setShowSignupModal(false);
+    }
+  }, [currentUser]);
   const handleStartJoyride = () => {
     updateJoyrideSteps(!!currentUser); // 根據用戶是否登入來更新步驟
     startJoyride();
