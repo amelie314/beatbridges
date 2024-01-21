@@ -23,6 +23,9 @@ BeatBridges is an integrative platform designed to streamline the search for per
     
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs directly in the markup.
 
+## Architecture
+![](public/architecture.png)
+
 ## Highlights
 
 - **User-Focused Features**: Emphasizes user interaction with a community-based platform similar to popular social media experiences.
