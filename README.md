@@ -2,6 +2,9 @@
 
 BeatBridges is an integrative platform designed to streamline the search for performance spaces, foster member reviews, and facilitate engaging interactions. With the ability to browse public pages, members can interact through comments, enhancing community links and friendships.
 
+![](public/website.png)
+
+
 ## Highlights
 
 - **User-Focused Features**: Emphasizes user interaction with a community-based platform similar to popular social media experiences.
