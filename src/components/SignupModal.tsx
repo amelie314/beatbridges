@@ -73,7 +73,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ show, onClose }) => {
         uid: user.uid,
       });
       // 註冊成功後的操作
-      console.log("Firestore 寫入成功");
+      // console.log("Firestore 寫入成功");
       alert("帳戶註冊成功！");
 
       // 先關閉 Modal

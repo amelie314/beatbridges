@@ -39,7 +39,7 @@ const ReviewList = ({
           userName: userDoc.data()?.username || "匿名用戶",
         };
       }
-      console.log(newDetails);
+      // console.log(newDetails);
 
       setUserDetails(newDetails);
     };

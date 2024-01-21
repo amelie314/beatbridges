@@ -13,7 +13,7 @@ const ReviewForm = ({ venueId, userId, onAddReview }) => {
     event.preventDefault();
     if (!reviewText.trim() || !venueId) {
       alert("請選擇一個展演空間並填寫評論。");
-      console.log(reviewText, venueId);
+      // console.log(reviewText, venueId);
       return;
     }
     //驗證日期是否已選擇且不是未來的日期

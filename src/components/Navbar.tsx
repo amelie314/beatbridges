@@ -27,7 +27,7 @@ const Navbar = () => {
   const router = useRouter();
 
   useEffect(() => {
-    console.log("Navbar");
+    // console.log("Navbar");
     if (currentUser) {
       setShowLoginModal(false);
       setShowSignupModal(false);

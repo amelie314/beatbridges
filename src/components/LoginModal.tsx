@@ -93,11 +93,11 @@ const LoginModal: React.FC<LoginModalProps> = ({
 
         // 寫入新用戶資料到 Firestore
         await setDoc(doc(db, "users", user.uid), userInfoData);
-        console.log("New user created with Google login.");
+        // console.log("New user created with Google login.");
       } else {
         // 如果用戶已存在，從 Firestore 獲取最新的用戶信息
         userInfoData = querySnapshot.docs[0].data() as UserInfo;
-        console.log("User already exists. Fetched existing data.");
+        // console.log("User already exists. Fetched existing data.");
       }
 
       // 更新 context 中的用戶信息

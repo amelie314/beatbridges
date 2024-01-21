@@ -57,7 +57,7 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
 
   // LocationInfo 组件中
   const handleVenueChange = (e) => {
-    console.log(e.target.value);
+    // console.log(e.target.value);
     const venueId = e.target.value; // 這裡獲取選中的 venueId
     setSelectedVenue(venueId); // 更新本地狀態
     onVenueSelected(venueId); // 通知父組件已選擇的 venueId

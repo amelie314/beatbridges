@@ -78,7 +78,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     const fetchUserData = async () => {
-      console.log("useEffect 開始執行- fetchUserData", { username, user });
+      // console.log("useEffect 開始執行- fetchUserData", { username, user });
       if (username) {
         const usersRef = collection(db, "users");
         const q = query(usersRef, where("username", "==", username));
@@ -112,7 +112,7 @@ const UserProfile = () => {
 
   useEffect(() => {
     if (user && isCurrentUser) {
-      // 假設您的用戶收藏資料存儲在 'userFavorites' 集合中
+      // 用戶收藏資料存儲在 'userFavorites' 集合中
       const fetchFavorites = async () => {
         const favoritesRef = collection(db, "userFavorites");
         const q = query(favoritesRef, where("userId", "==", user.uid));

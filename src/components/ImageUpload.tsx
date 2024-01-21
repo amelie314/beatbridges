@@ -15,7 +15,7 @@ const ImageUpload = ({ userId }) => {
 
   const handleUpload = () => {
     if (!image) {
-      console.log("未選擇圖片，取消上傳");
+      // console.log("未選擇圖片，取消上傳");
       return;
     }
 

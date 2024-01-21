@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-const TaiwanMap = (props) => {
+const Taiwan = (props) => {
   // const [activeCounty, setActiveCounty] = useState(null);
   const { activeCounty, setActiveCounty } = props;
   // const [venues, setVenues] = useState([]);
@@ -12,7 +12,7 @@ const TaiwanMap = (props) => {
   const [longPressTimer, setLongPressTimer] = useState<number | null>(null);
 
   // const handlePathClick = (countyName) => {
-  //   // console.log("點擊", countyName); // 加入此行來調試
+  //   console.log("點擊", countyName); // 加入此行來調試
   //   setActiveCounty(countyName);
   //   setIsTooltipVisible(false);
   // };
@@ -23,22 +23,7 @@ const TaiwanMap = (props) => {
     setTooltipContent(countyName);
     setIsTooltipVisible(true);
   };
-  // const handleMouseMove = (e, countyName) => {
-  //   let x, y;
-  //   if (e.type === "touchmove" || e.type === "touchstart") {
-  //     // 對於觸摸事件，使用 touches 陣列的第一個觸點來獲取位置
-  //     x = e.touches[0].pageX;
-  //     y = e.touches[0].pageY;
-  //   } else {
-  //     // 對於滑鼠事件，直接使用 pageX 和 pageY
-  //     x = e.pageX;
-  //     y = e.pageY;
-  //   }
 
-  //   setTooltipPosition({ x: x + 8, y: y - 35 });
-  //   setTooltipContent(countyName);
-  //   setIsTooltipVisible(true);
-  // };
   const handleClick = (countyName: string, e: React.MouseEvent) => {
     setActiveCounty(countyName);
 
@@ -477,4 +462,4 @@ const TaiwanMap = (props) => {
   );
 };
 
-export default TaiwanMap;
+export default Taiwan;
