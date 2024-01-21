@@ -12,7 +12,7 @@ BeatBridges is an integrative platform designed to streamline the search for per
 
 - **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and understandability.
 
-- **Next.js**: A React framework that enables functionality such as server-side rendering and generating static websites, equipped with file-system based routing for automatic route handling which simplifies the routing setup and boosts development efficiency.
+- **Next.js**: A React framework equipped with file-system-based routing that automates route handling, simplifying routing setup and boosting development efficiency.
 
 - **Vercel**: A platform for deploying front-end apps and static sites with optimal performance.
 
