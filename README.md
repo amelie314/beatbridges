@@ -7,8 +7,8 @@ BeatBridges is an integrative platform designed to streamline the search for per
 ## Technique Overview
 
 - **React**: A declarative, efficient, and flexible JavaScript library for building user interfaces.
-  - **React Hooks**: For state and lifecycle features in functional components.
-  - **React Context**: For managing global state across components without prop drilling.
+  - **React Hooks**
+  - **React Context**
 
 - **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and understandability.
 
