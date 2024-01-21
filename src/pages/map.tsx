@@ -28,7 +28,7 @@ import {
 } from "firebase/firestore";
 
 import { db, auth } from "../firebaseConfig";
-import TaiwanMap from "../components/TaiwanMap";
+import Taiwan from "../components/Taiwan";
 import LocationInfo from "../components/LocationInfo";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
@@ -411,7 +411,7 @@ function MapPage({ venues }) {
       <div className="flex flex-col md:flex-row w-full max-w-7xl mx-auto">
         {/* Left side: Map component */}
         <div className="w-full md:w-1/2 p-10">
-          <TaiwanMap
+          <Taiwan
             activeCounty={activeCounty}
             setActiveCounty={setActiveCounty}
           />
