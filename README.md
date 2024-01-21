@@ -4,6 +4,30 @@ BeatBridges is an integrative platform designed to streamline the search for per
 
 ![](public/website.png)
 
+## Technique Overview
+
+### Front-End
+- **React**: A declarative, efficient, and flexible JavaScript library for building user interfaces.
+  - **React Hooks**: For state and lifecycle features in functional components.
+  - **React Context**: For managing global state across components without prop drilling.
+
+### Type System
+- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and understandability.
+
+### Framework
+- **Next.js**: A React framework that enables functionality such as server-side rendering and generating static websites, equipped with file-system based routing for automatic route handling which simplifies the routing setup and boosts development efficiency.
+
+### Hosting
+- **Vercel**: A platform for deploying front-end apps and static sites with optimal performance.
+
+### Cloud Service
+- **Firebase**: A comprehensive app development platform that provides backend services.
+  - **Firestore Database**: A NoSQL database for storing and syncing data in real-time.
+  - **Authentication**: Secure user authentication system that supports various sign-in methods.
+  - **Storage**: Object storage solution for storing user-generated content.
+    
+### Styling
+- **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs directly in the markup.
 
 ## Highlights
 
@@ -11,17 +35,6 @@ BeatBridges is an integrative platform designed to streamline the search for per
 - **Personalized User Context**: Leverages React Context to manage and personalize user experience efficiently.
 - **Real-Time Interaction**: Implements Firebase real-time database features to sync user interactions instantly.
 - **Authentication and User Info**: Integrates Firebase Authentication and user information storage for a secure and personalized user experience.
-- **Technique Overview**
-  - React and React Hooks for responsive UIs.
-  - React Context for global state management.
-  - TypeScript for robust type-checking and scalability.
-  - Next.js for frontend framework with SSG and ISR capabilities.
-  - Vercel for deployment and hosting services.
-  - Firebase suite for backend services including:
-    - Firestore Database for data storage.
-    - Authentication for user verification.
-    - Storage for file management.
-  - styled-components for modular and reusable CSS in JS components.
 
 ## Feature Description
 
