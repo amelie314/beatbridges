@@ -4,10 +4,10 @@ BeatBridges is an integrative platform designed to streamline the search for per
 
 ![](public/website.png)
 
-## Technique Overview
+## Frontend Technique
 
 - **React**
-  - **React Hooks**
+  - **React Hooks** : useState, useEffect, useContext
   - **React Context**
 
 - **TypeScript**
