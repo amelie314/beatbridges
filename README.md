@@ -24,6 +24,37 @@ BeatBridges is an integrative platform designed to streamline the search for per
 ## Architecture
 ![](public/architecture_final.png)
 
+## Component Tree
+
+App
+│
+├───UserProvider (Manages global user state, provides UserContext)
+│   │
+│   └───JoyrideProvider (Manages guided processes based on user state)
+│       │
+│       └───Layout (Structural component typically including header and footer)
+│           │
+│           ├───Navbar (Navigation bar component, accesses UserContext)
+│           │
+│           └───Main Content (Main content area, dynamically displays based on current route)
+│               │
+│               ├───IndexPage (Home page)
+│               ├───MapPage (Map page, contains components like Taiwan, ReviewForm, ReviewList, LocationInfo)
+│               │   ├───Taiwan (Taiwan map component)
+│               │   ├───ReviewForm (Review form component)
+│               │   ├───ReviewList (Review list component)
+│               │   └───LocationInfo (Location information component)
+│               │
+│               └───[username]Page (Personal page, displays components like Modal, FavoriteReviews)
+│                   ├───Modal (Modal dialog component for user profile editing)
+│                   └───FavoriteReviews (Favorite reviews component)
+│
+└───Shared Components (Shared components)
+    ├───Nav (Navigation component)
+    └───LoginModal (Login modal, globally triggered)
+    └───SignupModal (Signup modal, globally triggered)
+
+
 ## Highlights
 
 - **User-Focused Features**: Emphasizes user interaction with a community-based platform similar to popular social media experiences.
