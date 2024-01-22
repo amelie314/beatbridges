@@ -7,7 +7,7 @@ BeatBridges is an integrative platform designed to streamline the search for per
 ## Frontend Technique
 
 - **React**
-  - **React Hooks** : useState, useEffect, useContext
+  - **React Hooks** : `useState`, `useEffect`, `useContext`
   - **React Context**
 
 - **TypeScript**
