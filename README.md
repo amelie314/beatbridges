@@ -6,6 +6,7 @@ BeatBridges is an integrative platform designed to streamline the search for per
 
 ## Frontend Technique
 
+- **React**
 **Hooks**: Utilize `useState` for state management within components, `useEffect` for side effects operations, and `useContext` to access React Context, which is a way to manage global state across the component tree without prop drilling.
 
 - **TypeScript**
