@@ -6,17 +6,16 @@ BeatBridges is an integrative platform designed to streamline the search for per
 
 ## Technique Overview
 
-- **React**: A declarative, efficient, and flexible JavaScript library for building user interfaces.
+- **React**
   - **React Hooks**
   - **React Context**
 
-- **TypeScript**: A typed superset of JavaScript that compiles to plain JavaScript, enhancing code quality and understandability.
+- **TypeScript**
 
-- **Next.js**: A React framework equipped with file-system-based routing that automates route handling, simplifying routing setup and boosting development efficiency.
+- **Next.js**
+- **Vercel**
 
-- **Vercel**: A platform for deploying front-end apps and static sites with optimal performance.
-
-- **Firebase**: A comprehensive app development platform that provides backend services.
+- **Firebase**
   - **Firestore Database**: A NoSQL database for storing and syncing data in real-time.
   - **Authentication**: Secure user authentication system that supports various sign-in methods.
   - **Storage**: Object storage solution for storing user-generated content.
