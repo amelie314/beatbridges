@@ -117,30 +117,32 @@ const LocationInfo: React.FC<LocationInfoProps> = ({
           🚩 Currently Selected County/City： {activeCounty}
         </p>
       </div>
-      <div className="mt-3">
-        <label
-          htmlFor="district-select"
-          className="block mb-2 text-sm font-medium text-gray-900"
-        ></label>
-        <select
-          id="district-select"
-          className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
-          value={selectedDistrict}
-          onChange={(e) => {
-            setSelectedDistrict(e.target.value);
-            setSelectedVenue(""); // 重置展演空間的選擇
-          }}
-        >
-          <option value="" disabled>
-            Select District
-          </option>
-          {uniqueDistricts.map((district: string, index) => (
-            <option key={index.toString()} value={district}>
-              {district}
+      {activeCounty && (
+        <div className="mt-3">
+          <label
+            htmlFor="district-select"
+            className="block mb-2 text-sm font-medium text-gray-900"
+          ></label>
+          <select
+            id="district-select"
+            className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5"
+            value={selectedDistrict}
+            onChange={(e) => {
+              setSelectedDistrict(e.target.value);
+              setSelectedVenue(""); // 重置展演空間的選擇
+            }}
+          >
+            <option value="" disabled>
+              Select District
             </option>
-          ))}
-        </select>
-      </div>
+            {uniqueDistricts.map((district: string, index) => (
+              <option key={index.toString()} value={district}>
+                {district}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
       {selectedDistrict && (
         <div className="mt-4">
           <label
