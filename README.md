@@ -16,9 +16,9 @@ BeatBridges is an integrative platform designed to streamline the search for per
 - **Vercel**
 
 - **Firebase**
-  - **Firestore Database**: A NoSQL database for storing and syncing data in real-time.
-  - **Authentication**: Secure user authentication system that supports various sign-in methods.
-  - **Storage**: Object storage solution for storing user-generated content.
+  - **Firestore Database**
+  - **Authentication**
+  - **Storage**
     
 - **Tailwind CSS**: A utility-first CSS framework for rapidly building custom designs directly in the markup.
 
