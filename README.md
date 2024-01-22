@@ -25,7 +25,7 @@ BeatBridges is an integrative platform designed to streamline the search for per
 ![](public/architecture_final.png)
 
 ## Component Tree
-
+```
 App
 │
 ├─── UserProvider (Manages global user state, provides UserContext)
@@ -53,7 +53,7 @@ App
     ├─── Nav (Navigation component)
     ├─── LoginModal (Login modal, globally triggered)
     └─── SignupModal (Signup modal, globally triggered)
-
+```
 
 ## Highlights
 
