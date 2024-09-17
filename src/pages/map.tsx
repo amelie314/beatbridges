@@ -4,6 +4,8 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { GetServerSideProps } from "next";
 import ReviewForm from "../components/ReviewForm";
 import ReviewList from "../components/ReviewList";
+import Taiwan from "../components/Taiwan";
+import LocationInfo from "../components/LocationInfo";
 //
 import { Venue } from "../types/types";
 import { Review } from "../types/types";
@@ -28,8 +30,6 @@ import {
 } from "firebase/firestore";
 
 import { db, auth } from "../firebaseConfig";
-import Taiwan from "../components/Taiwan";
-import LocationInfo from "../components/LocationInfo";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   const data: Venue[] = [];

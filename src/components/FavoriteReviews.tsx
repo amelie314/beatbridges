@@ -38,13 +38,13 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
   const [user, loading, error] = useAuthState(auth);
   const { userInfo } = useUserContext();
 
+  //fetch favorite reviews
   useEffect(() => {
     const fetchFavoriteReviews = async () => {
       if (!user) {
         console.error("User not logged in or undefined");
         return;
       }
-
       const reviews: Review[] = [];
       const details = {};
       for (const reviewId of favoriteReviewIds) {
@@ -53,7 +53,7 @@ const FavoriteReviews: React.FC<FavoriteReviewsProps> = ({
         if (reviewSnap.exists()) {
           const reviewData = reviewSnap.data() as any;
 
-          // 獲取收藏時間戳
+          // 檢查該評論是否被當前用户收藏
           const favQuery = query(
             collection(db, "userFavorites"),
             where("userId", "==", user.uid),
